@@ -1,0 +1,38 @@
+<!--pages/admin/question-manage/index.wxml-->
+<view class="container">
+  <!-- 操作按钮 -->
+  <view class="action-buttons">
+    <button class="action-btn import" bindtap="importQuestions">
+      <image class="btn-icon" src="/images/import-icon.png" mode="aspectFit"></image>
+      <text>导入题目</text>
+    </button>
+    <button class="action-btn export" bindtap="exportQuestions">
+      <image class="btn-icon" src="/images/export-icon.png" mode="aspectFit"></image>
+      <text>导出题目</text>
+    </button>
+  </view>
+
+  <!-- 题目列表 -->
+  <view class="question-list">
+    <view class="list-header">
+      <view class="header-item">题目</view>
+      <view class="header-item">类型</view>
+      <view class="header-item">操作</view>
+    </view>
+    <view class="list-content">
+      <view class="list-item" wx:for="{{questionList}}" wx:key="id">
+        <view class="question-title">{{item.title}}</view>
+        <view class="question-type">{{item.type}}</view>
+        <view class="item-actions">
+          <button class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</button>
+          <button class="btn delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 添加题目按钮 -->
+  <view class="add-button" bindtap="addQuestion">
+    <image class="add-icon" src="/images/add-icon.png" mode="aspectFit"></image>
+  </view>
+</view>

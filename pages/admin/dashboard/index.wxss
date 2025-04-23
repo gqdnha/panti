@@ -1,0 +1,259 @@
+.container {
+  min-height: 100vh;
+  background-color: #f7f8fa;
+  padding: 30rpx 20rpx;
+}
+
+/* 统计卡片 */
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16rpx;
+  margin-bottom: 30rpx;
+}
+
+.stats-card {
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  padding: 30rpx 20rpx;
+  border-radius: 16rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(74, 144, 226, 0.2);
+}
+
+.stats-title {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12rpx;
+}
+
+.stats-value {
+  font-size: 40rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* 功能卡片 */
+.function-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-top: 30rpx;
+}
+
+.function-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 240rpx;
+  position: relative;
+  overflow: hidden;
+}
+
+.function-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 6rpx;
+  background: linear-gradient(90deg, #4a90e2, #357abd);
+}
+
+.function-card:active {
+  transform: scale(0.98);
+}
+
+.card-icon {
+  width: 80rpx;
+  height: 80rpx;
+  margin-bottom: 20rpx;
+}
+
+.card-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.card-desc {
+  font-size: 26rpx;
+  color: #666;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.card-arrow {
+  position: absolute;
+  right: 30rpx;
+  bottom: 30rpx;
+  width: 32rpx;
+  height: 32rpx;
+  opacity: 0.5;
+}
+
+/* 动画效果 */
+.function-card {
+  transition: all 0.3s ease;
+}
+
+.function-card:active {
+  background: #f8f9fa;
+}
+
+/* 用户列表样式 */
+.user-list {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #333;
+  padding: 24rpx;
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  color: #fff;
+}
+
+.list-header {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 2fr;
+  padding: 20rpx 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f8f9fa;
+  font-weight: 500;
+}
+
+.list-content {
+  max-height: 600rpx;
+  overflow-y: auto;
+}
+
+.list-item {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 2fr;
+  padding: 24rpx;
+  align-items: center;
+  border-bottom: 1rpx solid #f0f0f0;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.list-item:active {
+  background: #f8f9fa;
+}
+
+.item-user {
+  display: flex;
+  align-items: center;
+}
+
+.user-avatar {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  margin-right: 16rpx;
+  border: 2rpx solid #fff;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.user-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.item-count, .item-rate {
+  font-size: 28rpx;
+  color: #666;
+  text-align: center;
+}
+
+.item-actions {
+  display: flex;
+  gap: 12rpx;
+  justify-content: flex-end;
+}
+
+.action-btn {
+  min-width: 120rpx;
+  font-size: 26rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 30rpx;
+  background: #f0f8ff;
+  color: #4a90e2;
+  border: none;
+  line-height: 1.5;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.95);
+}
+
+.action-btn.export {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+/* 题目管理样式 */
+.question-manage {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.manage-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16rpx;
+  padding: 24rpx;
+}
+
+.manage-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 32rpx;
+  font-size: 30rpx;
+  color: #333;
+  background: #f8f9fa;
+  border: none;
+  border-radius: 16rpx;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.manage-btn:active {
+  transform: scale(0.98);
+  background: #f0f2f5;
+}
+
+.btn-icon {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+/* 去除按钮默认样式 */
+button {
+  padding: 0;
+  line-height: normal;
+  background: none;
+}
+
+button::after {
+  border: none;
+} 

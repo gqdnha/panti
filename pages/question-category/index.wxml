@@ -1,0 +1,26 @@
+<!--pages/question-category/index.wxml-->
+<view class="container">
+  <view class="category-header">
+    <view class="category-title">{{categoryInfo.name}}</view>
+    <view class="category-desc">{{categoryInfo.description}}</view>
+  </view>
+
+  <view class="question-list">
+    <view class="question-item" wx:for="{{questions}}" wx:key="id" bindtap="startQuestion" data-id="{{item.id}}">
+      <view class="question-info">
+        <view class="question-name">{{item.name}}</view>
+        <view class="question-meta">
+          <text class="question-count">{{item.questionCount}}题</text>
+          <text class="question-time">预计{{item.estimatedTime}}分钟</text>
+        </view>
+      </view>
+      <view class="question-status {{item.status}}">
+        {{item.status === 'completed' ? '已完成' : item.status === 'in-progress' ? '进行中' : '未开始'}}
+      </view>
+    </view>
+  </view>
+
+  <view class="empty-tip" wx:if="{{questions.length === 0}}">
+    暂无题目，请稍后再试
+  </view>
+</view>

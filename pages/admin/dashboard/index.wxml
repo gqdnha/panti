@@ -1,0 +1,35 @@
+<!--pages/admin/dashboard/index.wxml-->
+<view class="container">
+  <!-- 顶部统计卡片 -->
+  <view class="stats-cards">
+    <view class="stats-card">
+      <view class="stats-title">总用户数</view>
+      <view class="stats-value">{{totalUsers}}</view>
+    </view>
+    <view class="stats-card">
+      <view class="stats-title">今日用户</view>
+      <view class="stats-value">{{todayUsers}}</view>
+    </view>
+    <view class="stats-card">
+      <view class="stats-title">平均正确率</view>
+      <view class="stats-value">{{avgCorrectRate}}%</view>
+    </view>
+  </view>
+
+  <!-- 功能卡片 -->
+  <view class="function-cards">
+    <view class="function-card" bindtap="navigateToUserStats">
+      <image class="card-icon" src="/images/stats-icon.png" mode="aspectFit"></image>
+      <view class="card-title">答题情况</view>
+      <view class="card-desc">查看用户答题数据统计</view>
+      <image class="card-arrow" src="/images/arrow-right.png" mode="aspectFit"></image>
+    </view>
+    
+    <view class="function-card" bindtap="navigateToQuestionManage">
+      <image class="card-icon" src="/images/question-icon.png" mode="aspectFit"></image>
+      <view class="card-title">题目管理</view>
+      <view class="card-desc">导入导出题目数据</view>
+      <image class="card-arrow" src="/images/arrow-right.png" mode="aspectFit"></image>
+    </view>
+  </view>
+</view>

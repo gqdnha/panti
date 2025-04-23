@@ -1,0 +1,42 @@
+<!--index.wxml-->
+<view class="container">
+  <view class="user-info">
+    <view class="nickname">
+      <text wx:if="{{userInfo}}">Hi，{{userInfo.nickName}}</text>
+      <text wx:else>未登录</text>
+    </view>
+    <view class="study-time">今日学习时长：{{studyTime}}分钟</view>
+  </view>
+
+  <!-- 学习统计 -->
+  <view class="stats-section">
+    <view class="stats-item">
+      <view class="stats-value">{{totalQuestions}}</view>
+      <view class="stats-label">总题数</view>
+    </view>
+    <view class="stats-item">
+      <view class="stats-value">{{correctRate}}%</view>
+      <view class="stats-label">正确率</view>
+    </view>
+    <view class="stats-item">
+      <view class="stats-value">{{totalTime}}</view>
+      <view class="stats-label">总时长(分钟)</view>
+    </view>
+  </view>
+
+  <!-- 功能模块 -->
+  <view class="function-section">
+    <view class="function-item" bindtap="navigateToCategory" data-type="practice">
+      <image class="function-icon" src="/images/practice.png" mode="aspectFit"></image>
+      <text class="function-name">练习模式</text>
+      <text class="function-desc">按题型练习</text>
+      <view class="start-btn">开始练习</view>
+    </view>
+    <view class="function-item" bindtap="navigateToCategory" data-type="exam">
+      <image class="function-icon" src="/images/exam.png" mode="aspectFit"></image>
+      <text class="function-name">考试模式</text>
+      <text class="function-desc">模拟考试</text>
+      <view class="start-btn">开始考试</view>
+    </view>
+  </view>
+</view>

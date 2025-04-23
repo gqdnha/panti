@@ -1,0 +1,26 @@
+<!--pages/admin/user-stats/index.wxml-->
+<view class="container">
+  <!-- 用户答题列表 -->
+  <view class="user-list">
+    <view class="list-header">
+      <view class="header-item">用户</view>
+      <view class="header-item">答题数</view>
+      <view class="header-item">正确率</view>
+      <view class="header-item">操作</view>
+    </view>
+    <view class="list-content">
+      <view class="list-item" wx:for="{{userList}}" wx:key="id">
+        <view class="item-user">
+          <image class="user-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
+          <text class="user-name">{{item.nickName}}</text>
+        </view>
+        <view class="item-count">{{item.questionCount}}</view>
+        <view class="item-rate">{{item.correctRate}}%</view>
+        <view class="item-actions">
+          <button class="action-btn" bindtap="viewDetail" data-id="{{item.id}}">详情</button>
+          <button class="action-btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</button>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

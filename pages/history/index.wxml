@@ -1,0 +1,89 @@
+<view class="container">
+  <!-- 顶部统计 -->
+  <view class="stats-section">
+    <view class="stats-item">
+      <view class="stats-value">{{totalCount}}</view>
+      <view class="stats-label">总答题次数</view>
+    </view>
+    <view class="stats-item">
+      <view class="stats-value">{{averageScore}}%</view>
+      <view class="stats-label">平均正确率</view>
+    </view>
+  </view>
+
+  <!-- 答题记录列表 -->
+  <view class="history-list">
+    <view class="list-header">
+      <text class="header-text">答题记录</text>
+      <view class="filter-btn" bindtap="showFilter">
+        <text>筛选</text>
+        <image class="filter-icon" src="/images/filter.png" mode="aspectFit"></image>
+      </view>
+    </view>
+
+    <view class="record-list">
+      <view class="record-item" wx:for="{{records}}" wx:key="id" bindtap="viewDetail" data-id="{{item.id}}">
+        <view class="record-header">
+          <text class="record-title">{{item.title}}</text>
+          <text class="record-time">{{item.time}}</text>
+        </view>
+        <view class="record-content">
+          <view class="record-info">
+            <text class="info-item">题目数：{{item.questionCount}}</text>
+            <text class="info-item">正确率：{{item.correctRate}}%</text>
+            <text class="info-item">用时：{{item.duration}}分钟</text>
+          </view>
+          <view class="record-status {{item.status === 'completed' ? 'completed' : 'in-progress'}}">
+            {{item.status === 'completed' ? '已完成' : '进行中'}}
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{records.length === 0}}">
+      <image class="empty-icon" src="/images/empty.png" mode="aspectFit"></image>
+      <text class="empty-text">暂无答题记录</text>
+    </view>
+  </view>
+
+  <!-- 筛选弹窗 -->
+  <view class="filter-popup {{showFilter ? 'show' : ''}}">
+    <view class="filter-mask" bindtap="hideFilter"></view>
+    <view class="filter-content">
+      <view class="filter-header">
+        <text class="filter-title">筛选</text>
+        <view class="filter-close" bindtap="hideFilter">×</view>
+      </view>
+      <view class="filter-body">
+        <view class="filter-item">
+          <text class="filter-label">时间范围</text>
+          <picker mode="date" value="{{startDate}}" bindchange="onStartDateChange">
+            <view class="picker-value">{{startDate || '开始日期'}}</view>
+          </picker>
+          <text class="filter-separator">至</text>
+          <picker mode="date" value="{{endDate}}" bindchange="onEndDateChange">
+            <view class="picker-value">{{endDate || '结束日期'}}</view>
+          </picker>
+        </view>
+        <view class="filter-item">
+          <text class="filter-label">题目类型</text>
+          <view class="type-tags">
+            <view class="type-tag {{selectedTypes.includes('单选题') ? 'active' : ''}}" 
+                  bindtap="toggleType" data-type="单选题">单选题</view>
+            <view class="type-tag {{selectedTypes.includes('多选题') ? 'active' : ''}}" 
+                  bindtap="toggleType" data-type="多选题">多选题</view>
+            <view class="type-tag {{selectedTypes.includes('判断题') ? 'active' : ''}}" 
+                  bindtap="toggleType" data-type="判断题">判断题</view>
+            <view class="type-tag {{selectedTypes.includes('简答题') ? 'active' : ''}}" 
+                  bindtap="toggleType" data-type="简答题">简答题</view>
+          </view>
+        </view>
+      </view>
+      <view class="filter-footer">
+        <button class="reset-btn" bindtap="resetFilter">重置</button>
+        <button class="confirm-btn" bindtap="confirmFilter">确定</button>
+      </view>
+    </view>
+  </view>
+</view> 

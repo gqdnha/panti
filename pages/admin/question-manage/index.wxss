@@ -1,0 +1,158 @@
+.container {
+  min-height: 100vh;
+  background-color: #f7f8fa;
+  padding: 20rpx;
+  position: relative;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20rpx;
+  margin-bottom: 30rpx;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  padding: 32rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.action-btn:active {
+  transform: scale(0.98);
+}
+
+.btn-icon {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+.action-btn text {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 题目列表 */
+.question-list {
+  background: #fff;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+}
+
+.list-header {
+  display: grid;
+  grid-template-columns: 3fr 1fr 2fr;
+  padding: 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  background: #f8f9fa;
+  font-weight: 500;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.list-content {
+  max-height: calc(100vh - 320rpx);
+  overflow-y: auto;
+}
+
+.list-item {
+  display: grid;
+  grid-template-columns: 3fr 1fr 2fr;
+  padding: 24rpx;
+  align-items: center;
+  border-bottom: 1rpx solid #f0f0f0;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.list-item:active {
+  background: #f8f9fa;
+}
+
+.question-title {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.question-type {
+  font-size: 26rpx;
+  color: #666;
+  text-align: center;
+}
+
+.item-actions {
+  display: flex;
+  gap: 12rpx;
+  justify-content: flex-end;
+}
+
+.btn {
+  min-width: 100rpx;
+  font-size: 26rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 30rpx;
+  border: none;
+  line-height: 1.5;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.btn.edit {
+  background: #f0f8ff;
+  color: #4a90e2;
+}
+
+.btn.delete {
+  background: #fff1f0;
+  color: #f5222d;
+}
+
+.btn:active {
+  transform: scale(0.95);
+}
+
+/* 添加按钮 */
+.add-button {
+  position: fixed;
+  right: 40rpx;
+  bottom: 40rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: linear-gradient(135deg, #4a90e2, #357abd);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 20rpx rgba(74, 144, 226, 0.3);
+  transition: all 0.3s ease;
+}
+
+.add-button:active {
+  transform: scale(0.95);
+}
+
+.add-icon {
+  width: 48rpx;
+  height: 48rpx;
+}
+
+/* 去除按钮默认样式 */
+button {
+  padding: 0;
+  line-height: normal;
+  background: none;
+}
+
+button::after {
+  border: none;
+} 
