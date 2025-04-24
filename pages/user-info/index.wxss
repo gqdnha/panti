@@ -48,14 +48,14 @@
 
 /* 统计数据 */
 .stats-section {
-  margin: 20rpx;
-  margin-top: 180rpx;
+  margin: 25rpx;
   background-color: #fff;
-  padding: 24rpx;
+  padding: 25rpx;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4rpx 25rpx rgba(71, 189, 236, 0.05);
+  border-radius: 25rpx;
 }
 
 .stats-item {
@@ -120,20 +120,31 @@
 
 /* 退出登录按钮 */
 .logout-section {
-  margin: 60rpx 30rpx;
-}
-
-.logout-btn {
-  width: 100%;
-  height: 88rpx;
-  line-height: 88rpx;
-  text-align: center;
-  background-color: #fff;
-  color: #ff4d4f;
-  font-size: 32rpx;
-  border-radius: 12rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
-}
+    margin: 60rpx 30rpx;
+  }
+  
+  .logout-btn {
+    width: 100%;
+    height: 88rpx;
+    line-height: 88rpx;
+    background-color: #fff;
+    color: #ff4d4f;
+    font-size: 32rpx;
+    border-radius: 12rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  
+  .logout-btn:hover {
+    background-color: #ff4d4f;
+    color: #fff;
+  }
+  
+  .logout-btn:active {
+    background-color: #d9363e;
+    color: #fff;
+  }
 
 .logout-btn::after {
   border: none;

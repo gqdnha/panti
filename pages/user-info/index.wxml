@@ -34,11 +34,11 @@
       <text class="function-name">答题历史</text>
       <image class="arrow-icon" src="/images/arrow-right.png" mode="aspectFit"></image>
     </view>
-    <view class="function-item" bindtap="navigateToFavorites">
+    <!-- <view class="function-item" bindtap="navigateToFavorites">
       <image class="function-icon" src="/images/favorite.png" mode="aspectFit"></image>
       <text class="function-name">我的收藏</text>
       <image class="arrow-icon" src="/images/arrow-right.png" mode="aspectFit"></image>
-    </view>
+    </view> -->
     <view class="function-item" bindtap="navigateToSettings">
       <image class="function-icon" src="/images/settings.png" mode="aspectFit"></image>
       <text class="function-name">设置</text>

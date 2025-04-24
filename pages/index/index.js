@@ -274,6 +274,15 @@ Page({
       url: '/pages/stats/wrong-questions/index'
     });
   },
+  goToAnswerHistory() {
+    if (!this.data.userInfo) {
+      this.showLoginTip();
+      return;
+    }
+    wx.navigateTo({
+      url: '/pages/history/index'
+    });
+  },
   // 用户反馈
   onFeedback() {
     wx.navigateTo({
