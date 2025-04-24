@@ -1,0 +1,109 @@
+<view class="container">
+  <!-- 顶部进度条 -->
+  <view class="progress-bar">
+    <view class="progress-info">
+      <text>第{{currentQuestion}}/{{totalQuestions}}题</text>
+      <text>用时：{{usedTime}}分钟</text>
+    </view>
+    <view class="progress-track">
+      <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view>
+    </view>
+  </view>
+
+  <!-- 题目内容 -->
+  <view class="question-container">
+    <view class="question-type">{{currentQuestionData.type}}</view>
+    <view class="question-content">
+      <text>{{currentQuestionData.content}}</text>
+      <!-- 如果有图片 -->
+      <image wx:if="{{currentQuestionData.image}}" 
+             src="{{currentQuestionData.image}}" 
+             mode="aspectFit" 
+             class="question-image"></image>
+    </view>
+
+    <!-- 选项区域 -->
+    <view class="options-container">
+      <!-- 单选题 -->
+      <block wx:if="{{currentQuestionData.type === '单选'}}">
+        <view class="option-item {{item.selected ? 'selected' : ''}}"
+              wx:for="{{currentQuestionData.options}}"
+              wx:key="index"
+              bindtap="selectOption"
+              data-index="{{index}}">
+          <text class="option-label">{{item.label}}</text>
+          <text class="option-content">{{item.content}}</text>
+        </view>
+      </block>
+
+      <!-- 多选题 -->
+      <block wx:if="{{currentQuestionData.type === '多选'}}">
+        <view class="option-item {{item.selected ? 'selected' : ''}}"
+              wx:for="{{currentQuestionData.options}}"
+              wx:key="index"
+              bindtap="selectMultipleOption"
+              data-index="{{index}}">
+          <text class="option-label">{{item.label}}</text>
+          <text class="option-content">{{item.content}}</text>
+        </view>
+      </block>
+
+      <!-- 判断题 -->
+      <block wx:if="{{currentQuestionData.type === '判断'}}">
+        <view class="judge-options">
+          <view class="judge-item {{answer === true ? 'selected' : ''}}"
+                bindtap="selectJudge"
+                data-value="{{true}}">
+            <text>正确</text>
+          </view>
+          <view class="judge-item {{answer === false ? 'selected' : ''}}"
+                bindtap="selectJudge"
+                data-value="{{false}}">
+            <text>错误</text>
+          </view>
+        </view>
+      </block>
+
+      <!-- 填空题 -->
+      <block wx:if="{{currentQuestionData.type === '填空'}}">
+        <input class="fill-blank-input"
+               placeholder="请输入答案"
+               value="{{answer}}"
+               bindinput="onInputAnswer"/>
+      </block>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="btn prev" bindtap="prevQuestion" wx:if="{{currentQuestion > 1}}">上一题</view>
+    <view class="btn submit" bindtap="submitAnswer">提交答案</view>
+    <view class="btn next" bindtap="nextQuestion" wx:if="{{currentQuestion < totalQuestions}}">下一题</view>
+  </view>
+
+  <!-- 答案解析弹窗 -->
+  <view class="analysis-modal" wx:if="{{showAnalysis}}">
+    <view class="modal-content">
+      <view class="result-header">
+        <text class="{{isCorrect ? 'correct' : 'wrong'}}">
+          {{isCorrect ? '回答正确' : '回答错误'}}
+        </text>
+      </view>
+      <view class="correct-answer">
+        <text>正确答案：{{currentQuestionData.correctAnswer}}</text>
+      </view>
+      <view class="analysis-content">
+        <text class="analysis-title">解析：</text>
+        <text>{{currentQuestionData.analysis}}</text>
+      </view>
+      <view class="knowledge-points">
+        <text class="knowledge-title">知识点：</text>
+        <text>{{currentQuestionData.knowledgePoints}}</text>
+      </view>
+      <view class="modal-btns">
+        <view class="btn" bindtap="closeAnalysis">继续答题</view>
+        <view class="btn" bindtap="addToWrongBook">加入错题本</view>
+      </view>
+    </view>
+  </view>
+</view> 

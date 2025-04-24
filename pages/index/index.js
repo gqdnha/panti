@@ -1,4 +1,5 @@
 // index.js
+const { mockUserInfo, mockStatistics, mockRecentExams, mockRecommended } = require('../../data/mock');
 const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
 Page({
@@ -39,7 +40,52 @@ Page({
     correctRate: 0,
     totalTime: 0,
     recentExams: [],
-    recommended: []
+    recommended: [],
+    currentDate: '',
+    practiceCount: 0,
+    // 题目类型配置
+    questionTypes: {
+      single: '单选（点选+提交）',
+      multiple: '多选（句选+提交）',
+      judgment: '判断（点选+提交）',
+      fillBlank: '填空（输入框+提交）',
+      shortAnswer: '简答（文本框+提交）',
+      caseAnalysis: '案例分析（文本框+提交）'
+    },
+    // 专题分类
+    topicCategories: [
+      '法律法规',
+      '规章办法',
+      '标准规范',
+      '政策制度',
+      '其他'
+    ],
+    // 每日练习选项
+    dailyOptions: [
+      { count: 20, label: '20题/日' },
+      { count: 30, label: '30题/日' },
+      { random: true, label: '题目随机' }
+    ],
+    // 资料库分类
+    resourceCategories: [
+      '法律法规',
+      '规章',
+      '标准',
+      '导则'
+    ],
+    // 统计数据
+    statistics: {
+      correctRate: {
+        weekly: [],
+        monthly: []
+      },
+      studyTime: 0,
+      wrongQuestions: {
+        byType: {},
+        byKnowledgePoint: {},
+        byTime: {}
+      }
+    }
   },
   bindViewTap() {
     wx.navigateTo({
@@ -76,8 +122,9 @@ Page({
     })
   },
   onLoad() {
-    this.getUserInfo();
-    this.getStudyStats();
+    this.setCurrentDate();
+    this.loadUserInfo();
+    this.loadStatistics();
     this.getRecentExams();
     this.getRecommended();
   },
@@ -87,84 +134,37 @@ Page({
     this.getStudyStats();
   },
   getUserInfo() {
-    const userInfo = wx.getStorageSync('userInfo');
+    const userInfo = wx.getStorageSync('userInfo') || mockUserInfo;
     this.setData({
       userInfo
     });
   },
   getStudyStats() {
-    // TODO: 从服务器获取学习统计数据
-    // 这里使用模拟数据
+    // 使用模拟数据，添加默认值防止undefined
+    const userInfo = this.data.userInfo || mockUserInfo || {
+      studyTime: 0,
+      totalQuestions: 0,
+      correctRate: 0,
+      totalTime: 0
+    };
+
     this.setData({
-      studyTime: 45,
-      totalQuestions: 100,
-      correctRate: 85,
-      totalTime: 120
+      studyTime: userInfo.studyTime || 0,
+      totalQuestions: userInfo.totalQuestions || 0,
+      correctRate: userInfo.correctRate || 0,
+      totalTime: userInfo.totalTime || 0
     });
   },
   getRecentExams() {
-    // TODO: 从服务器获取最近考试数据
-    // 这里使用模拟数据
-    const recentExams = [
-      {
-        id: 1,
-        name: 'JavaScript基础测试',
-        time: '2024-03-20 14:30',
-        duration: 30,
-        status: 'upcoming'
-      },
-      {
-        id: 2,
-        name: 'Vue.js进阶测试',
-        time: '2024-03-19 16:45',
-        duration: 25,
-        status: 'ongoing'
-      },
-      {
-        id: 3,
-        name: 'React基础测试',
-        time: '2024-03-18 10:20',
-        duration: 35,
-        status: 'ended'
-      }
-    ];
-
+    // 使用模拟数据
     this.setData({
-      recentExams
+      recentExams: mockRecentExams
     });
   },
   getRecommended() {
-    // TODO: 从服务器获取推荐练习数据
-    // 这里使用模拟数据
-    const recommended = [
-      {
-        id: 1,
-        name: 'JavaScript基础练习',
-        description: '掌握JavaScript基础知识',
-        icon: '/images/js.png',
-        questionCount: 50,
-        difficulty: '简单'
-      },
-      {
-        id: 2,
-        name: 'Vue.js实战练习',
-        description: 'Vue.js框架应用实践',
-        icon: '/images/vue.png',
-        questionCount: 30,
-        difficulty: '中等'
-      },
-      {
-        id: 3,
-        name: 'React核心概念',
-        description: '深入理解React核心概念',
-        icon: '/images/react.png',
-        questionCount: 40,
-        difficulty: '困难'
-      }
-    ];
-
+    // 使用模拟数据
     this.setData({
-      recommended
+      recommended: mockRecommended
     });
   },
   navigateToCategory(e) {
@@ -210,5 +210,103 @@ Page({
         }
       }
     });
+  },
+  setCurrentDate() {
+    const date = new Date();
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    this.setData({
+      currentDate: `${year}年${month}月${day}日`
+    });
+  },
+  // 基础理论相关功能
+  goToSequentialPractice() {
+    wx.navigateTo({
+      url: '/pages/practice/sequential/index'
+    });
+  },
+  goToTopicalPractice(e) {
+    const { category } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/practice/topical/index?category=${category}`
+    });
+  },
+  goToDailyPractice(e) {
+    const { option } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/practice/daily/index?option=${JSON.stringify(option)}`
+    });
+  },
+  // 资料库
+  goToResources(e) {
+    const { category } = e.currentTarget.dataset;
+    wx.navigateTo({
+      url: `/pages/resources/index?category=${category}`
+    });
+  },
+  // 综合题相关功能
+  goToShortAnswer() {
+    wx.navigateTo({
+      url: '/pages/comprehensive/short-answer/index'
+    });
+  },
+  goToCaseAnalysis() {
+    wx.navigateTo({
+      url: '/pages/comprehensive/case-analysis/index'
+    });
+  },
+  // 个人数据统计相关功能
+  goToAnswerStats() {
+    wx.navigateTo({
+      url: '/pages/stats/answer-stats/index',
+      success: () => {
+        // 预加载统计数据
+        wx.setStorage({
+          key: 'statsData',
+          data: this.data.statistics
+        });
+      }
+    });
+  },
+  goToWrongQuestions() {
+    wx.navigateTo({
+      url: '/pages/stats/wrong-questions/index'
+    });
+  },
+  // 用户反馈
+  onFeedback() {
+    wx.navigateTo({
+      url: '/pages/feedback/index'
+    });
+  },
+  // 加载用户信息
+  loadUserInfo() {
+    const userInfo = wx.getStorageSync('userInfo');
+    if (userInfo) {
+      this.setData({ userInfo });
+    }
+  },
+  // 加载统计数据
+  loadStatistics() {
+    // 使用模拟数据
+    this.setData({
+      statistics: mockStatistics
+    });
+  },
+  // 检查题目作答时间
+  checkAnswerTime() {
+    // 这里只显示用户开始作答至当前的总用时
+    const startTime = wx.getStorageSync('answerStartTime');
+    if (startTime) {
+      const currentTime = new Date().getTime();
+      const duration = Math.floor((currentTime - startTime) / 1000 / 60); // 转换为分钟
+      return duration;
+    }
+    return 0;
+  },
+  // 显示进度条
+  showProgress(current, total) {
+    return `${current}/${total}`;
   }
 })

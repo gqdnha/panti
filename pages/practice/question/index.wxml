@@ -1,0 +1,58 @@
+<!--pages/practice/question/index.wxml-->
+<view class="container">
+  <!-- 顶部进度条 -->
+  <view class="progress-bar">
+    <view class="progress-inner" style="width: {{progress}}%"></view>
+  </view>
+
+  <!-- 题目信息 -->
+  <view class="question-info">
+    <text class="question-type">{{currentQuestion.type}}</text>
+    <text class="question-index">{{currentIndex + 1}}/{{totalQuestions}}</text>
+  </view>
+
+  <!-- 题目内容 -->
+  <view class="question-content">
+    <text>{{currentQuestion.content}}</text>
+  </view>
+
+  <!-- 选项列表 -->
+  <view class="options-list">
+    <view class="option-item {{item.selected ? 'selected' : ''}} {{item.status}}"
+          wx:for="{{currentQuestion.options}}"
+          wx:key="index"
+          bindtap="selectOption"
+          data-index="{{index}}">
+      <text class="option-label">{{item.label}}</text>
+      <text class="option-content">{{item.content}}</text>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-bar">
+    <view class="time-info">
+      <text>剩余时间：{{remainingTime}}秒</text>
+    </view>
+    <view class="action-buttons">
+      <button class="btn-skip" bindtap="skipQuestion" wx:if="{{!hasAnswered}}">跳过</button>
+      <button class="btn-next" bindtap="nextQuestion" wx:if="{{hasAnswered}}">下一题</button>
+    </view>
+  </view>
+
+  <!-- 答题结果弹窗 -->
+  <view class="result-modal" wx:if="{{showResult}}">
+    <view class="modal-content">
+      <view class="result-icon {{isCorrect ? 'correct' : 'wrong'}}">
+        <text class="iconfont {{isCorrect ? 'icon-correct' : 'icon-wrong'}}"></text>
+      </view>
+      <view class="result-text">
+        <text>{{isCorrect ? '回答正确' : '回答错误'}}</text>
+      </view>
+      <view class="explanation" wx:if="{{!isCorrect}}">
+        <text>正确答案：{{currentQuestion.correctAnswer}}</text>
+        <text class="explanation-text">{{currentQuestion.explanation}}</text>
+      </view>
+      <button class="btn-continue" bindtap="closeResult">继续</button>
+    </view>
+  </view>
+</view> 

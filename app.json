@@ -7,12 +7,22 @@
     "pages/user-info/index",
     "pages/admin/dashboard/index",
     "pages/admin/user-stats/index",
-    "pages/admin/question-manage/index"
+    "pages/admin/question-manage/index",
+    "pages/practice/sequential/index",
+    "pages/practice/topical/index",
+    "pages/practice/daily/index",
+    "pages/practice/question/index",
+    "pages/comprehensive/short-answer/index",
+    "pages/comprehensive/case-analysis/index",
+    "pages/resources/index",
+    "pages/stats/answer-stats/index",
+    "pages/stats/wrong-questions/index",
+    "pages/feedback/index"
   ],
   "window": {
     "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "答题小程序",
+    "navigationBarTitleText": "环保知识练习",
     "navigationBarTextStyle": "black"
   },
   "tabBar": {

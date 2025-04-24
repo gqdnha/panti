@@ -1,42 +1,96 @@
 <!--index.wxml-->
 <view class="container">
+  <!-- 顶部用户信息 -->
   <view class="user-info">
-    <view class="nickname">
-      <text wx:if="{{userInfo}}">Hi，{{userInfo.nickName}}</text>
-      <text wx:else>未登录</text>
+    <view class="avatar-container">
+      <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
+        <image class="avatar" src="{{userInfo.avatarUrl || defaultAvatarUrl}}"></image>
+      </button>
     </view>
-    <view class="study-time">今日学习时长：{{studyTime}}分钟</view>
-  </view>
-
-  <!-- 学习统计 -->
-  <view class="stats-section">
-    <view class="stats-item">
-      <view class="stats-value">{{totalQuestions}}</view>
-      <view class="stats-label">总题数</view>
-    </view>
-    <view class="stats-item">
-      <view class="stats-value">{{correctRate}}%</view>
-      <view class="stats-label">正确率</view>
-    </view>
-    <view class="stats-item">
-      <view class="stats-value">{{totalTime}}</view>
-      <view class="stats-label">总时长(分钟)</view>
+    <view class="user-detail">
+      <input type="nickname" class="nickname-input" placeholder="请输入昵称" bind:change="onInputChange" value="{{userInfo.nickName}}"/>
+      <view class="user-stats">
+        <text>学习时长：{{studyTime}}分钟</text>
+        <text>答题数：{{totalQuestions}}</text>
+        <text>正确率：{{correctRate}}%</text>
+      </view>
     </view>
   </view>
 
-  <!-- 功能模块 -->
-  <view class="function-section">
-    <view class="function-item" bindtap="navigateToCategory" data-type="practice">
-      <image class="function-icon" src="/images/practice.png" mode="aspectFit"></image>
-      <text class="function-name">练习模式</text>
-      <text class="function-desc">按题型练习</text>
-      <view class="start-btn">开始练习</view>
+  <!-- 基础理论模块 -->
+  <view class="module-section">
+    <view class="section-title">基础理论</view>
+    <view class="module-content">
+      <view class="module-item" bindtap="goToSequentialPractice">
+        <image class="module-icon" src="/assets/icons/sequential.png"></image>
+        <text class="module-name">顺序练习</text>
+      </view>
+      <view class="module-item" bindtap="goToTopicalPractice" data-category="法律法规">
+        <image class="module-icon" src="/assets/icons/topical.png"></image>
+        <text class="module-name">专题练习</text>
+      </view>
+      <view class="module-item" bindtap="goToDailyPractice" data-option="{{dailyOptions[0]}}">
+        <image class="module-icon" src="/assets/icons/daily.png"></image>
+        <text class="module-name">每日练习</text>
+      </view>
     </view>
-    <view class="function-item" bindtap="navigateToCategory" data-type="exam">
-      <image class="function-icon" src="/images/exam.png" mode="aspectFit"></image>
-      <text class="function-name">考试模式</text>
-      <text class="function-desc">模拟考试</text>
-      <view class="start-btn">开始考试</view>
+  </view>
+
+  <!-- 资料库模块 -->
+  <view class="module-section">
+    <view class="section-title">资料库</view>
+    <view class="module-content">
+      <view class="module-item" bindtap="goToResources" data-category="法律法规">
+        <image class="module-icon" src="/assets/icons/law.png"></image>
+        <text class="module-name">法律法规</text>
+      </view>
+      <view class="module-item" bindtap="goToResources" data-category="规章">
+        <image class="module-icon" src="/assets/icons/regulation.png"></image>
+        <text class="module-name">规章</text>
+      </view>
+      <view class="module-item" bindtap="goToResources" data-category="标准">
+        <image class="module-icon" src="/assets/icons/standard.png"></image>
+        <text class="module-name">标准</text>
+      </view>
+      <view class="module-item" bindtap="goToResources" data-category="导则">
+        <image class="module-icon" src="/assets/icons/guide.png"></image>
+        <text class="module-name">导则</text>
+      </view>
     </view>
+  </view>
+
+  <!-- 综合题模块 -->
+  <view class="module-section">
+    <view class="section-title">综合题</view>
+    <view class="module-content">
+      <view class="module-item" bindtap="goToShortAnswer">
+        <image class="module-icon" src="/assets/icons/short-answer.png"></image>
+        <text class="module-name">简答题</text>
+      </view>
+      <view class="module-item" bindtap="goToCaseAnalysis">
+        <image class="module-icon" src="/assets/icons/case-analysis.png"></image>
+        <text class="module-name">案例分析</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 个人数据统计模块 -->
+  <view class="module-section">
+    <view class="section-title">个人数据</view>
+    <view class="module-content">
+      <view class="module-item" bindtap="goToAnswerStats">
+        <image class="module-icon" src="/assets/icons/stats.png"></image>
+        <text class="module-name">答题统计</text>
+      </view>
+      <view class="module-item" bindtap="goToWrongQuestions">
+        <image class="module-icon" src="/assets/icons/wrong.png"></image>
+        <text class="module-name">错题本</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 用户反馈 -->
+  <view class="feedback-section" bindtap="onFeedback">
+    <text>意见反馈</text>
   </view>
 </view>
