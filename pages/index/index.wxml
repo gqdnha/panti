@@ -2,6 +2,7 @@
 <view class="container">
   <!-- 顶部用户信息 -->
   <view class="user-info">
+    <!-- 头像框 -->
     <view class="avatar-container">
       <button class="avatar-wrapper" open-type="chooseAvatar" bind:chooseavatar="onChooseAvatar">
         <image class="avatar" src="{{userInfo.avatarUrl || defaultAvatarUrl}}"></image>
@@ -22,15 +23,15 @@
     <view class="section-title">基础理论</view>
     <view class="module-content">
       <view class="module-item" bindtap="goToSequentialPractice">
-        <image class="module-icon" src="/assets/icons/sequential.png"></image>
+        <image class="module-icon" src="/assets/icons/顺序练习.png"></image>
         <text class="module-name">顺序练习</text>
       </view>
       <view class="module-item" bindtap="goToTopicalPractice" data-category="法律法规">
-        <image class="module-icon" src="/assets/icons/topical.png"></image>
+        <image class="module-icon" src="/assets/icons/专题练习.png"></image>
         <text class="module-name">专题练习</text>
       </view>
       <view class="module-item" bindtap="goToDailyPractice" data-option="{{dailyOptions[0]}}">
-        <image class="module-icon" src="/assets/icons/daily.png"></image>
+        <image class="module-icon" src="/assets/icons/每日练习.png"></image>
         <text class="module-name">每日练习</text>
       </view>
     </view>
@@ -41,26 +42,26 @@
     <view class="section-title">资料库</view>
     <view class="module-content">
       <view class="module-item" bindtap="goToResources" data-category="法律法规">
-        <image class="module-icon" src="/assets/icons/law.png"></image>
+        <image class="module-icon" src="/assets/icons/法律法规.png"></image>
         <text class="module-name">法律法规</text>
       </view>
       <view class="module-item" bindtap="goToResources" data-category="规章">
-        <image class="module-icon" src="/assets/icons/regulation.png"></image>
+        <image class="module-icon" src="/assets/icons/规章.png"></image>
         <text class="module-name">规章</text>
       </view>
       <view class="module-item" bindtap="goToResources" data-category="标准">
-        <image class="module-icon" src="/assets/icons/standard.png"></image>
+        <image class="module-icon" src="/assets/icons/标准.png"></image>
         <text class="module-name">标准</text>
       </view>
       <view class="module-item" bindtap="goToResources" data-category="导则">
-        <image class="module-icon" src="/assets/icons/guide.png"></image>
+        <image class="module-icon" src="/assets/icons/导则.png"></image>
         <text class="module-name">导则</text>
       </view>
     </view>
   </view>
 
   <!-- 综合题模块 -->
-  <view class="module-section">
+  <!-- <view class="module-section">
     <view class="section-title">综合题</view>
     <view class="module-content">
       <view class="module-item" bindtap="goToShortAnswer">
@@ -72,18 +73,18 @@
         <text class="module-name">案例分析</text>
       </view>
     </view>
-  </view>
+  </view> -->
 
   <!-- 个人数据统计模块 -->
   <view class="module-section">
     <view class="section-title">个人数据</view>
     <view class="module-content">
       <view class="module-item" bindtap="goToAnswerStats">
-        <image class="module-icon" src="/assets/icons/stats.png"></image>
+        <image class="module-icon" src="/assets/icons/统计.png"></image>
         <text class="module-name">答题统计</text>
       </view>
       <view class="module-item" bindtap="goToWrongQuestions">
-        <image class="module-icon" src="/assets/icons/wrong.png"></image>
+        <image class="module-icon" src="/assets/icons/错题本.png"></image>
         <text class="module-name">错题本</text>
       </view>
     </view>
