@@ -154,7 +154,7 @@ page {
   color: #333;
   margin-bottom: 10rpx;
   padding-left: 15rpx;
-  border-left: 6rpx solid #0066cc;
+  border-left: 6rpx solid #88bbee;
 }
 
 .question-grid {
@@ -453,7 +453,7 @@ page {
   font-size: 30rpx;
   font-weight: bold;
   color: #fff;
-  background-color: #0066cc;
+  background-color: #88bbee;
   padding: 10rpx 20rpx;
   border-radius: 4rpx;
   margin-bottom: 20rpx;
@@ -470,7 +470,7 @@ page {
   align-items: center;
   gap: 10rpx;
   padding: 10rpx;
-  background-color: #004d99;
+  background-color: #88bbee;
   color: #fff;
   border-radius: 4rpx;
 }
@@ -515,7 +515,7 @@ page {
 }
 
 .resource-list {
-  background-color: #004d99;
+  background-color: #88bbee;
   padding: 15rpx;
   border-radius: 4rpx;
 }
@@ -528,7 +528,7 @@ page {
   display: flex;
   flex-direction: column;
   padding: 15rpx;
-  background-color: #004d99;
+  background-color: #88bbee;
   color: #fff;
   border-radius: 4rpx;
   margin-bottom: 10rpx;
@@ -583,7 +583,7 @@ page {
   font-size: 28rpx;
   font-weight: bold;
   color: #fff;
-  background-color: #0066cc;
+  background-color: #88bbee;
   padding: 12rpx 20rpx;
   border-radius: 4rpx;
   margin-bottom: 15rpx;
@@ -606,14 +606,15 @@ page {
 }
 
 .module-item {
-  width: calc(33.33% - 7rpx);
-  background-color: #88bbee;
-  padding: 15rpx;
-  border-radius: 6rpx;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: all 0.3s ease;
+    width: 120rpx;
+    height: 120rpx;
+    background-color: #88bbee;
+    padding: 15rpx;
+    border-radius: 30rpx;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: all 0.3s ease;
 }
 
 .module-item:active {
@@ -623,29 +624,16 @@ page {
 .module-icon {
   width: 60rpx;
   height: 60rpx;
-  margin-bottom: 5rpx;
+  margin-bottom: 10rpx;
 }
 
 .module-name {
-  font-size: 24rpx;
-  color: #333;
+  font-size: 26rpx;
+  color: #fff;
   text-align: center;
 }
 
-/* 资料库模块特殊样式 */
-.module-section:nth-child(3) .module-item {
-  width: calc(25% - 8rpx);
-}
 
-/* 综合题模块特殊样式 */
-.module-section:nth-child(4) .module-item {
-  width: calc(50% - 5rpx);
-}
-
-/* 个人数据模块特殊样式 */
-.module-section:nth-child(5) .module-item {
-  width: calc(50% - 5rpx);
-}
 
 /* 用户反馈样式 */
 .feedback-section {
