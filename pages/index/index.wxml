@@ -87,6 +87,10 @@
         <image class="module-icon" src="/assets/icons/错题本.png"></image>
         <text class="module-name">错题本</text>
       </view>
+      <view class="module-item" bindtap="goToWrongQuestions">
+        <image class="module-icon" src="/assets/icons/答题历史.png"></image>
+        <text class="module-name">答题历史</text>
+      </view>
     </view>
   </view>
 
