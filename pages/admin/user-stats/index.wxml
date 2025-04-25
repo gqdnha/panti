@@ -1,26 +1,29 @@
-<!--pages/admin/user-stats/index.wxml-->
+<!--pages/admin/question-manage/index.wxml-->
 <view class="container">
-  <!-- 用户答题列表 -->
-  <view class="user-list">
-    <view class="list-header">
-      <view class="header-item">用户</view>
-      <view class="header-item">答题数</view>
-      <view class="header-item">正确率</view>
-      <view class="header-item">操作</view>
+    <!-- 题目列表 -->
+    <view class="question-list">
+        <table class="question-table">
+            <thead class="list-header">
+                <tr class="table-header">
+                    <th class="header-item">用户</th>
+                    <th class="header-item">答题数</th>
+                    <th class="header-item">正确率</th>
+                    <th class="header-item">操作</th>
+                </tr>
+            </thead>
+            <tbody class="list-content">
+                <tr class="list-item" wx:for="{{userList}}" wx:key="id">
+                    <td class="user-name">{{item.nickName}}</td>
+                    <td class="user-count">{{item.questionCount}}</td>
+                    <td class="correctRate">{{item.correctRate}}%</td>
+
+                    <td class="item-actions">
+                        <view class="btn edit" bindtap="viewDetail" data-id="{{item.id}}">详情</view>
+                        <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </view>
-    <view class="list-content">
-      <view class="list-item" wx:for="{{userList}}" wx:key="id">
-        <view class="item-user">
-          <image class="user-avatar" src="{{item.avatarUrl}}" mode="aspectFill"></image>
-          <text class="user-name">{{item.nickName}}</text>
-        </view>
-        <view class="item-count">{{item.questionCount}}</view>
-        <view class="item-rate">{{item.correctRate}}%</view>
-        <view class="item-actions">
-          <button class="action-btn" bindtap="viewDetail" data-id="{{item.id}}">详情</button>
-          <button class="action-btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</button>
-        </view>
-      </view>
-    </view>
-  </view>
+
 </view>
