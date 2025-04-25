@@ -3,12 +3,12 @@
     padding: 0;
     height: 100vh;
     display: flex;
-    justify-content: center;
     align-items: center;
     background: linear-gradient(to bottom, #e6f7ff, #ffffff);
 }
 
 .login-box {
+    margin-top: 200rpx;
     width: 85%;
     padding: 40rpx;
     background-color: rgba(255, 255, 255, 0.95);
