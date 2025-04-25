@@ -1,7 +1,7 @@
 <!--pages/login/index.wxml-->
 <view class="container">
     <view class="login-box">
-        <view class="title">登录</view>
+        <view class="title" style="position: relative; left: -1rpx; top: 0rpx">登录</view>
         <view class="input-group">
             <input type="number" placeholder="请输入手机号" bindinput="inputPhone" value="{{phone}}" maxlength="11" />
         </view>
