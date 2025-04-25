@@ -1,7 +1,7 @@
 <!--pages/admin/question-manage/index.wxml-->
 <view class="container">
   <!-- 操作按钮 -->
-<view class="action-buttons">
+<!-- <view class="action-buttons">
     <button class="action-btn import" bindtap="importQuestions">
         <image class="btn-icon" src="/images/import-icon.png" mode="aspectFit"></image>
         <text>导入题目</text>
@@ -10,7 +10,7 @@
         <image class="btn-icon" src="/images/export-icon.png" mode="aspectFit"></image>
         <text>导出题目</text>
     </button>
-</view>
+</view> -->
 
   <!-- 题目列表 -->
 <view class="question-list">
