@@ -16,7 +16,8 @@
 <view class="question-list">
     <table class="question-table">
         <thead class="list-header">
-            <tr>
+            <tr class="table-header">
+                <th class="header-item">序号</th>
                 <th class="header-item">题目</th>
                 <th class="header-item">类型</th>
                 <th class="header-item">操作</th>
@@ -24,11 +25,12 @@
         </thead>
         <tbody class="list-content">
             <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
+                <td class="question-id">{{item.id}}</td>
                 <td class="question-title">{{item.title}}</td>
                 <td class="question-type">{{item.type}}</td>
                 <td class="item-actions">
-                <view class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</view>
-                <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</view>
+                    <view class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</view>
+                    <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</view>
                 <!-- <button class="btn-edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</button>
                 <button class="btn-delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</button> -->
                 </td>

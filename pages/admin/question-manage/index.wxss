@@ -67,13 +67,18 @@
 .list-header {
     width: 100vw ;
     display: grid;
-    grid-template-columns: 3fr 2fr 2fr;
+    /* grid-template-columns: 1fr 3fr 1.5fr 2fr; */
     padding: 32rpx;
     font-size: 28rpx;
     color: #636e72;
     background: #f8f9fa;
     font-weight: 600;
     border-bottom: 2rpx solid #e9ecef;
+}
+.table-header {
+    display: grid;
+    grid-template-columns: 1fr 3fr 2.4fr 2fr;
+
 }
   
 .list-content {
@@ -84,7 +89,7 @@
   /* 列表项 */
 .list-item {
     display: grid;
-    grid-template-columns: 3fr 1.5fr 2fr;
+    grid-template-columns: 1fr 3fr 1.8fr 2fr;
     padding: 32rpx;
     align-items: center;
     border-bottom: 1rpx dashed #e9ecef;
@@ -98,9 +103,12 @@
 .list-item:active {
     background: rgba(241, 242, 244, 0.5);
 }
-  
+.question-id {
+    font-size: 22rpx;
+    text-align: center;
+}
 .question-title {
-    font-size: 30rpx;
+    font-size: 22rpx;
     color: #2d3436;
     font-weight: 500;
     line-height: 1.4;
@@ -112,10 +120,10 @@
 }
   
 .question-type {
-    font-size: 26rpx;
+    font-size: 22rpx;
     color: #636e72;
     text-align: center;
-    padding: 8rpx 16rpx;
+    padding: 8rpx 10rpx;
     background: rgba(233, 236, 239, 0.5);
     border-radius: 8rpx;
     margin: 0 20rpx;
