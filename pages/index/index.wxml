@@ -34,6 +34,7 @@
             <view class="dailyTest" bindtap="goToDailyPractice" data-option="{{dailyOptions[0]}}">
                 <image class="module-icon" src="/assets/icons/每日练习.png"></image>
                 <text class="module-name">每日练习</text>
+                <view class="startTest">开始练习</view>
             </view>
             <view class="function-content-right">
                 <view class="orderTest" bindtap="goToSequentialPractice">

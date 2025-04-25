@@ -92,6 +92,7 @@ page {
 
 
 .dailyTest {
+    position: relative;
     width: 250rpx;
     height: 450rpx;
     background: linear-gradient(to bottom, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) );
@@ -100,6 +101,17 @@ page {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+.startTest {
+    font-size: 25rpx;
+    height: 50rpx;
+    width: 150rpx ;
+    text-align: center;
+    line-height: 50rpx;
+    border-radius: 30rpx;
+    background-color: #fff;
+    position: absolute;
+    bottom: 50rpx ;
 }
 .orderTest {
     width: 390rpx;
@@ -148,13 +160,14 @@ page {
 }
 
 .module-icon {
-    width: 60rpx;
-    height: 60rpx;
+    width: 80rpx;
+    height: 80rpx;
     margin-bottom: 10rpx;
 }
 
 .module-name {
-    font-size: 26rpx;
+    font-size: 35rpx;
+    font-weight: 600;
     color: #fff;
     text-align: center;
 }
