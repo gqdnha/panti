@@ -11,8 +11,8 @@
     margin-top: 200rpx;
     width: 85%;
     padding: 40rpx;
-    /* background-color: rgba(255, 255, 255, 0.5); */
-    background-color: rgba(227, 255, 252, 0.5);
+    background-color: rgba(255, 255, 255, 0.5);
+    /* background-color: rgba(227, 255, 252, 0.5); */
     border-radius: 30rpx;
     box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
 }

@@ -10,17 +10,21 @@
     </view>
     <!-- 学习时长 -->
     <view class="study-content">
-        <view class="study-item" bindtap="goToAnswerStats">
+        <view class="study-item">
             <!-- <image class="module-icon" src="/assets/icons/统计.png"></image> -->
-            <text class="module-name">学习时长：{{studyTime}} 分钟</text>
+            <text class="studyValue">{{studyTime}}</text>
+            <text class="studyName">分钟</text>
+            <text class="studyName">学习时长</text>
         </view>
-        <view class="study-item" bindtap="goToWrongQuestions">
-            <image class="module-icon" src="/assets/icons/错题本.png"></image>
-            <text class="module-name">答题数：{{totalQuestions}}</text>
+        <view class="study-item">
+            <!-- <image class="module-icon" src="/assets/icons/错题本.png"></image> -->
+            <text class="studyValue">{{totalQuestions}}</text>
+            <text class="studyName">已答题</text>
         </view>
-        <view class="study-item" bindtap="goToAnswerHistory">
-            <image class="module-icon" src="/assets/icons/答题历史.png"></image>
-            <text class="module-name">正确率：{{correctRate}}%</text>
+        <view class="study-item">
+            <!-- <image class="module-icon" src="/assets/icons/答题历史.png"></image> -->
+            <text class="studyValue">{{correctRate}}%</text>
+            <text class="studyName">正确率</text>
         </view>
     </view>
     <!-- 功能模块 -->
