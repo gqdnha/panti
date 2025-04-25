@@ -6,7 +6,7 @@
 
 /* 用户信息卡片 */
 .user-card {
-    background: linear-gradient(135deg, #4a90e2, #357abd);
+    background: linear-gradient(135deg, #73abec, #60daf0);
     padding: 40rpx 30rpx;
     color: #fff;
     position: fixed;
@@ -15,6 +15,10 @@
     right: 0;
     z-index: 100;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .user-info {
@@ -83,28 +87,9 @@
     box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
 }
 
-.function-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    padding: 24rpx;
-    position: relative;
-    width: 350rpx;
-}
-
-.function-item:not(:last-child)::after {
-    content: '';
-    position: absolute;
-    left: 30rpx;
-    right: 30rpx;
-    bottom: 0;
-    height: 1rpx;
-    background-color: #f0f0f0;
-}
-
-.function-icon {
-    width: 40rpx;
-    height: 40rpx;
+.setting-icon {
+    width: 70rpx;
+    height: 70rpx;
     margin-right: 20rpx;
 }
 
