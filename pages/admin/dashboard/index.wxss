@@ -1,7 +1,10 @@
 .container {
-  min-height: 100vh;
+  height: 100vh;
   background-color: #f7f8fa;
   padding: 30rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
 }
 
 /* 统计卡片 */
@@ -37,7 +40,7 @@
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20rpx;
-  margin-top: 30rpx;
+  /* margin-top: 30rpx; */
 }
 
 .function-card {
