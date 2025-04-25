@@ -20,6 +20,35 @@ Page({
         id: 3,
         title: 'HTML5新特性有哪些？',
         type: '选择题'
+      },
+      {
+        id: 1,
+        title: '什么是JavaScript？',
+        type: '选择题'
+      },
+      {
+        id: 2,
+        title: '解释CSS盒模型',
+        type: '简答题'
+      },
+      {
+        id: 3,
+        title: 'HTML5新特性有哪些？',
+        type: '选择题'
+      },{
+        id: 1,
+        title: '什么是JavaScript？',
+        type: '选择题'
+      },
+      {
+        id: 2,
+        title: '解释CSS盒模型',
+        type: '简答题'
+      },
+      {
+        id: 3,
+        title: 'HTML5新特性有哪些？',
+        type: '选择题'
       }
     ]
   },
