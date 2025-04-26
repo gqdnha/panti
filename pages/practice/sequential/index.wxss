@@ -290,3 +290,6 @@
     background-color: #0066cc;
     color: #fff;
 }
+.view-detail-btn {
+    margin-top: 50rpx;
+}
