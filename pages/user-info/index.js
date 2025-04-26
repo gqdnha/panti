@@ -138,17 +138,21 @@ Page({
     },
     // 去错题本
     goToWrongQuestions() {
+        if (!this.data.userInfo) {
+            this.showLoginTip();
+            return;
+        }
         wx.navigateTo({
-            url: '/pages/stats/wrong-questions/index'
+            url: '/pages/wrongBook/wrongBook'
         });
     },
 
     // 去答题历史
     goToAnswerHistory() {
-        /* if (!this.data.userInfo) {
+        if (!this.data.userInfo) {
             this.showLoginTip();
             return;
-        } */
+        }
         wx.navigateTo({
             url: '/pages/history/history'
         });

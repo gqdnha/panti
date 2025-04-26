@@ -16,10 +16,9 @@
     "pages/comprehensive/case-analysis/index",
     "pages/resources/index",
     "pages/stats/answer-stats/index",
-    "pages/stats/wrong-questions/index",
     "pages/feedback/index",
-    "pages/stats/answer-history/index",
-    "pages/history/history"
+    "pages/history/history",
+    "pages/wrongBook/wrongBook"
   ],
   "window": {
     "backgroundTextStyle": "light",
