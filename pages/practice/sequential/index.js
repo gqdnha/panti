@@ -241,34 +241,27 @@ Page({
         return parts[0];
     },
 
-    // 关闭解析弹窗
+    // 关闭解析弹窗并继续答题
+    closeAnalysisAndContinue: function () {
+        this.setData({
+            showAnalysis: false
+        });
+        this.nextQuestion();
+    },
+
+    // 显示解析弹窗
+    showAnalysis: function () {
+        this.setData({
+            showAnalysis: true
+        });
+    },
+
+    // 关闭解析弹窗（仅关闭不跳转）
     closeAnalysis: function () {
         this.setData({
             showAnalysis: false
         });
-        // 下一题
-        this.nextQuestion()
     },
-
-    // 加入错题本
-    /*   addToWrongBook: function() {
-        const wrongQuestions = wx.getStorageSync('wrongQuestions') || [];
-        const exists = wrongQuestions.some(q => q.id === this.data.currentQuestionData.id);
-        
-        if (!exists) {
-          wrongQuestions.push(this.data.currentQuestionData);
-          wx.setStorageSync('wrongQuestions', wrongQuestions);
-          wx.showToast({
-            title: '已加入错题本',
-            icon: 'success'
-          });
-        } else {
-          wx.showToast({
-            title: '已在错题本中',
-            icon: 'none'
-          });
-        }
-      }, */
 
     // 上一题
     prevQuestion: function () {
@@ -331,4 +324,4 @@ Page({
     //         this.nextQuestion();
     //     }
     // }
-});
+});    
