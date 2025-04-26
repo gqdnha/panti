@@ -1,211 +1,330 @@
-// pages/practice/daily/index.js
-const { questions } = require('../../../data/questions');
-const { knowledgePoints } = require('../../../data/categories');
+const {
+    questions
+} = require('../../../data/questions.js');
 
 Page({
-
-  /**
-   * 页面的初始数据
-   */
-  data: {
-    date: '',
-    completedCount: 0,
-    streakDays: 0,
-    modes: [
-      { id: 'mode1', name: '每日20题', count: 20, desc: '固定20题' },
-      { id: 'mode2', name: '每日30题', count: 30, desc: '固定30题' },
-      { id: 'mode3', name: '随机练习', count: 0, desc: '不限数量' }
-    ],
-    currentMode: 'mode1',
-    progress: {
-      percentage: 0,
-      correct: 0,
-      wrong: 0,
-      accuracy: 0
+    data: {
+        currentQuestion: 1,
+        totalQuestions: questions.length,
+        remainingTime: '20:00', // 初始化为 20 分钟
+        startTime: 0,
+        currentQuestionData: null,
+        answer: '',
+        showAnalysis: false,
+        isCorrect: false,
+        timer: null,
+        questions: questions,
+        touchStartX: 0, // 触摸开始时的 X 坐标
+        touchEndX: 0,    // 触摸结束时的 X 坐标
+        isSubmitted: false // 添加标志位，记录是否已经提交过答案
     },
-    knowledgeDistribution: [],
-    canStartPractice: true
-  },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
-    this.initData();
-  },
+    onLoad: function () {
+        this.startCountdown();
+        this.loadQuestion(this.data.currentQuestion);
+    },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
+    onUnload: function () {
+        this.clearCountdown();
+    },
 
-  },
+    // 开始倒计时
+    startCountdown: function () {
+        this.clearCountdown();
+        let remainingSeconds = 1200; // 20 分钟 = 1200 秒
+        this.data.timer = setInterval(() => {
+            if (remainingSeconds > 0) {
+                remainingSeconds--;
+                const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
+                const seconds = (remainingSeconds % 60).toString().padStart(2, '0');
+                this.setData({
+                    remainingTime: `${minutes}:${seconds}`
+                });
+            } else {
+                this.clearCountdown();
+                this.submitAnswer();
+            }
+        }, 1000);
+    },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
-    this.loadProgress();
-    this.loadKnowledgeDistribution();
-  },
+    // 清除倒计时
+    clearCountdown: function () {
+        if (this.data.timer) {
+            clearInterval(this.data.timer);
+        }
+    },
 
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
+    // 加载题目
+    loadQuestion: function (questionIndex) {
+        const question = this.data.questions[questionIndex - 1];
+        if (question) {
+            // 从缓存中读取答案和选项状态
+            const records = wx.getStorageSync('answerRecords') || [];
+            const record = records.find(r => r.questionId === question.id);
+            if (record) {
+                this.setData({
+                    answer: record.answer,
+                    isCorrect: record.isCorrect,
+                    isSubmitted: record.isSubmitted
+                });
+                if (question.type === '单选' || question.type === '多选') {
+                    question.options = question.options.map(option => {
+                        const selected = record.options && record.options.some(o => o.label === option.label && o.selected);
+                        return {
+                            ...option,
+                            selected: selected
+                        };
+                    });
+                } else if (question.type === '判断') {
+                    this.setData({
+                        answer: record.answer === 'true'
+                    });
+                }
+            } else {
+                this.setData({
+                    answer: '',
+                    isCorrect: false,
+                    isSubmitted: false
+                });
+                if (question.options) {
+                    question.options = question.options.map(option => ({
+                        ...option,
+                        selected: false
+                    }));
+                }
+            }
 
-  },
+            this.setData({
+                currentQuestionData: question
+            });
+        }
+    },
 
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
+    // 选择单选题选项
+    selectOption: function (e) {
+        const index = e.currentTarget.dataset.index;
+        const options = this.data.currentQuestionData.options.map((item, i) => {
+            return {
+                ...item,
+                selected: i === index
+            };
+        });
 
-  },
+        this.setData({
+            'currentQuestionData.options': options,
+            answer: options[index].label
+        });
+    },
 
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
+    // 选择多选题选项
+    selectMultipleOption: function (e) {
+        const index = e.currentTarget.dataset.index;
+        const options = this.data.currentQuestionData.options.map((item, i) => {
+            if (i === index) {
+                return {
+                    ...item,
+                    selected:!item.selected
+                };
+            }
+            return item;
+        });
 
-  },
+        const selectedOptions = options
+           .filter(item => item.selected)
+           .map(item => item.label)
+           .join('');
 
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
+        this.setData({
+            'currentQuestionData.options': options,
+            answer: selectedOptions
+        });
+    },
 
-  },
+    // 选择判断题答案
+    selectJudge: function (e) {
+        const value = e.currentTarget.dataset.value;
+        this.setData({
+            answer: value
+        });
+    },
 
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
+    // 填空题输入答案
+    onInputAnswer: function (e) {
+        this.setData({
+            answer: e.detail.value
+        });
+    },
 
-  },
+    // 提交答案
+    submitAnswer: function () {
+        if (!this.data.answer && this.data.answer!== false) {
+            wx.showToast({
+                title: '请选择或输入答案',
+                icon: 'none'
+            });
+            return;
+        }
 
-  // 初始化数据
-  initData() {
-    const today = new Date();
-    const dateStr = `${today.getFullYear()}年${today.getMonth() + 1}月${today.getDate()}日`;
-    
-    this.setData({
-      date: dateStr
-    });
-  },
+        if (this.data.isSubmitted) {
+            return; // 如果已经提交过答案，直接返回
+        }
 
-  // 切换练习模式
-  switchMode(e) {
-    const modeId = e.currentTarget.dataset.id;
-    this.setData({
-      currentMode: modeId
-    });
-  },
+        // 检查答案是否正确
+        const isCorrect = this.checkAnswer();
 
-  // 加载进度数据
-  loadProgress() {
-    // 从本地存储获取今日进度
-    const todayProgress = wx.getStorageSync('todayProgress') || {
-      completed: 0,
-      correct: 0,
-      wrong: 0
-    };
+        // 保存答题记录
+        this.saveAnswerRecord(isCorrect);
 
-    const total = this.data.modes.find(m => m.id === this.data.currentMode).count;
-    const percentage = total ? Math.round((todayProgress.completed / total) * 100) : 0;
-    const accuracy = todayProgress.completed ? 
-      Math.round((todayProgress.correct / todayProgress.completed) * 100) : 0;
+        this.setData({
+            showAnalysis: true,
+            isCorrect,
+            isSubmitted: true // 设置已经提交过答案的标志
+        });
+        this.clearCountdown();
+    },
 
-    this.setData({
-      'progress.percentage': percentage,
-      'progress.correct': todayProgress.correct,
-      'progress.wrong': todayProgress.wrong,
-      'progress.accuracy': accuracy,
-      completedCount: todayProgress.completed
-    });
-  },
+    // 检查答案是否正确
+    checkAnswer: function () {
+        const {
+            currentQuestionData,
+            answer
+        } = this.data;
 
-  // 加载知识点分布
-  loadKnowledgeDistribution() {
-    // 从本地存储获取知识点统计
-    const knowledgeStats = wx.getStorageSync('knowledgeStats') || {};
-    
-    const distribution = Object.entries(knowledgePoints).map(([key, name]) => {
-      const stats = knowledgeStats[key] || { total: 0, correct: 0 };
-      const percentage = stats.total ? Math.round((stats.correct / stats.total) * 100) : 0;
-      
-      return {
-        name,
-        count: stats.total,
-        percentage
-      };
-    });
+        if (currentQuestionData.type === '判断') {
+            return answer === currentQuestionData.correctAnswer;
+        } else if (currentQuestionData.type === '多选') {
+            // 对多选题答案进行排序后比较
+            const sortedAnswer = answer.split('').sort().join('');
+            const sortedCorrectAnswer = currentQuestionData.correctAnswer.split('').sort().join('');
+            return sortedAnswer === sortedCorrectAnswer;
+        } else {
+            return answer === currentQuestionData.correctAnswer;
+        }
+    },
 
-    this.setData({
-      knowledgeDistribution: distribution
-    });
-  },
+    // 保存答题记录
+    saveAnswerRecord: function (isCorrect) {
+        const record = {
+            questionId: this.data.currentQuestionData.id,
+            answer: this.data.answer,
+            isCorrect,
+            usedTime: this.extractMinutes(this.data.remainingTime), // 保存剩余时间
+            timestamp: Date.now(),
+            isSubmitted: true
+        };
 
-  // 开始练习
-  startPractice() {
-    if (!this.data.canStartPractice) {
-      return;
-    }
+        if (this.data.currentQuestionData.type === '单选' || this.data.currentQuestionData.type === '多选') {
+            record.options = this.data.currentQuestionData.options.map(option => ({
+                label: option.label,
+                selected: option.selected
+            }));
+        }
 
-    const mode = this.data.modes.find(m => m.id === this.data.currentMode);
-    const total = mode.count;
-    
-    // 获取今日已完成的题目
-    const todayProgress = wx.getStorageSync('todayProgress') || {
-      completed: 0,
-      correct: 0,
-      wrong: 0
-    };
+        // 保存到本地存储
+        const records = wx.getStorageSync('answerRecords') || [];
+        const existingRecordIndex = records.findIndex(r => r.questionId === record.questionId);
+        if (existingRecordIndex > -1) {
+            records[existingRecordIndex] = record;
+        } else {
+            records.push(record);
+        }
+        wx.setStorageSync('answerRecords', records);
 
-    // 检查是否已完成今日练习
-    if (total && todayProgress.completed >= total) {
-      wx.showToast({
-        title: '今日练习已完成',
-        icon: 'none'
-      });
-      return;
-    }
+        // 如果答错了，加入错题本
+        /* if (!isCorrect) {
+            const wrongQuestions = wx.getStorageSync('wrongQuestions') || [];
+            wrongQuestions.push(this.data.currentQuestionData);
+            wx.setStorageSync('wrongQuestions', wrongQuestions);
+        } */
+    },
 
-    // 根据模式筛选题目
-    let practiceQuestions = [];
-    if (mode.id === 'mode3') {
-      // 随机模式：随机选择20题
-      practiceQuestions = this.getRandomQuestions(20);
-    } else {
-      // 固定模式：从未完成的题目中选择
-      const remainingCount = total - todayProgress.completed;
-      practiceQuestions = this.getRandomQuestions(remainingCount);
-    }
+    // 提取时间字符串中的分钟部分
+    extractMinutes: function (timeStr) {
+        const parts = timeStr.split(':');
+        return parts[0];
+    },
 
-    // 保存练习题目到本地存储
-    wx.setStorageSync('currentPractice', {
-      questions: practiceQuestions,
-      mode: mode.id,
-      startTime: new Date().getTime()
-    });
+    // 关闭解析弹窗并继续答题
+    closeAnalysisAndContinue: function () {
+        this.setData({
+            showAnalysis: false
+        });
+        this.nextQuestion();
+    },
 
-    // 跳转到答题页面
-    wx.navigateTo({
-      url: '/pages/practice/question/index'
-    });
-  },
+    // 显示解析弹窗
+    showAnalysis: function () {
+        this.setData({
+            showAnalysis: true
+        });
+    },
 
-  // 获取随机题目
-  getRandomQuestions(count) {
-    const allQuestions = [...questions];
-    const result = [];
-    
-    for (let i = 0; i < count && allQuestions.length > 0; i++) {
-      const randomIndex = Math.floor(Math.random() * allQuestions.length);
-      result.push(allQuestions[randomIndex]);
-      allQuestions.splice(randomIndex, 1);
-    }
-    
-    return result;
-  }
-})
+    // 关闭解析弹窗（仅关闭不跳转）
+    closeAnalysis: function () {
+        this.setData({
+            showAnalysis: false
+        });
+    },
+
+    // 上一题
+    prevQuestion: function () {
+        if (this.data.currentQuestion > 1) {
+            this.setData({
+                currentQuestion: this.data.currentQuestion - 1,
+                showAnalysis: false
+            }, () => {
+                this.loadQuestion(this.data.currentQuestion);
+            });
+        }
+    },
+
+    // 下一题
+    nextQuestion: function () {
+        if (this.data.currentQuestion < this.data.totalQuestions) {
+            this.setData({
+                currentQuestion: this.data.currentQuestion + 1,
+                showAnalysis: false
+            }, () => {
+                this.loadQuestion(this.data.currentQuestion);
+            });
+        } else {
+            wx.showModal({
+                title: '提示',
+                content: '已经是最后一题了，是否返回首页？',
+                success: (res) => {
+                    if (res.confirm) {
+                        wx.navigateBack();
+                    }
+                }
+            });
+        }
+    },
+
+    // 触摸开始事件
+    onTouchStart: function (e) {
+        this.setData({
+            touchStartX: e.touches[0].pageX
+        });
+    },
+
+    // 触摸移动事件
+    onTouchMove: function (e) {
+        this.setData({
+            touchEndX: e.touches[0].pageX
+        });
+    },
+
+    // 触摸结束事件
+    // onTouchEnd: function () {
+    //     const { touchStartX, touchEndX, currentQuestion, totalQuestions } = this.data;
+    //     const deltaX = touchEndX - touchStartX;
+
+    //     if (deltaX > 50 && currentQuestion > 1) {
+    //         // 向右滑动，显示上一题
+    //         this.prevQuestion();
+    //     } else if (deltaX < -50 && currentQuestion < totalQuestions) {
+    //         // 向左滑动，显示下一题
+    //         this.nextQuestion();
+    //     }
+    // }
+});    
