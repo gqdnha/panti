@@ -37,21 +37,25 @@
                 <view class="startTest">开始练习</view>
             </view>
             <view class="function-content-right">
-                <view class="orderTest" bindtap="goToSequentialPractice">
+                <!-- <view class="orderTest" bindtap="goToSequentialPractice">
                     <image class="module-icon" src="/assets/icons/顺序练习.png"></image>
                     <text class="module-name">顺序练习</text>
-                </view>
-                <view class="specialTest" bindtap="goToTopicalPractice" data-category="法律法规">
+                </view> -->
+                <view class="orderTest" bindtap="goToTopicalPractice" data-category="法律法规">
                     <image class="module-icon" src="/assets/icons/专题练习.png"></image>
                     <text class="module-name">专题练习</text>
+                </view>
+                <view class="functionLaw" bindtap="goToResources" data-category="法律法规">
+                    <image class="module-icon" src="/assets/icons/法律法规.png"></image>
+                    <text class="module-name">法律法规</text>
                 </view>
             </view>
 
         </view>
-        <view class="functionLaw" bindtap="goToResources" data-category="法律法规">
+        <!-- <view class="functionLaw" bindtap="goToResources" data-category="法律法规">
             <image class="module-icon" src="/assets/icons/法律法规.png"></image>
             <text class="module-name">法律法规</text>
-        </view>
+        </view> -->
     </view>
     <!-- 基础理论模块 -->
     <!-- <view class="module-section">

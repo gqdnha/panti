@@ -98,11 +98,12 @@ Page({
         });
     },
     goToPracticePage(e) {
-        const categoryId = e.currentTarget.dataset.categoryId;
+        // const categoryId = e.currentTarget.dataset.categoryId;
         console.log('11');
         // 这里需要替换为实际的练习页面路径
         wx.navigateTo({
             // url: `pages/practice/topical/topicalAnswer/topicalAnswer?categoryId=${categoryId}&level=${this.data.level}`
+            url: `pages/practice/topical/index`
         });
     },
 });    

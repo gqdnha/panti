@@ -16,12 +16,16 @@ Page({
         questions: questions,
         touchStartX: 0, // 触摸开始时的 X 坐标
         touchEndX: 0,    // 触摸结束时的 X 坐标
-        isSubmitted: false // 添加标志位，记录是否已经提交过答案
+        isSubmitted: false, // 添加标志位，记录是否已经提交过答案
+        isAllSubmitted: false, // 记录是否所有答案都已提交
+        allAnswers: [] // 存储所有题目的答案
     },
 
     onLoad: function () {
         this.startCountdown();
         this.loadQuestion(this.data.currentQuestion);
+        // 初始化所有题目的答案
+        this.data.allAnswers = new Array(this.data.totalQuestions).fill('');
     },
 
     onUnload: function () {
@@ -42,7 +46,7 @@ Page({
                 });
             } else {
                 this.clearCountdown();
-                this.submitAnswer();
+                this.submitAllAnswers();
             }
         }, 1000);
     },
@@ -97,6 +101,10 @@ Page({
             this.setData({
                 currentQuestionData: question
             });
+            // 加载当前题目的答案
+            this.setData({
+                answer: this.data.allAnswers[questionIndex - 1]
+            });
         }
     },
 
@@ -110,10 +118,13 @@ Page({
             };
         });
 
+        const answer = options[index].label;
         this.setData({
             'currentQuestionData.options': options,
-            answer: options[index].label
+            answer
         });
+        // 保存当前题目的答案
+        this.data.allAnswers[this.data.currentQuestion - 1] = answer;
     },
 
     // 选择多选题选项
@@ -138,6 +149,8 @@ Page({
             'currentQuestionData.options': options,
             answer: selectedOptions
         });
+        // 保存当前题目的答案
+        this.data.allAnswers[this.data.currentQuestion - 1] = selectedOptions;
     },
 
     // 选择判断题答案
@@ -146,96 +159,100 @@ Page({
         this.setData({
             answer: value
         });
+        // 保存当前题目的答案
+        this.data.allAnswers[this.data.currentQuestion - 1] = value;
     },
 
     // 填空题输入答案
     onInputAnswer: function (e) {
+        const answer = e.detail.value;
         this.setData({
-            answer: e.detail.value
+            answer
         });
+        // 保存当前题目的答案
+        this.data.allAnswers[this.data.currentQuestion - 1] = answer;
     },
 
-    // 提交答案
-    submitAnswer: function () {
-        if (!this.data.answer && this.data.answer!== false) {
+    // 提交所有答案
+    submitAllAnswers: function () {
+        let allAnswered = true;
+        let correctCount = 0;
+        const records = [];
+
+        for (let i = 0; i < this.data.totalQuestions; i++) {
+            const question = this.data.questions[i];
+            const answer = this.data.allAnswers[i];
+
+            if (!answer && answer!== false) {
+                allAnswered = false;
+                break;
+            }
+
+            // 检查答案是否正确
+            const isCorrect = this.checkAnswer(question, answer);
+            if (isCorrect) {
+                correctCount++;
+            }
+
+            // 保存答题记录
+            const record = {
+                questionId: question.id,
+                answer,
+                isCorrect,
+                usedTime: this.extractMinutes(this.data.remainingTime), // 保存剩余时间
+                timestamp: Date.now(),
+                isSubmitted: true
+            };
+
+            if (question.type === '单选' || question.type === '多选') {
+                record.options = question.options.map(option => ({
+                    label: option.label,
+                    selected: option.selected
+                }));
+            }
+
+            records.push(record);
+        }
+
+        if (!allAnswered) {
             wx.showToast({
-                title: '请选择或输入答案',
+                title: '请回答所有问题',
                 icon: 'none'
             });
             return;
         }
 
-        if (this.data.isSubmitted) {
-            return; // 如果已经提交过答案，直接返回
-        }
-
-        // 检查答案是否正确
-        const isCorrect = this.checkAnswer();
-
-        // 保存答题记录
-        this.saveAnswerRecord(isCorrect);
+        // 保存所有答题记录
+        wx.setStorageSync('answerRecords', records);
 
         this.setData({
-            showAnalysis: true,
-            isCorrect,
-            isSubmitted: true // 设置已经提交过答案的标志
+            isAllSubmitted: true
         });
-        this.clearCountdown();
+
+        // 显示结果
+        wx.showModal({
+            title: '答题结果',
+            content: `你答对了 ${correctCount} 道题，共 ${this.data.totalQuestions} 道题。`,
+            success: (res) => {
+                if (res.confirm) {
+                    wx.navigateBack();
+                }
+            }
+        });
     },
 
     // 检查答案是否正确
-    checkAnswer: function () {
-        const {
-            currentQuestionData,
-            answer
-        } = this.data;
-
-        if (currentQuestionData.type === '判断') {
-            return answer === currentQuestionData.correctAnswer;
-        } else if (currentQuestionData.type === '多选') {
+    checkAnswer: function (question, answer) {
+        if (question.type === '判断') {
+            return answer === question.correctAnswer;
+        } else if (question.type === '多选') {
             // 对多选题答案进行排序后比较
             const sortedAnswer = answer.split('').sort().join('');
-            const sortedCorrectAnswer = currentQuestionData.correctAnswer.split('').sort().join('');
+            const sortedCorrectAnswer = question.correctAnswer.split('').sort().join('');
             return sortedAnswer === sortedCorrectAnswer;
         } else {
-            return answer === currentQuestionData.correctAnswer;
+            return answer === question.correctAnswer;
         }
-    },
-
-    // 保存答题记录
-    saveAnswerRecord: function (isCorrect) {
-        const record = {
-            questionId: this.data.currentQuestionData.id,
-            answer: this.data.answer,
-            isCorrect,
-            usedTime: this.extractMinutes(this.data.remainingTime), // 保存剩余时间
-            timestamp: Date.now(),
-            isSubmitted: true
-        };
-
-        if (this.data.currentQuestionData.type === '单选' || this.data.currentQuestionData.type === '多选') {
-            record.options = this.data.currentQuestionData.options.map(option => ({
-                label: option.label,
-                selected: option.selected
-            }));
-        }
-
-        // 保存到本地存储
-        const records = wx.getStorageSync('answerRecords') || [];
-        const existingRecordIndex = records.findIndex(r => r.questionId === record.questionId);
-        if (existingRecordIndex > -1) {
-            records[existingRecordIndex] = record;
-        } else {
-            records.push(record);
-        }
-        wx.setStorageSync('answerRecords', records);
-
-        // 如果答错了，加入错题本
-        /* if (!isCorrect) {
-            const wrongQuestions = wx.getStorageSync('wrongQuestions') || [];
-            wrongQuestions.push(this.data.currentQuestionData);
-            wx.setStorageSync('wrongQuestions', wrongQuestions);
-        } */
     },
 
     // 提取时间字符串中的分钟部分
@@ -287,16 +304,6 @@ Page({
             }, () => {
                 this.loadQuestion(this.data.currentQuestion);
             });
-        } else {
-            wx.showModal({
-                title: '提示',
-                content: '已经是最后一题了，是否返回首页？',
-                success: (res) => {
-                    if (res.confirm) {
-                        wx.navigateBack();
-                    }
-                }
-            });
         }
     },
 
@@ -308,23 +315,23 @@ Page({
     },
 
     // 触摸移动事件
-    onTouchMove: function (e) {
+    /* onTouchMove: function (e) {
         this.setData({
             touchEndX: e.touches[0].pageX
         });
-    },
+    }, */
 
     // 触摸结束事件
-    // onTouchEnd: function () {
-    //     const { touchStartX, touchEndX, currentQuestion, totalQuestions } = this.data;
-    //     const deltaX = touchEndX - touchStartX;
+    /* onTouchEnd: function () {
+        const { touchStartX, touchEndX, currentQuestion, totalQuestions } = this.data;
+        const deltaX = touchEndX - touchStartX;
 
-    //     if (deltaX > 50 && currentQuestion > 1) {
-    //         // 向右滑动，显示上一题
-    //         this.prevQuestion();
-    //     } else if (deltaX < -50 && currentQuestion < totalQuestions) {
-    //         // 向左滑动，显示下一题
-    //         this.nextQuestion();
-    //     }
-    // }
+        if (deltaX > 50 && currentQuestion > 1) {
+            // 向右滑动，显示上一题
+            this.prevQuestion();
+        } else if (deltaX < -50 && currentQuestion < totalQuestions) {
+            // 向左滑动，显示下一题
+            this.nextQuestion();
+        }
+    } */
 });    
