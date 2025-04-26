@@ -1,4 +1,3 @@
-<!-- 顺序练习 -->
 <view class="container" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd">
   <!-- 顶部进度条 -->
   <view class="progress-bar">
@@ -28,7 +27,7 @@
     <view class="options-container">
       <!-- 单选题 -->
       <block wx:if="{{currentQuestionData.type === '单选'}}">
-        <view class="option-item {{item.selected? (isCorrect? 'selected correct' : 'selected wrong') : ''}}"
+        <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}"
               wx:for="{{currentQuestionData.options}}"
               wx:key="index"
               bindtap="selectOption"
@@ -40,7 +39,7 @@
 
       <!-- 多选题 -->
       <block wx:if="{{currentQuestionData.type === '多选'}}">
-        <view class="option-item {{item.selected? (isCorrect? 'selected correct' : 'selected wrong') : ''}}"
+        <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}"
               wx:for="{{currentQuestionData.options}}"
               wx:key="index"
               bindtap="selectMultipleOption"
@@ -53,12 +52,12 @@
       <!-- 判断题 -->
       <block wx:if="{{currentQuestionData.type === '判断'}}">
         <view class="judge-options">
-          <view class="judge-item {{answer === true? (isCorrect? 'selected correct' : 'selected wrong') : ''}}"
+          <view class="judge-item {{answer === true? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}"
                 bindtap="selectJudge"
                 data-value="{{true}}">
             <text>正确</text>
           </view>
-          <view class="judge-item {{answer === false? (isCorrect? 'selected correct' : 'selected wrong') : ''}}"
+          <view class="judge-item {{answer === false? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}"
                 bindtap="selectJudge"
                 data-value="{{false}}">
             <text>错误</text>
@@ -68,7 +67,7 @@
 
       <!-- 填空题 -->
       <block wx:if="{{currentQuestionData.type === '填空'}}">
-        <input class="fill-blank-input {{isCorrect? 'correct' : 'wrong'}}"
+        <input class="fill - blank - input {{isCorrect? 'correct' : (isSubmitted? 'wrong' : '')}}"
                placeholder="请输入答案"
                value="{{answer}}"
                bindinput="onInputAnswer"/>
@@ -79,7 +78,7 @@
   <!-- 底部操作栏 -->
   <view class="bottom-bar">
     <view class="btn prev" bindtap="prevQuestion" wx:if="{{currentQuestion > 1}}">上一题</view>
-    <view class="btn submit" bindtap="submitAnswer" wx:if="{{!isSubmitted}}" style="{{!isSubmitted? '' : 'opacity: 0.5; pointer-events: none;'}}">提交答案</view>
+    <view class="btn submit" bindtap="submitAnswer" wx:if="{{!isSubmitted}}" style="{{!isSubmitted? '' : 'opacity: 0.5; pointer - events: none;'}}">提交答案</view>
     <view class="btn next" bindtap="nextQuestion" wx:if="{{currentQuestion < totalQuestions}}">下一题</view>
   </view>
 
@@ -108,4 +107,4 @@
       </view>
     </view>
   </view>
-</view> 
+</view>

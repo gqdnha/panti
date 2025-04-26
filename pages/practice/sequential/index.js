@@ -56,32 +56,23 @@ Page({
     loadQuestion: function (questionIndex) {
         const question = this.data.questions[questionIndex - 1];
         if (question) {
-            // 为选项添加selected属性
-            if (question.options) {
-                question.options = question.options.map(option => ({
-                   ...option,
-                    selected: false
-                }));
-            }
-
-            // 从缓存中读取答案
+            // 从缓存中读取答案和选项状态
             const records = wx.getStorageSync('answerRecords') || [];
             const record = records.find(r => r.questionId === question.id);
             if (record) {
                 this.setData({
-                    answer: record.answer
+                    answer: record.answer,
+                    isCorrect: record.isCorrect,
+                    isSubmitted: record.isSubmitted
                 });
-                if (question.type === '单选') {
-                    question.options = question.options.map(option => ({
-                       ...option,
-                        selected: option.label === record.answer
-                    }));
-                } else if (question.type === '多选') {
-                    const selectedLabels = record.answer.split('');
-                    question.options = question.options.map(option => ({
-                       ...option,
-                        selected: selectedLabels.includes(option.label)
-                    }));
+                if (question.type === '单选' || question.type === '多选') {
+                    question.options = question.options.map(option => {
+                        const selected = record.options && record.options.some(o => o.label === option.label && o.selected);
+                        return {
+                            ...option,
+                            selected: selected
+                        };
+                    });
                 } else if (question.type === '判断') {
                     this.setData({
                         answer: record.answer === 'true'
@@ -89,13 +80,20 @@ Page({
                 }
             } else {
                 this.setData({
-                    answer: ''
+                    answer: '',
+                    isCorrect: false,
+                    isSubmitted: false
                 });
+                if (question.options) {
+                    question.options = question.options.map(option => ({
+                        ...option,
+                        selected: false
+                    }));
+                }
             }
 
             this.setData({
-                currentQuestionData: question,
-                isSubmitted: false // 加载新题目时重置提交标志
+                currentQuestionData: question
             });
         }
     },
@@ -105,7 +103,7 @@ Page({
         const index = e.currentTarget.dataset.index;
         const options = this.data.currentQuestionData.options.map((item, i) => {
             return {
-               ...item,
+                ...item,
                 selected: i === index
             };
         });
@@ -122,7 +120,7 @@ Page({
         const options = this.data.currentQuestionData.options.map((item, i) => {
             if (i === index) {
                 return {
-                   ...item,
+                    ...item,
                     selected:!item.selected
                 };
             }
@@ -208,8 +206,16 @@ Page({
             answer: this.data.answer,
             isCorrect,
             usedTime: this.extractMinutes(this.data.usedTime), // 只保存分钟部分
-            timestamp: Date.now()
+            timestamp: Date.now(),
+            isSubmitted: true
         };
+
+        if (this.data.currentQuestionData.type === '单选' || this.data.currentQuestionData.type === '多选') {
+            record.options = this.data.currentQuestionData.options.map(option => ({
+                label: option.label,
+                selected: option.selected
+            }));
+        }
 
         // 保存到本地存储
         const records = wx.getStorageSync('answerRecords') || [];
@@ -313,16 +319,16 @@ Page({
     },
 
     // 触摸结束事件
-    onTouchEnd: function () {
-        const { touchStartX, touchEndX, currentQuestion, totalQuestions } = this.data;
-        const deltaX = touchEndX - touchStartX;
+    // onTouchEnd: function () {
+    //     const { touchStartX, touchEndX, currentQuestion, totalQuestions } = this.data;
+    //     const deltaX = touchEndX - touchStartX;
 
-        if (deltaX > 50 && currentQuestion > 1) {
-            // 向右滑动，显示上一题
-            this.prevQuestion();
-        } else if (deltaX < -50 && currentQuestion < totalQuestions) {
-            // 向左滑动，显示下一题
-            this.nextQuestion();
-        }
-    }
+    //     if (deltaX > 50 && currentQuestion > 1) {
+    //         // 向右滑动，显示上一题
+    //         this.prevQuestion();
+    //     } else if (deltaX < -50 && currentQuestion < totalQuestions) {
+    //         // 向左滑动，显示下一题
+    //         this.nextQuestion();
+    //     }
+    // }
 });
