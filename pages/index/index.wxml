@@ -12,7 +12,6 @@
     <!-- 学习时长 -->
     <view class="study-content">
         <view class="study-item">
-            <!-- <image class="module-icon" src="/assets/icons/统计.png"></image> -->
             <text class="studyValue">{{studyTime}}</text>
             <text class="studyName">分钟</text>
             <text class="studyName">学习时长</text>

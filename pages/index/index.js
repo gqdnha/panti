@@ -1,6 +1,6 @@
 // index.js
-const { mockUserInfo, mockStatistics, mockRecentExams, mockRecommended } = require('../../data/mock');
-const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
+// const { mockUserInfo, mockStatistics, mockRecentExams, mockRecommended } = require('../../data/mock');
+// const defaultAvatarUrl = 'https://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRna42FI242Lcia07jQodd2FJGIYQfG0LAJGFxM4FbnQP6yfMxBgJ0F3YRqJCJ1aPAK2dQagdusBZg/0'
 
 Page({
   data: {
@@ -161,7 +161,7 @@ Page({
       recentExams: mockRecentExams
     });
   },
-  getRecommended() {
+/*   getRecommended() {
     // 使用模拟数据
     this.setData({
       recommended: mockRecommended
@@ -176,8 +176,8 @@ Page({
     wx.navigateTo({
       url: `/pages/question-category/index?type=${type}`
     });
-  },
-  startExam(e) {
+  }, */
+/*   startExam(e) {
     const { id } = e.currentTarget.dataset;
     if (!this.data.userInfo) {
       this.showLoginTip();
@@ -186,8 +186,8 @@ Page({
     wx.navigateTo({
       url: `/pages/exam/index?id=${id}`
     });
-  },
-  startPractice(e) {
+  }, */
+ /*  startPractice(e) {
     const { id } = e.currentTarget.dataset;
     if (!this.data.userInfo) {
       this.showLoginTip();
@@ -196,7 +196,8 @@ Page({
     wx.navigateTo({
       url: `/pages/practice/index?id=${id}`
     });
-  },
+  }, */
+//   未登录跳转登录
   showLoginTip() {
     wx.showModal({
       title: '提示',
@@ -211,7 +212,7 @@ Page({
       }
     });
   },
-  setCurrentDate() {
+/*   setCurrentDate() {
     const date = new Date();
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
@@ -219,26 +220,28 @@ Page({
     this.setData({
       currentDate: `${year}年${month}月${day}日`
     });
-  },
-  // 基础理论相关功能
+  }, */
+  // 顺序练习
   goToSequentialPractice() {
     wx.navigateTo({
       url: '/pages/practice/sequential/index'
     });
   },
+//   专题练习
   goToTopicalPractice(e) {
     const { category } = e.currentTarget.dataset;
     wx.navigateTo({
       url: `/pages/practice/topical/index?category=${category}`
     });
   },
+//   每日练习
   goToDailyPractice(e) {
     const { option } = e.currentTarget.dataset;
     wx.navigateTo({
       url: `/pages/practice/daily/index?option=${JSON.stringify(option)}`
     });
   },
-  // 资料库
+  // 法律法规
   goToResources(e) {
     const { category } = e.currentTarget.dataset;
     wx.navigateTo({
@@ -246,7 +249,7 @@ Page({
     });
   },
   // 综合题相关功能
-  goToShortAnswer() {
+  /* goToShortAnswer() {
     wx.navigateTo({
       url: '/pages/comprehensive/short-answer/index'
     });
@@ -255,9 +258,9 @@ Page({
     wx.navigateTo({
       url: '/pages/comprehensive/case-analysis/index'
     });
-  },
+  }, */
   // 个人数据统计相关功能
-  goToAnswerStats() {
+/*   goToAnswerStats() {
     wx.navigateTo({
       url: '/pages/stats/answer-stats/index',
       success: () => {
@@ -268,13 +271,13 @@ Page({
         });
       }
     });
-  },
-  goToWrongQuestions() {
+  }, */
+/*   goToWrongQuestions() {
     wx.navigateTo({
       url: '/pages/stats/wrong-questions/index'
     });
-  },
-  goToAnswerHistory() {
+  }, */
+/*   goToAnswerHistory() {
     if (!this.data.userInfo) {
       this.showLoginTip();
       return;
@@ -282,13 +285,13 @@ Page({
     wx.navigateTo({
       url: '/pages/history/index'
     });
-  },
+  }, */
   // 用户反馈
-  onFeedback() {
+  /* onFeedback() {
     wx.navigateTo({
       url: '/pages/feedback/index'
     });
-  },
+  }, */
   // 加载用户信息
   loadUserInfo() {
     const userInfo = wx.getStorageSync('userInfo');
