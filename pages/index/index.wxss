@@ -157,9 +157,9 @@ page {
 }
 
 
-.module-item:active {
+/* .module-item:active {
     background-color: #e6f0ff;
-}
+} */
 
 .module-icon {
     width: 80rpx;

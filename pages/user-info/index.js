@@ -78,7 +78,7 @@ Page({
             userInfo
         });
     },
-
+    // 从服务器获取学习统计数据
     getStudyStats() {
         // TODO: 从服务器获取学习统计数据
         // 这里使用模拟数据
@@ -88,16 +88,6 @@ Page({
                 correctRate: 85,
                 totalTime: 120
             }
-        });
-    },
-
-    navigateToHistory() {
-        if (!this.data.userInfo) {
-            this.showLoginTip();
-            return;
-        }
-        wx.navigateTo({
-            url: '/pages/history/index'
         });
     },
 
@@ -145,5 +135,22 @@ Page({
                 }
             }
         });
-    }
+    },
+    // 去错题本
+    goToWrongQuestions() {
+        wx.navigateTo({
+            url: '/pages/stats/wrong-questions/index'
+        });
+    },
+
+    // 去答题历史
+    goToAnswerHistory() {
+        /* if (!this.data.userInfo) {
+            this.showLoginTip();
+            return;
+        } */
+        wx.navigateTo({
+            url: '/pages/history/history'
+        });
+    },
 })

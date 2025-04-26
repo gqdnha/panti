@@ -1,0 +1,29 @@
+<!--pages/admin/question-manage/index.wxml-->
+<view class="container">
+
+
+    <!-- 题目列表 -->
+    <view class="question-list">
+        <table class="question-table">
+            <thead class="list-header">
+                <tr class="table-header">
+                    <th class="header-item">序号</th>
+                    <th class="header-item">题目</th>
+                    <th class="header-item">类型</th>
+                    <th class="header-item">操作</th>
+                </tr>
+            </thead>
+            <tbody class="list-content">
+                <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
+                    <td class="question-id">{{item.id}}</td>
+                    <td class="question-title">{{item.title}}</td>
+                    <td class="question-type">{{item.type}}</td>
+                    <td class="item-actions">
+                        <view class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">练习</view>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </view>
+
+</view>

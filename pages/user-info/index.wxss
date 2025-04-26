@@ -80,23 +80,43 @@
 
 /* 功能列表 */
 .function-list {
-    margin: 20rpx;
-    background-color: #fff;
+    margin: 50rpx;
     border-radius: 12rpx;
     overflow: hidden;
     box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40rpx;
+}
+
+.function-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 180rpx;
+    height: 180rpx;
+    /* background-color: #88bbee; */
+    background: linear-gradient(to bottom, #a6d2ff , #6ea4e4);
+    border-radius: 30rpx;
+
+}
+.function-name {
+    font-size: 35rpx;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+}
+.function-icon {
+    width: 80rpx;
+    height: 80rpx;
+    margin-bottom: 10rpx;
 }
 
 .setting-icon {
     width: 60rpx;
     height: 60rpx;
     margin-right: 20rpx;
-}
-
-.function-name {
-    flex: 1;
-    font-size: 30rpx;
-    color: #333;
 }
 
 .arrow-icon {
