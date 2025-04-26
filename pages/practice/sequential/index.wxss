@@ -1,248 +1,292 @@
 .container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: 20rpx;
-  box-sizing: border-box;
-  background-color: #f5f6fa;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20rpx;
+    box-sizing: border-box;
+    background-color: #f5f6fa;
 }
 
 /* 进度条样式 */
 .progress-bar {
-  background-color: #fff;
-  padding: 20rpx;
-  border-radius: 10rpx;
-  margin-bottom: 20rpx;
+    background-color: #fff;
+    padding: 20rpx;
+    border-radius: 10rpx;
+    margin-bottom: 20rpx;
 }
 
 .progress-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10rpx;
-  font-size: 28rpx;
-  color: #333;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10rpx;
+    font-size: 28rpx;
+    color: #333;
 }
 
 .progress-track {
-  height: 10rpx;
-  background-color: #e0e0e0;
-  border-radius: 5rpx;
+    height: 10rpx;
+    background-color: #e0e0e0;
+    border-radius: 5rpx;
 }
 
 .progress-fill {
-  height: 100%;
-  background-color: #0066cc;
-  border-radius: 5rpx;
-  transition: width 0.3s ease;
+    height: 100%;
+    background-color: #0066cc;
+    border-radius: 5rpx;
+    transition: width 0.3s ease;
 }
 
 /* 题目容器样式 */
 .question-container {
-  flex: 1;
-  background-color: #fff;
-  border-radius: 10rpx;
-  padding: 30rpx;
-  margin-bottom: 20rpx;
-  overflow-y: auto;
+    flex: 1;
+    background-color: #fff;
+    border-radius: 10rpx;
+    padding: 30rpx;
+    margin-bottom: 20rpx;
+    overflow-y: auto;
 }
 
 .question-type {
-  font-size: 28rpx;
-  color: #0066cc;
-  margin-bottom: 20rpx;
-  padding: 10rpx 20rpx;
-  background-color: #e6f0ff;
-  border-radius: 20rpx;
-  display: inline-block;
+    font-size: 28rpx;
+    color: #0066cc;
+    margin-bottom: 20rpx;
+    padding: 10rpx 20rpx;
+    background-color: #e6f0ff;
+    border-radius: 20rpx;
+    display: inline-block;
 }
 
 .question-content {
-  font-size: 32rpx;
-  color: #333;
-  line-height: 1.6;
-  margin-bottom: 30rpx;
+    font-size: 32rpx;
+    color: #333;
+    line-height: 1.6;
+    margin-bottom: 30rpx;
 }
 
 .question-image {
-  width: 100%;
-  max-height: 400rpx;
-  margin-top: 20rpx;
-  border-radius: 8rpx;
+    width: 100%;
+    max-height: 400rpx;
+    margin-top: 20rpx;
+    border-radius: 8rpx;
 }
 
 /* 选项样式 */
 .options-container {
-  margin-top: 30rpx;
+    margin-top: 30rpx;
 }
 
 .option-item {
-  display: flex;
-  align-items: flex-start;
-  padding: 20rpx;
-  margin-bottom: 20rpx;
-  background-color: #f8f9fa;
-  border-radius: 8rpx;
-  transition: all 0.3s ease;
+    display: flex;
+    align-items: flex-start;
+    padding: 20rpx;
+    margin-bottom: 20rpx;
+    background-color: #f8f9fa;
+    border-radius: 8rpx;
+    transition: all 0.3s ease;
+    position: relative;
 }
 
 .option-item.selected {
-  background-color: #e6f0ff;
-  border: 2rpx solid #0066cc;
+    background-color: #e6f0ff;
+    border: 2rpx solid #0066cc;
+}
+
+.option-item.correct.selected {
+    border-color: #52c41a;
+    background-color: rgba(82, 196, 26, 0.1);
+    box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
+    transition: all 0.3s ease;
+}
+
+.option-item.wrong.selected {
+    border-color: #f5222d;
+    background-color: rgba(245, 34, 45, 0.1);
+    box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
+    transition: all 0.3s ease;
 }
 
 .option-label {
-  font-size: 30rpx;
-  color: #0066cc;
-  margin-right: 20rpx;
-  font-weight: bold;
+    font-size: 30rpx;
+    color: #0066cc;
+    margin-right: 20rpx;
+    font-weight: bold;
 }
 
 .option-content {
-  font-size: 30rpx;
-  color: #333;
-  flex: 1;
+    font-size: 30rpx;
+    color: #333;
+    flex: 1;
 }
 
 /* 判断题样式 */
 .judge-options {
-  display: flex;
-  justify-content: center;
-  gap: 40rpx;
+    display: flex;
+    justify-content: center;
+    gap: 40rpx;
 }
 
 .judge-item {
-  padding: 20rpx 60rpx;
-  background-color: #f8f9fa;
-  border-radius: 8rpx;
-  font-size: 32rpx;
-  color: #333;
+    padding: 20rpx 60rpx;
+    background-color: #f8f9fa;
+    border-radius: 8rpx;
+    font-size: 32rpx;
+    color: #333;
 }
 
 .judge-item.selected {
-  background-color: #e6f0ff;
-  border: 2rpx solid #0066cc;
-  color: #0066cc;
+    background-color: #e6f0ff;
+    border: 2rpx solid #0066cc;
+    color: #0066cc;
+}
+
+.judge-item.correct.selected {
+    border-color: #52c41a;
+    background-color: rgba(82, 196, 26, 0.1);
+    box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
+    color: #52c41a;
+    transition: all 0.3s ease;
+}
+
+.judge-item.wrong.selected {
+    border-color: #f5222d;
+    background-color: rgba(245, 34, 45, 0.1);
+    box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
+    color: #f5222d;
+    transition: all 0.3s ease;
 }
 
 /* 填空题样式 */
 .fill-blank-input {
-  width: 100%;
-  padding: 20rpx;
-  border: 2rpx solid #e0e0e0;
-  border-radius: 8rpx;
-  font-size: 30rpx;
-  margin-top: 20rpx;
+    width: 80%;
+    padding: 20rpx;
+    border: 2rpx solid #e0e0e0;
+    border-radius: 8rpx;
+    font-size: 30rpx;
+    margin-top: 20rpx;
+}
+
+.fill-blank-input.correct {
+    border-color: #52c41a;
+    box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
+    transition: all 0.3s ease;
+}
+
+.fill-blank-input.wrong {
+    border-color: #f5222d;
+    box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
+    transition: all 0.3s ease;
 }
 
 /* 底部操作栏样式 */
 .bottom-bar {
-  display: flex;
-  justify-content: space-between;
-  padding: 20rpx;
-  background-color: #fff;
-  border-radius: 10rpx;
+    display: flex;
+    justify-content: space-between;
+    padding: 20rpx;
+    background-color: #fff;
+    border-radius: 10rpx;
 }
 
 .btn {
-  padding: 20rpx 40rpx;
-  border-radius: 8rpx;
-  font-size: 30rpx;
-  text-align: center;
+    padding: 20rpx 40rpx;
+    border-radius: 8rpx;
+    font-size: 30rpx;
+    text-align: center;
 }
 
 .prev {
-  background-color: #f8f9fa;
-  color: #666;
+    background-color: #f8f9fa;
+    color: #666;
 }
 
 .submit {
-  background-color: #0066cc;
-  color: #fff;
-  flex: 1;
-  margin: 0 20rpx;
+    background-color: #0066cc;
+    color: #fff;
+    flex: 1;
+    margin: 0 20rpx;
 }
 
 .next {
-  background-color: #f8f9fa;
-  color: #666;
+    background-color: #f8f9fa;
+    color: #666;
 }
 
 /* 答案解析弹窗样式 */
 .analysis-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
 .modal-content {
-  width: 80%;
-  max-height: 80vh;
-  background-color: #fff;
-  border-radius: 10rpx;
-  padding: 30rpx;
-  overflow-y: auto;
+    width: 80%;
+    max-height: 80vh;
+    background-color: #fff;
+    border-radius: 10rpx;
+    padding: 30rpx;
+    overflow-y: auto;
 }
 
 .result-header {
-  text-align: center;
-  margin-bottom: 30rpx;
+    text-align: center;
+    margin-bottom: 30rpx;
 }
 
 .correct {
-  color: #52c41a;
-  font-size: 36rpx;
-  font-weight: bold;
+    color: #52c41a;
+    font-size: 36rpx;
+    font-weight: bold;
 }
 
 .wrong {
-  color: #f5222d;
-  font-size: 36rpx;
-  font-weight: bold;
+    color: #f5222d;
+    font-size: 36rpx;
+    font-weight: bold;
 }
 
 .correct-answer {
-  margin-bottom: 20rpx;
-  font-size: 30rpx;
-  color: #333;
+    margin-bottom: 20rpx;
+    font-size: 30rpx;
+    color: #333;
 }
 
 .analysis-content {
-  margin-bottom: 20rpx;
+    margin-bottom: 20rpx;
 }
 
 .analysis-title {
-  font-size: 30rpx;
-  color: #0066cc;
-  font-weight: bold;
-  margin-right: 10rpx;
+    font-size: 30rpx;
+    color: #0066cc;
+    font-weight: bold;
+    margin-right: 10rpx;
 }
 
 .knowledge-points {
-  margin-bottom: 30rpx;
+    margin-bottom: 30rpx;
 }
 
 .knowledge-title {
-  font-size: 30rpx;
-  color: #0066cc;
-  font-weight: bold;
-  margin-right: 10rpx;
+    font-size: 30rpx;
+    color: #0066cc;
+    font-weight: bold;
+    margin-right: 10rpx;
 }
 
 .modal-btns {
-  display: flex;
-  justify-content: space-between;
-  gap: 20rpx;
+    display: flex;
+    justify-content: space-between;
+    gap: 20rpx;
 }
 
 .modal-btns .btn {
-  flex: 1;
-  background-color: #0066cc;
-  color: #fff;
-} 
+    flex: 1;
+    background-color: #fd6854;
+    background-color: #0066cc;
+    color: #fff;
+}
