@@ -41,6 +41,6 @@
 
     <!-- 添加题目按钮 -->
     <view class="add-button" bindtap="addQuestion">
-        <image class="add-icon" src="/images/add-icon.png" mode="aspectFit"></image>
+        <image class="add-icon" src="/assets/icons/add.png" mode="aspectFit"></image>
     </view>
 </view>

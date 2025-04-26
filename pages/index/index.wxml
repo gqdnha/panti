@@ -4,7 +4,8 @@
     <view class="user-detail">
         <view class="welcomeBox">
             <text class="welcomId">Hi，</text>
-            <text class="welcomName">耿庆栋</text>
+            <text class="welcomName">Name</text>
+            <!-- <text class="welcomName">{{Name}}</text> -->
         </view>
         <view>欢迎进入xxxxxxxxxxxx系统</view>
     </view>
