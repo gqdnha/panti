@@ -54,7 +54,7 @@
 .stats-section {
     margin: 25rpx;
     background-color: #fff;
-    padding: 25rpx;
+    padding: 40rpx;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16rpx;
@@ -94,10 +94,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 180rpx;
-    height: 180rpx;
+    width: 250rpx;
+    height: 250rpx;
     /* background-color: #88bbee; */
-    background: linear-gradient(to bottom, #a6d2ff , #6ea4e4);
+    /* background: linear-gradient(to bottom, #59ddf5,#a6d2ff , #2c99e2); */
+    background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
     border-radius: 30rpx;
 
 }

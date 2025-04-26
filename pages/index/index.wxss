@@ -57,7 +57,8 @@ page {
     width: 180rpx;
     height: 180rpx;
     /* background-color: #88bbee; */
-    background: linear-gradient(to bottom, #a6d2ff , #6ea4e4);
+    /* background: linear-gradient(to bottom, #a6d2ff , #6ea4e4); */
+    background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
     border-radius: 30rpx;
 
 }

@@ -16,7 +16,8 @@
 }
 
 .stats-card {
-  background: linear-gradient(135deg, #4a90e2, #357abd);
+  /* background: linear-gradient(135deg, #4a90e2, #357abd); */
+  background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
   padding: 30rpx 20rpx;
   border-radius: 16rpx;
   text-align: center;
@@ -44,7 +45,8 @@
 }
 
 .function-card {
-  background: #88bbee;
+  /* background: #88bbee; */
+  background: linear-gradient(135deg, #f5f259,#a6f2ff , #2c99e2);
   border-radius: 16rpx;
   padding: 30rpx;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
