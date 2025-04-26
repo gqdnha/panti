@@ -1,61 +1,26 @@
-<!--pages/practice/topical/index.wxml-->
+<!-- 专题练习 -->
 <view class="container">
-  <!-- 顶部分类选择 -->
-  <view class="category-header">
-    <view class="category-title">专题分类练习</view>
-    <view class="category-tabs">
-      <view class="tab {{currentCategory === index ? 'active' : ''}}"
-            wx:for="{{categories}}"
-            wx:key="index"
-            bindtap="switchCategory"
-            data-index="{{index}}">
-        {{item.name}}
-      </view>
-    </view>
-  </view>
-
-  <!-- 题目列表 -->
-  <view class="question-list">
-    <view class="section-title">{{categories[currentCategory].name}}题库</view>
-    <view class="list-content">
-      <view class="question-item" 
-            wx:for="{{questionList}}" 
-            wx:key="id"
-            bindtap="goToQuestion"
-            data-id="{{item.id}}">
-        <view class="question-info">
-          <text class="question-type">{{item.type}}</text>
-          <text class="question-status {{item.status === 'correct' ? 'correct' : item.status === 'wrong' ? 'wrong' : ''}}">
-            {{item.status === 'correct' ? '已答对' : item.status === 'wrong' ? '已答错' : '未作答'}}
-          </text>
+    <!-- 头部区域 -->
+    <view class="header">
+        <view class="nav">
+            <view class="nav-item {{level === '初级' ? 'active' : ''}}" bindtap="changeLevel" data-level="初级">初级</view>
+            <view class="nav-item {{level === '中级' ? 'active' : ''}}" bindtap="changeLevel" data-level="中级">中级</view>
+            <view class="nav-item {{level === '2025年能力提升' ? 'active' : ''}}" bindtap="changeLevel" data-level="2025年能力提升">2025年能力提升</view>
         </view>
-        <view class="question-content">{{item.content}}</view>
-        <view class="question-meta">
-          <text class="knowledge-point">知识点：{{item.knowledgePoints}}</text>
-          <text class="difficulty">难度：{{item.difficulty || '中等'}}</text>
+    </view>
+    <!-- 内容区域 -->
+    <view class="content">
+        <!-- 分类练习 -->
+        <view class="category" wx:for="{{currentCategories}}" wx:key="id" bindtap="goToPracticePage" data-category-id="{{item.id}}">
+            <view class="category-name">{{item.name}}</view>
+            <view class="category-status">{{categoryStatus[item.id]}}</view>
+            <view class="category-icon" style="background-image: url({{item.icon}});"></view>
         </view>
-      </view>
+        <!-- 综合练习 -->
+        <view class="category">
+            <view class="category-name">综合练习</view>
+            <view class="category-status">{{comprehensiveStatus}}</view>
+            <view class="category-icon" style="background-image: url({{comprehensiveIcon}});"></view>
+        </view>
     </view>
-  </view>
-
-  <!-- 底部统计 -->
-  <view class="statistics">
-    <view class="stat-item">
-      <text class="stat-label">总题数</text>
-      <text class="stat-value">{{totalQuestions}}</text>
-    </view>
-    <view class="stat-item">
-      <text class="stat-label">已答题数</text>
-      <text class="stat-value">{{answeredQuestions}}</text>
-    </view>
-    <view class="stat-item">
-      <text class="stat-label">正确率</text>
-      <text class="stat-value">{{correctRate}}%</text>
-    </view>
-  </view>
-
-  <!-- 开始练习按钮 -->
-  <view class="start-practice" bindtap="startPractice">
-    开始练习
-  </view>
-</view>
+</view>    

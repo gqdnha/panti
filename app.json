@@ -18,7 +18,9 @@
     "pages/stats/answer-stats/index",
     "pages/stats/wrong-questions/index",
     "pages/feedback/index",
-    "pages/stats/answer-history/index"
+    "pages/stats/answer-history/index",
+    "pages/answer/answer",
+    "pages/practice/topical/topicalAnswer/topicalAnswer"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,155 +1,93 @@
-/* pages/practice/topical/index.wxss */
+/* 全局样式 */
+page {
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 容器样式 */
 .container {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background-color: #f5f6fa;
+    width: 100vw;
+    padding: 24rpx;
 }
 
-/* 顶部分类选择样式 */
-.category-header {
-  background-color: #fff;
-  padding: 20rpx;
+/* 头部样式 */
+.header {
+    width: 100vw;
+
 }
 
-.category-title {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20rpx;
-  text-align: center;
+.nav {
+    display: flex;
+    margin-left: 20rpx;
+    margin-bottom: 30rpx;
 }
 
-.category-tabs {
-  display: flex;
-  overflow-x: auto;
-  white-space: nowrap;
-  padding-bottom: 10rpx;
+.nav-item {
+    padding: 12rpx 24rpx;
+    margin-right: 20rpx;
+    border-radius: 20rpx;
+    background-color: #e8e8e8;
+    color: #666;
+    font-size: 28rpx;
+    transition: all 0.3s ease;
 }
 
-.tab {
-  padding: 15rpx 30rpx;
-  margin-right: 20rpx;
-  background-color: #f0f2f5;
-  border-radius: 30rpx;
-  font-size: 28rpx;
-  color: #666;
-  transition: all 0.3s ease;
+.nav-item.active {
+    background-color: #1890ff;
+    color: #fff;
+    box-shadow: 0 4rpx 8rpx rgba(24, 144, 255, 0.2);
 }
 
-.tab.active {
-  background-color: #0066cc;
-  color: #fff;
+.nav-item:hover {
+    transform: translateY(-2rpx);
+    box-shadow: 0 6rpx 12rpx rgba(0, 0, 0, 0.1);
 }
 
-/* 题目列表样式 */
-.question-list {
-  flex: 1;
-  padding: 20rpx;
-  overflow-y: auto;
+/* 内容区域样式 */
+.content {
+    width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between; */
 }
 
-.section-title {
-  font-size: 30rpx;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 20rpx;
+.category {
+    margin-left: 15rpx;
+    margin-right: 15rpx;
+    width: 45%;
+    height: 220rpx;
+    background-color: #fff;
+    border-radius: 16rpx;
+    margin-bottom: 32rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
 }
 
-.list-content {
-  display: flex;
-  flex-direction: column;
-  gap: 20rpx;
+.category:hover {
+    transform: translateY(-4rpx);
+    box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.1);
 }
 
-.question-item {
-  background-color: #fff;
-  border-radius: 10rpx;
-  padding: 20rpx;
+.category-name {
+    font-size: 36rpx;
+    margin-bottom: 16rpx;
+    color: #333;
+    font-weight: 600;
 }
 
-.question-info {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 15rpx;
+.category-status {
+    font-size: 24rpx;
+    color: #999;
 }
 
-.question-type {
-  font-size: 26rpx;
-  color: #0066cc;
-  background-color: #e6f0ff;
-  padding: 6rpx 16rpx;
-  border-radius: 20rpx;
-}
-
-.question-status {
-  font-size: 26rpx;
-  color: #999;
-}
-
-.question-status.correct {
-  color: #52c41a;
-}
-
-.question-status.wrong {
-  color: #f5222d;
-}
-
-.question-content {
-  font-size: 28rpx;
-  color: #333;
-  line-height: 1.6;
-  margin-bottom: 15rpx;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  overflow: hidden;
-}
-
-.question-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 24rpx;
-  color: #999;
-}
-
-/* 底部统计样式 */
-.statistics {
-  display: flex;
-  justify-content: space-around;
-  padding: 20rpx;
-  background-color: #fff;
-  border-top: 1rpx solid #eee;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.stat-label {
-  font-size: 24rpx;
-  color: #666;
-  margin-bottom: 8rpx;
-}
-
-.stat-value {
-  font-size: 32rpx;
-  color: #0066cc;
-  font-weight: bold;
-}
-
-/* 开始练习按钮样式 */
-.start-practice {
-  position: fixed;
-  bottom: 40rpx;
-  left: 50%;
-  transform: translateX(-50%);
-  background-color: #0066cc;
-  color: #fff;
-  padding: 20rpx 60rpx;
-  border-radius: 40rpx;
-  font-size: 30rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 102, 204, 0.2);
+.category-icon {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 16rpx;
 }

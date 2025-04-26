@@ -1,3 +1,4 @@
+<!-- 顺序练习 -->
 <view class="container">
   <!-- 顶部进度条 -->
   <view class="progress-bar">
@@ -5,6 +6,7 @@
       <text>第{{currentQuestion}}/{{totalQuestions}}题</text>
       <text>用时：{{usedTime}}分钟</text>
     </view>
+    <!-- 进度条 -->
     <view class="progress-track">
       <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view>
     </view>
