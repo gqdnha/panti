@@ -79,8 +79,12 @@
 .table-header {
     display: grid;
     grid-template-columns: 1fr 3fr 2fr .9fr;
+    text-align: center;
 
 }
+/* .header-item {
+    margin: auto;
+} */
 
 .list-content {
     overflow-y: auto;
@@ -89,7 +93,7 @@
 /* 列表项 */
 .list-item {
     display: grid;
-    grid-template-columns: 1fr 3fr 2fr .9fr;
+    grid-template-columns: .4fr 3fr 2fr .9fr;
     padding: 32rpx;
     align-items: center;
     border-bottom: 1rpx dashed #e9ecef;
@@ -105,6 +109,7 @@
 }
 
 .question-id {
+    margin: auto;
     font-size: 22rpx;
     text-align: center;
 }

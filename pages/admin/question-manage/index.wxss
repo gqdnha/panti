@@ -2,7 +2,7 @@
 .container {
     min-height: 100vh;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 32rpx;
+    padding: 0rpx;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -68,7 +68,7 @@
     width: 100vw ;
     display: grid;
     /* grid-template-columns: 1fr 3fr 1.5fr 2fr; */
-    padding: 32rpx;
+    padding: 20rpx;
     font-size: 28rpx;
     color: #636e72;
     background: #f8f9fa;

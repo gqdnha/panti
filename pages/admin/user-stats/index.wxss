@@ -2,7 +2,7 @@
 .container {
     min-height: 100vh;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    /* padding: 0rpx; */
+    padding: 0rpx;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -67,7 +67,7 @@
 .list-header {
     width: 100vw;
     display: grid;
-    padding: 32rpx;
+    padding: 20rpx;
     font-size: 28rpx;
     color: #636e72;
     background: #f8f9fa;
