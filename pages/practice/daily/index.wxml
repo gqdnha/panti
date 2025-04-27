@@ -15,7 +15,7 @@
     <view class="question-container">
         <view class="question-type">{{currentQuestionData.type}}</view>
         <view class="question-content">
-            <text>{{currentQuestionData.content}}</text>
+            <text>{{currentQuestion}}.{{currentQuestionData.content}}</text>
             <!-- 如果有图片 -->
             <image wx:if="{{currentQuestionData.image}}" src="{{currentQuestionData.image}}" mode="aspectFit" class="question-image"></image>
         </view>
@@ -49,7 +49,7 @@
                 </view>
             </block> -->
             <block wx:if="{{currentQuestionData.type === '判断题'}}">
-                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{currentQuestionData.options}}" wx:key="index" bindtap="selectJudge" data-index="{{index}}">
+                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{currentQuestionData.options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <!-- <text class="option-label">{{item}}</text> -->
                     <text class="option-content">{{item.content}}</text>
                 </view>

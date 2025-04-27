@@ -50,7 +50,7 @@ Page({
                     totalQuestions: newQuestions.length,
                     currentQuestionData: newQuestions[0],
                     allAnswers: new Array(newQuestions.length).fill(''),
-                    content:newQuestions.options
+                    content: newQuestions.options
                 }, () => {
                     this.loadQuestion(this.data.currentQuestion);
                 });
@@ -118,7 +118,37 @@ Page({
             clearInterval(this.data.timer);
         }
     },
+    // 上一题
+    prevQuestion: function () {
+        if (this.data.currentQuestion > 1) {
+            this.setData({
+                currentQuestion: this.data.currentQuestion - 1,
+                showAnalysis: false
+            }, () => {
+                this.loadQuestion(this.data.currentQuestion);
+            }),
+            setTimeout(() => {
+                this.loadQuestion(this.data.currentQuestion);
+            },10)
+        }
+    },
 
+    // 下一题
+    nextQuestion: function () {
+        if (this.data.currentQuestion < this.data.totalQuestions) {
+            this.setData({
+                    currentQuestion: this.data.currentQuestion + 1,
+                    showAnalysis: false
+                },
+                () => {
+                    this.loadQuestion(this.data.currentQuestion);
+                },
+                setTimeout(() => {
+                    this.loadQuestion(this.data.currentQuestion);
+                },10)
+            );
+        }
+    },
     // 加载题目
     loadQuestion: function (questionIndex) {
         const question = this.data.questions[questionIndex - 1];
@@ -133,6 +163,18 @@ Page({
                         isCorrect: record.isCorrect,
                         isSubmitted: record.isSubmitted,
                         'currentQuestionData.options': this.setSelectedOptions(options, record.options)
+                    }, () => {
+                        // 确保数据更新完成后再设置 currentQuestionData 和 answer
+                        this.setData({
+                            currentQuestionData: question
+                        }, () => {
+                            this.setData({
+                                answer: this.data.allAnswers[questionIndex - 1]
+                            }, () => {
+                                // 这里可以添加一些日志来确认数据是否正确更新
+                                console.log('loadQuestion 数据更新完成', this.data.currentQuestionData, this.data.answer);
+                            });
+                        });
                     });
                 } else {
                     this.setData({
@@ -140,14 +182,20 @@ Page({
                         isCorrect: false,
                         isSubmitted: false,
                         'currentQuestionData.options': options
+                    }, () => {
+                        // 确保数据更新完成后再设置 currentQuestionData 和 answer
+                        this.setData({
+                            currentQuestionData: question
+                        }, () => {
+                            this.setData({
+                                answer: this.data.allAnswers[questionIndex - 1]
+                            }, () => {
+                                // 这里可以添加一些日志来确认数据是否正确更新
+                                console.log('loadQuestion 数据更新完成', this.data.currentQuestionData, this.data.answer);
+                            });
+                        });
                     });
                 }
-                this.setData({
-                    currentQuestionData: question
-                });
-                this.setData({
-                    answer: this.data.allAnswers[questionIndex - 1]
-                });
             } catch (error) {
                 console.error('加载题目数据时出错', error);
                 wx.showToast({
@@ -330,13 +378,13 @@ Page({
 
     // 检查答案是否正确
     checkAnswer: function (question, answer) {
-        if (question.type === '判断') {
+        if (question.type === '判断题') {
             return answer === question.answer;
-        } else if (question.type === '多选') {
+        } else if (question.type === '多选题') {
             const sortedAnswer = answer.split('').sort().join('');
             const sortedCorrectAnswer = question.answer.split('').sort().join('');
             return sortedAnswer === sortedCorrectAnswer;
-        } else if (question.type === '单选') {
+        } else if (question.type === '单选题') {
             return answer === question.answer;
         }
         return false;
@@ -370,29 +418,6 @@ Page({
         });
     },
 
-    // 上一题
-    prevQuestion: function () {
-        if (this.data.currentQuestion > 1) {
-            this.setData({
-                currentQuestion: this.data.currentQuestion - 1,
-                showAnalysis: false
-            }, () => {
-                this.loadQuestion(this.data.currentQuestion);
-            });
-        }
-    },
-
-    // 下一题
-    nextQuestion: function () {
-        if (this.data.currentQuestion < this.data.totalQuestions) {
-            this.setData({
-                currentQuestion: this.data.currentQuestion + 1,
-                showAnalysis: false
-            }, () => {
-                this.loadQuestion(this.data.currentQuestion);
-            });
-        }
-    },
 
     // 触摸开始事件
     onTouchStart: function (e) {
