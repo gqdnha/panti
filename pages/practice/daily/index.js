@@ -3,14 +3,10 @@ import {
 } from "../../../api/getDailyTest"
 // import {requst} from "../../../api/request"
 
-const {
-    questions
-} = require('../../../data/questions.js');
-
 Page({
     data: {
         currentQuestion: 1,
-        totalQuestions: questions.length,
+        totalQuestions: 0, // 初始化为 0，等待接口数据来更新
         remainingTime: '20:00', // 初始化为 20 分钟
         startTime: 0,
         currentQuestionData: null,
@@ -18,7 +14,7 @@ Page({
         showAnalysis: false,
         isCorrect: false,
         timer: null,
-        questions: questions,
+        questions: [], // 初始化为空数组，等待接口数据来填充
         touchStartX: 0, // 触摸开始时的 X 坐标
         touchEndX: 0, // 触摸结束时的 X 坐标
         isSubmitted: false, // 添加标志位，记录是否已经提交过答案
@@ -28,12 +24,23 @@ Page({
 
     onLoad: function () {
         this.startCountdown();
-        this.loadQuestion(this.data.currentQuestion);
-        // 初始化所有题目的答案
-        this.data.allAnswers = new Array(this.data.totalQuestions).fill('');
 
         apiGetDailyTest().then(res => {
             console.log(res, '111');
+            if (res.data && Array.isArray(res.data)) {
+                const newQuestions = res.data;
+                this.setData({
+                    questions: newQuestions,
+                    totalQuestions: newQuestions.length,
+                    currentQuestionData: newQuestions[0], // 假设当前显示第一题
+                    allAnswers: new Array(newQuestions.length).fill('') // 重新初始化答案数组
+                });
+                // 加载当前题目的答案
+                this.setData({
+                    answer: this.data.allAnswers[this.data.currentQuestion - 1]
+                });
+                this.loadQuestion(this.data.currentQuestion); // 加载第一题的详细数据
+            }
         }).catch(err => {
             console.error('获取每日测试数据失败', err);
             wx.showToast({
@@ -79,7 +86,7 @@ Page({
         if (question) {
             // 从缓存中读取答案和选项状态
             const records = wx.getStorageSync('answerRecords') || [];
-            const record = records.find(r => r.questionId === question.id);
+            const record = records.find(r => r.questionId === question.questionId);
             if (record) {
                 this.setData({
                     answer: record.answer,
@@ -87,10 +94,12 @@ Page({
                     isSubmitted: record.isSubmitted
                 });
                 if (question.type === '单选' || question.type === '多选') {
-                    question.options = question.options.map(option => {
-                        const selected = record.options && record.options.some(o => o.label === option.label && o.selected);
+                    // 将字符串形式的选项转换为真正的数组
+                    const options = JSON.parse(question.options);
+                    question.options = options.map(option => {
+                        const selected = record.options && record.options.some(o => o.label === option && o.selected);
                         return {
-                            ...option,
+                           ...option,
                             selected: selected
                         };
                     });
@@ -106,8 +115,10 @@ Page({
                     isSubmitted: false
                 });
                 if (question.options) {
-                    question.options = question.options.map(option => ({
-                        ...option,
+                    // 将字符串形式的选项转换为真正的数组
+                    const options = JSON.parse(question.options);
+                    question.options = options.map(option => ({
+                       ...option,
                         selected: false
                     }));
                 }
@@ -128,7 +139,7 @@ Page({
         const index = e.currentTarget.dataset.index;
         const options = this.data.currentQuestionData.options.map((item, i) => {
             return {
-                ...item,
+               ...item,
                 selected: i === index
             };
         });
@@ -148,8 +159,8 @@ Page({
         const options = this.data.currentQuestionData.options.map((item, i) => {
             if (i === index) {
                 return {
-                    ...item,
-                    selected: !item.selected
+                   ...item,
+                    selected:!item.selected
                 };
             }
             return item;
@@ -211,7 +222,7 @@ Page({
 
             // 保存答题记录
             const record = {
-                questionId: question.id,
+                questionId: question.questionId,
                 answer,
                 isCorrect,
                 usedTime: this.extractMinutes(this.data.remainingTime), // 保存剩余时间
@@ -259,15 +270,16 @@ Page({
     // 检查答案是否正确
     checkAnswer: function (question, answer) {
         if (question.type === '判断') {
-            return answer === question.correctAnswer;
+            return answer === question.answer;
         } else if (question.type === '多选') {
             // 对多选题答案进行排序后比较
             const sortedAnswer = answer.split('').sort().join('');
-            const sortedCorrectAnswer = question.correctAnswer.split('').sort().join('');
+            const sortedCorrectAnswer = question.answer.split('').sort().join('');
             return sortedAnswer === sortedCorrectAnswer;
-        } else {
-            return answer === question.correctAnswer;
+        } else if (question.type === '单选') {
+            return answer === question.answer;
         }
+        return false;
     },
 
     // 提取时间字符串中的分钟部分
@@ -349,4 +361,4 @@ Page({
             this.nextQuestion();
         }
     } */
-});    
+});
