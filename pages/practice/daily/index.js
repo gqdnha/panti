@@ -1,45 +1,65 @@
 import {
     apiGetDailyTest
-} from "../../../api/getDailyTest"
+} from "../../../api/getDailyTest";
 // import {requst} from "../../../api/request"
 
 Page({
     data: {
         currentQuestion: 1,
-        totalQuestions: 0, // 初始化为 0，等待接口数据来更新
-        remainingTime: '20:00', // 初始化为 20 分钟
-        startTime: 0,
+        totalQuestions: 0,
+        remainingTime: '20:00',
         currentQuestionData: null,
         answer: '',
         showAnalysis: false,
         isCorrect: false,
         timer: null,
-        questions: [], // 初始化为空数组，等待接口数据来填充
-        touchStartX: 0, // 触摸开始时的 X 坐标
-        touchEndX: 0, // 触摸结束时的 X 坐标
-        isSubmitted: false, // 添加标志位，记录是否已经提交过答案
-        isAllSubmitted: false, // 记录是否所有答案都已提交
-        allAnswers: [] // 存储所有题目的答案
+        questions: [],
+        touchStartX: 0,
+        touchEndX: 0,
+        isSubmitted: false,
+        isAllSubmitted: false,
+        allAnswers: []
     },
 
     onLoad: function () {
         this.startCountdown();
+        this.fetchQuestions();
+    },
 
+    onUnload: function () {
+        this.clearCountdown();
+    },
+
+    // 获取题目数据
+    fetchQuestions: function () {
         apiGetDailyTest().then(res => {
             console.log(res, '111');
-            if (res.data && Array.isArray(res.data)) {
-                const newQuestions = res.data;
+            // console.log(res.data); //undefined
+            if (res && Array.isArray(res)) {
+                const newQuestions = res;
+                const hasInvalidData = this.validateQuestions(newQuestions);
+                if (hasInvalidData) {
+                    wx.showToast({
+                        title: '数据格式错误，请联系管理员',
+                        icon: 'none'
+                    });
+                    return;
+                }
                 this.setData({
                     questions: newQuestions,
                     totalQuestions: newQuestions.length,
-                    currentQuestionData: newQuestions[0], // 假设当前显示第一题
-                    allAnswers: new Array(newQuestions.length).fill('') // 重新初始化答案数组
+                    currentQuestionData: newQuestions[0],
+                    allAnswers: new Array(newQuestions.length).fill(''),
+                    content:newQuestions.options
+                }, () => {
+                    this.loadQuestion(this.data.currentQuestion);
                 });
-                // 加载当前题目的答案
-                this.setData({
-                    answer: this.data.allAnswers[this.data.currentQuestion - 1]
+            } else {
+                console.error('接口返回数据格式不正确', res);
+                wx.showToast({
+                    title: '数据格式错误，请联系管理员',
+                    icon: 'none'
                 });
-                this.loadQuestion(this.data.currentQuestion); // 加载第一题的详细数据
             }
         }).catch(err => {
             console.error('获取每日测试数据失败', err);
@@ -50,14 +70,33 @@ Page({
         });
     },
 
-    onUnload: function () {
-        this.clearCountdown();
+    // 验证题目数据
+    validateQuestions: function (questions) {
+        let hasInvalidData = false;
+        const requiredProps = ['questionId', 'type', 'content', 'options', 'answer'];
+        questions.forEach(question => {
+            requiredProps.forEach(prop => {
+                if (!question.hasOwnProperty(prop)) {
+                    console.error(`数据项缺失属性: ${prop}`, question);
+                    hasInvalidData = true;
+                }
+            });
+            try {
+                if (question.options && typeof question.options === 'string') {
+                    JSON.parse(question.options);
+                }
+            } catch (error) {
+                console.error('选项数据格式错误', question);
+                hasInvalidData = true;
+            }
+        });
+        return hasInvalidData;
     },
 
     // 开始倒计时
     startCountdown: function () {
         this.clearCountdown();
-        let remainingSeconds = 1200; // 20 分钟 = 1200 秒
+        let remainingSeconds = 1200;
         this.data.timer = setInterval(() => {
             if (remainingSeconds > 0) {
                 remainingSeconds--;
@@ -84,99 +123,116 @@ Page({
     loadQuestion: function (questionIndex) {
         const question = this.data.questions[questionIndex - 1];
         if (question) {
-            // 从缓存中读取答案和选项状态
-            const records = wx.getStorageSync('answerRecords') || [];
-            const record = records.find(r => r.questionId === question.questionId);
-            if (record) {
-                this.setData({
-                    answer: record.answer,
-                    isCorrect: record.isCorrect,
-                    isSubmitted: record.isSubmitted
-                });
-                if (question.type === '单选' || question.type === '多选') {
-                    // 将字符串形式的选项转换为真正的数组
-                    const options = JSON.parse(question.options);
-                    question.options = options.map(option => {
-                        const selected = record.options && record.options.some(o => o.label === option && o.selected);
-                        return {
-                           ...option,
-                            selected: selected
-                        };
-                    });
-                } else if (question.type === '判断') {
+            try {
+                const records = wx.getStorageSync('answerRecords') || [];
+                const record = records.find(r => r.questionId === question.questionId);
+                const options = this.parseOptions(question);
+                if (record) {
                     this.setData({
-                        answer: record.answer === 'true'
+                        answer: record.answer,
+                        isCorrect: record.isCorrect,
+                        isSubmitted: record.isSubmitted,
+                        'currentQuestionData.options': this.setSelectedOptions(options, record.options)
+                    });
+                } else {
+                    this.setData({
+                        answer: '',
+                        isCorrect: false,
+                        isSubmitted: false,
+                        'currentQuestionData.options': options
                     });
                 }
-            } else {
                 this.setData({
-                    answer: '',
-                    isCorrect: false,
-                    isSubmitted: false
+                    currentQuestionData: question
                 });
-                if (question.options) {
-                    // 将字符串形式的选项转换为真正的数组
-                    const options = JSON.parse(question.options);
-                    question.options = options.map(option => ({
-                       ...option,
-                        selected: false
-                    }));
-                }
+                this.setData({
+                    answer: this.data.allAnswers[questionIndex - 1]
+                });
+            } catch (error) {
+                console.error('加载题目数据时出错', error);
+                wx.showToast({
+                    title: '题目数据加载失败，请稍后重试',
+                    icon: 'none'
+                });
             }
+        }
+    },
 
-            this.setData({
-                currentQuestionData: question
-            });
-            // 加载当前题目的答案
-            this.setData({
-                answer: this.data.allAnswers[questionIndex - 1]
+    // 解析选项
+    parseOptions: function (question) {
+        if (question.options) {
+            const options = JSON.parse(question.options);
+            return options.map((option, index) => ({
+                label: String.fromCharCode(65 + index) + '.',
+                content: option,
+                selected: false
+            }));
+        }
+        return [];
+    },
+
+    // 设置选项的选中状态
+    setSelectedOptions: function (options, recordOptions) {
+        if (recordOptions) {
+            return options.map(option => {
+                const selected = recordOptions.some(o => o.label === option.label && o.selected);
+                return {
+                    ...option,
+                    selected
+                };
             });
         }
+        return options;
     },
 
     // 选择单选题选项
     selectOption: function (e) {
         const index = e.currentTarget.dataset.index;
-        const options = this.data.currentQuestionData.options.map((item, i) => {
-            return {
-               ...item,
-                selected: i === index
-            };
-        });
-
+        const options = this.setSelectedOption(this.data.currentQuestionData.options, index);
         const answer = options[index].label;
         this.setData({
             'currentQuestionData.options': options,
             answer
         });
-        // 保存当前题目的答案
-        this.data.allAnswers[this.data.currentQuestion - 1] = answer;
+        this.updateAnswer(this.data.currentQuestion - 1, answer);
+    },
+
+    // 设置单选题选项的选中状态
+    setSelectedOption: function (options, index) {
+        return options.map((item, i) => {
+            return {
+                ...item,
+                selected: i === index
+            };
+        });
     },
 
     // 选择多选题选项
     selectMultipleOption: function (e) {
         const index = e.currentTarget.dataset.index;
-        const options = this.data.currentQuestionData.options.map((item, i) => {
-            if (i === index) {
-                return {
-                   ...item,
-                    selected:!item.selected
-                };
-            }
-            return item;
-        });
-
+        const options = this.toggleSelectedOption(this.data.currentQuestionData.options, index);
         const selectedOptions = options
-           .filter(item => item.selected)
-           .map(item => item.label)
-           .join('');
-
+            .filter(item => item.selected)
+            .map(item => item.label)
+            .join('');
         this.setData({
             'currentQuestionData.options': options,
             answer: selectedOptions
         });
-        // 保存当前题目的答案
-        this.data.allAnswers[this.data.currentQuestion - 1] = selectedOptions;
+        this.updateAnswer(this.data.currentQuestion - 1, selectedOptions);
+    },
+
+    // 切换多选题选项的选中状态
+    toggleSelectedOption: function (options, index) {
+        return options.map((item, i) => {
+            if (i === index) {
+                return {
+                    ...item,
+                    selected: !item.selected
+                };
+            }
+            return item;
+        });
     },
 
     // 选择判断题答案
@@ -185,8 +241,7 @@ Page({
         this.setData({
             answer: value
         });
-        // 保存当前题目的答案
-        this.data.allAnswers[this.data.currentQuestion - 1] = value;
+        this.updateAnswer(this.data.currentQuestion - 1, value);
     },
 
     // 填空题输入答案
@@ -195,76 +250,82 @@ Page({
         this.setData({
             answer
         });
-        // 保存当前题目的答案
-        this.data.allAnswers[this.data.currentQuestion - 1] = answer;
+        this.updateAnswer(this.data.currentQuestion - 1, answer);
+    },
+
+    // 更新当前题目的答案
+    updateAnswer: function (index, answer) {
+        const allAnswers = this.data.allAnswers;
+        allAnswers[index] = answer;
+        this.setData({
+            allAnswers
+        });
     },
 
     // 提交所有答案
     submitAllAnswers: function () {
-        let allAnswered = true;
+        if (this.isAllAnswered()) {
+            const {
+                correctCount,
+                records
+            } = this.checkAllAnswers();
+            wx.setStorageSync('answerRecords', records);
+            this.setData({
+                isAllSubmitted: true
+            });
+            wx.showModal({
+                title: '答题结果',
+                content: `你答对了 ${correctCount} 道题，共 ${this.data.totalQuestions} 道题。`,
+                success: (res) => {
+                    if (res.confirm) {
+                        wx.navigateBack();
+                    }
+                }
+            });
+        } else {
+            wx.showToast({
+                title: '请回答所有问题',
+                icon: 'none'
+            });
+        }
+    },
+
+    // 检查是否所有问题都已回答
+    isAllAnswered: function () {
+        return this.data.allAnswers.every(answer => answer || answer === false);
+    },
+
+    // 检查所有答案并返回正确数量和答题记录
+    checkAllAnswers: function () {
         let correctCount = 0;
         const records = [];
-
         for (let i = 0; i < this.data.totalQuestions; i++) {
             const question = this.data.questions[i];
             const answer = this.data.allAnswers[i];
-
-            if (!answer && answer!== false) {
-                allAnswered = false;
-                break;
-            }
-
-            // 检查答案是否正确
             const isCorrect = this.checkAnswer(question, answer);
             if (isCorrect) {
                 correctCount++;
             }
-
-            // 保存答题记录
             const record = {
                 questionId: question.questionId,
                 answer,
                 isCorrect,
-                usedTime: this.extractMinutes(this.data.remainingTime), // 保存剩余时间
+                usedTime: this.extractMinutes(this.data.remainingTime),
                 timestamp: Date.now(),
                 isSubmitted: true
             };
-
             if (question.type === '单选' || question.type === '多选') {
                 record.options = question.options.map(option => ({
                     label: option.label,
                     selected: option.selected
                 }));
             }
-
             records.push(record);
         }
-
-        if (!allAnswered) {
-            wx.showToast({
-                title: '请回答所有问题',
-                icon: 'none'
-            });
-            return;
-        }
-
-        // 保存所有答题记录
-        wx.setStorageSync('answerRecords', records);
-
-        this.setData({
-            isAllSubmitted: true
-        });
-
-        // 显示结果
-        wx.showModal({
-            title: '答题结果',
-            content: `你答对了 ${correctCount} 道题，共 ${this.data.totalQuestions} 道题。`,
-            success: (res) => {
-                if (res.confirm) {
-                    wx.navigateBack();
-                }
-            }
-        });
+        return {
+            correctCount,
+            records
+        };
     },
 
     // 检查答案是否正确
@@ -272,7 +333,6 @@ Page({
         if (question.type === '判断') {
             return answer === question.answer;
         } else if (question.type === '多选') {
-            // 对多选题答案进行排序后比较
             const sortedAnswer = answer.split('').sort().join('');
             const sortedCorrectAnswer = question.answer.split('').sort().join('');
             return sortedAnswer === sortedCorrectAnswer;
@@ -342,23 +402,22 @@ Page({
     },
 
     // 触摸移动事件
-    /* onTouchMove: function (e) {
-        this.setData({
-            touchEndX: e.touches[0].pageX
-        });
-    }, */
+    // onTouchMove: function (e) {
+    //     this.setData({
+    //         touchEndX: e.touches[0].pageX
+    //     });
+    // },
 
     // 触摸结束事件
-    /* onTouchEnd: function () {
-        const { touchStartX, touchEndX, currentQuestion, totalQuestions } = this.data;
-        const deltaX = touchEndX - touchStartX;
-
-        if (deltaX > 50 && currentQuestion > 1) {
-            // 向右滑动，显示上一题
-            this.prevQuestion();
-        } else if (deltaX < -50 && currentQuestion < totalQuestions) {
-            // 向左滑动，显示下一题
-            this.nextQuestion();
-        }
-    } */
+    // onTouchEnd: function () {
+    //     const { touchStartX, touchEndX, currentQuestion, totalQuestions } = this.data;
+    //     const deltaX = touchEndX - touchStartX;
+    //     if (deltaX > 50 && currentQuestion > 1) {
+    //         // 向右滑动，显示上一题
+    //         this.prevQuestion();
+    //     } else if (deltaX < -50 && currentQuestion < totalQuestions) {
+    //         // 向左滑动，显示下一题
+    //         this.nextQuestion();
+    //     }
+    // }
 });
