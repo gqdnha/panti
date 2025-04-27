@@ -1,6 +1,7 @@
 import {
     apiGetDailyTest
 } from "../../../api/getDailyTest";
+import {apiJudgeTest} from  "../../../api/judgeTest"
 // import {requst} from "../../../api/request"
 
 Page({
@@ -321,15 +322,40 @@ Page({
             this.setData({
                 isAllSubmitted: true
             });
-            wx.showModal({
-                title: '答题结果',
-                content: `你答对了 ${correctCount} 道题，共 ${this.data.totalQuestions} 道题。`,
-                success: (res) => {
-                    if (res.confirm) {
-                        wx.navigateBack();
-                    }
-                }
-            });
+
+            // 构建要发送给后端的数据
+            const dataToSend = [];
+            for (let i = 0; i < this.data.totalQuestions; i++) {
+                const question = this.data.questions[i];
+                const answer = this.data.allAnswers[i];
+                dataToSend.push({
+                    questionId: question.questionId,
+                    answer: answer
+                });
+            }
+
+            // 使用封装的 apiJudgeTest 函数调用后端接口
+            apiJudgeTest({ answers: dataToSend })
+               .then(res => {
+                    // 处理后端返回的结果
+                    console.log('提交成功', res.data);
+                    wx.showModal({
+                        title: '答题结果',
+                        content: `你答对了 ${correctCount} 道题，共 ${this.data.totalQuestions} 道题。`,
+                        success: (resModal) => {
+                            if (resModal.confirm) {
+                                wx.navigateBack();
+                            }
+                        }
+                    });
+                })
+               .catch(err => {
+                    console.error('提交失败', err);
+                    wx.showToast({
+                        title: '提交答案失败，请稍后重试',
+                        icon: 'none'
+                    });
+                });
         } else {
             wx.showToast({
                 title: '请回答所有问题',

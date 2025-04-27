@@ -56,7 +56,7 @@
             </block>
 
             <!-- 填空题 -->
-            <block wx:if="{{currentQuestionData.type === '填空题'}}">
+            <block class="testCard" wx:if="{{currentQuestionData.type === '填空题'}}">
                 <input class="fill-blank-input {{isCorrect? 'correct' : (isSubmitted? 'wrong' : '')}}" placeholder="请输入答案" value="{{answer}}" bindinput="onInputAnswer" />
             </block>
         </view>

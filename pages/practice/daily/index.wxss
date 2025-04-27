@@ -38,6 +38,7 @@
 
 /* 题目容器样式 */
 .question-container {
+    width: 85vw;
     flex: 1;
     background-color: #fff;
     border-radius: 10rpx;
@@ -208,6 +209,7 @@
 .next {
     background-color: #f8f9fa;
     color: #666;
+    margin-left: 20rpx;
 }
 
 /* 答案解析弹窗样式 */
