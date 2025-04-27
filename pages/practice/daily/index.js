@@ -1,3 +1,8 @@
+import {
+    apiGetDailyTest
+} from "../../../api/getDailyTest"
+// import {requst} from "../../../api/request"
+
 const {
     questions
 } = require('../../../data/questions.js');
@@ -15,7 +20,7 @@ Page({
         timer: null,
         questions: questions,
         touchStartX: 0, // 触摸开始时的 X 坐标
-        touchEndX: 0,    // 触摸结束时的 X 坐标
+        touchEndX: 0, // 触摸结束时的 X 坐标
         isSubmitted: false, // 添加标志位，记录是否已经提交过答案
         isAllSubmitted: false, // 记录是否所有答案都已提交
         allAnswers: [] // 存储所有题目的答案
@@ -26,6 +31,16 @@ Page({
         this.loadQuestion(this.data.currentQuestion);
         // 初始化所有题目的答案
         this.data.allAnswers = new Array(this.data.totalQuestions).fill('');
+
+        apiGetDailyTest().then(res => {
+            console.log(res, '111');
+        }).catch(err => {
+            console.error('获取每日测试数据失败', err);
+            wx.showToast({
+                title: '获取数据失败，请稍后重试',
+                icon: 'none'
+            });
+        });
     },
 
     onUnload: function () {
@@ -134,7 +149,7 @@ Page({
             if (i === index) {
                 return {
                     ...item,
-                    selected:!item.selected
+                    selected: !item.selected
                 };
             }
             return item;
