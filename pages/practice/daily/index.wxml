@@ -7,7 +7,7 @@
         </view>
         <!-- 进度条 -->
         <view class="progress-track">
-            <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view>
+            <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}"></view>
         </view>
     </view>
 

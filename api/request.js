@@ -39,6 +39,7 @@ export const request = function request(option) {
             method: option.method,
             data: option.data === undefined? "" : JSON.stringify(option.data),
             header: header,
+            params:option.params === undefined? "" : JSON.stringify(option.params),
             timeout: 5000,
             success(res) {
                 console.log('request success: 响应数据:', res);

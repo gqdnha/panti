@@ -46,12 +46,13 @@ Page({
                     });
                     return;
                 }
+                console.log(newQuestions.options);
                 this.setData({
                     questions: newQuestions,
                     totalQuestions: newQuestions.length,
                     currentQuestionData: newQuestions[0],
                     allAnswers: new Array(newQuestions.length).fill(''),
-                    content: newQuestions.options
+                    // content: newQuestions.options
                 }, () => {
                     this.loadQuestion(this.data.currentQuestion);
                 });
@@ -152,6 +153,7 @@ Page({
     },
     // 加载题目
     loadQuestion: function (questionIndex) {
+        console.log(this.data.questions);
         const question = this.data.questions[questionIndex - 1];
         if (question) {
             try {
@@ -209,14 +211,29 @@ Page({
 
     // 解析选项
     parseOptions: function (question) {
-        if (question.options) {
-            const options = JSON.parse(question.options);
+        if(typeof question.options=="string"){
+            const options = JSON.parse(question.options)
             return options.map((option, index) => ({
                 label: String.fromCharCode(65 + index) + '.',
                 content: option,
                 selected: false
             }));
+        }else{
+            console.log(question.options);
+            let context=[];
+            question.options.forEach(item=>{
+                context.push(item.content)
+            })
+            return context.map((option, index) => ({
+                label: String.fromCharCode(65 + index) + '.',
+                content: option,
+                selected: false
+            }));
         }
+               
+          
+            
+        
         return [];
     },
 
@@ -238,6 +255,7 @@ Page({
     selectOption: function (e) {
         const index = e.currentTarget.dataset.index;
         const options = this.setSelectedOption(this.data.currentQuestionData.options, index);
+        console.log(options);
         const answer = options[index].label;
         this.setData({
             'currentQuestionData.options': options,
@@ -312,31 +330,33 @@ Page({
     },
 
     // 提交所有答案
-    submitAllAnswers: function () {
-        if (this.isAllAnswered()) {
-            const {
-                correctCount,
-                records
-            } = this.checkAllAnswers();
-            wx.setStorageSync('answerRecords', records);
-            this.setData({
-                isAllSubmitted: true
+    // index.js 部分代码
+submitAllAnswers: function () {
+    if (this.isAllAnswered()) {
+        const {
+            correctCount,
+            records
+        } = this.checkAllAnswers();
+        wx.setStorageSync('answerRecords', records);
+        this.setData({
+            isAllSubmitted: true
+        });
+
+        // 构建要发送给后端的数据
+        const dataToSend = [];
+        for (let i = 0; i < this.data.totalQuestions; i++) {
+            const question = this.data.questions[i];
+            const answer = this.data.allAnswers[i];
+            dataToSend.push({
+                questionId: question.questionId,
+                answer: answer
             });
+        }
 
-            // 构建要发送给后端的数据
-            const dataToSend = [];
-            for (let i = 0; i < this.data.totalQuestions; i++) {
-                const question = this.data.questions[i];
-                const answer = this.data.allAnswers[i];
-                dataToSend.push({
-                    questionId: question.questionId,
-                    answer: answer
-                });
-            }
-
-            // 使用封装的 apiJudgeTest 函数调用后端接口
-            apiJudgeTest({ answers: dataToSend })
-               .then(res => {
+        // 使用封装的 apiJudgeTest 函数调用后端接口
+        apiJudgeTest({ answers: dataToSend })
+           .then(res => {
+                if (res.statusCode === 200) {
                     // 处理后端返回的结果
                     console.log('提交成功', res.data);
                     wx.showModal({
@@ -348,21 +368,28 @@ Page({
                             }
                         }
                     });
-                })
-               .catch(err => {
-                    console.error('提交失败', err);
+                } else {
+                    console.error('提交失败，状态码:', res.statusCode, '响应数据:', res.data);
                     wx.showToast({
-                        title: '提交答案失败，请稍后重试',
+                        title: `提交答案失败，状态码: ${res.statusCode}`,
                         icon: 'none'
                     });
+                }
+            })
+           .catch(err => {
+                console.error('请求发生错误:', err);
+                wx.showToast({
+                    title: '提交答案失败，请稍后重试',
+                    icon: 'none'
                 });
-        } else {
-            wx.showToast({
-                title: '请回答所有问题',
-                icon: 'none'
             });
-        }
-    },
+    } else {
+        wx.showToast({
+            title: '请回答所有问题',
+            icon: 'none'
+        });
+    }
+},
 
     // 检查是否所有问题都已回答
     isAllAnswered: function () {
@@ -446,11 +473,11 @@ Page({
 
 
     // 触摸开始事件
-    onTouchStart: function (e) {
+    /* onTouchStart: function (e) {
         this.setData({
             touchStartX: e.touches[0].pageX
         });
-    },
+    }, */
 
     // 触摸移动事件
     // onTouchMove: function (e) {
