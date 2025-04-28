@@ -1,4 +1,4 @@
-<view class="container" >
+<view class="container">
     <!-- 顶部进度条 -->
     <view class="progress-bar">
         <view class="progress-info">
@@ -8,7 +8,7 @@
         <!-- 进度条 -->
         <view class="progress-track">
             <!-- <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view> -->
-            <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}"></view>
+            <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view>
         </view>
     </view>
 
@@ -33,9 +33,11 @@
 
             <!-- 多选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
-                <view class="option-item {{selectedOptions[currentQuestion - 1] && selectedOptions[currentQuestion - 1].indexOf(index) > -1? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
-                    <text class="option-content">{{item}}</text>
-                </view>
+                <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
+                    <view class="option-item {{selectedOptions[currentQuestion - 1] && selectedOptions[currentQuestion - 1].includes(index)? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
+                        <text class="option-content">{{item}}</text>
+                    </view>
+                </block>
             </block>
 
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '判断题'}}">

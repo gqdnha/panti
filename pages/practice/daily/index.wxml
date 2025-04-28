@@ -14,38 +14,50 @@
 
     <!-- 题目内容 -->
     <view class="question-container">
-        <view class="question-type">{{allQuestions[currentQuestion - 1].type}}</view>
+        <view class="question-type">{{currentQuestionData.type}}</view>
         <view class="question-content">
-            <text>{{currentQuestion}}.{{allQuestions[currentQuestion - 1].content}}</text>
+            <text>{{currentQuestion}}.{{currentQuestionData.content}}</text>
             <!-- 如果有图片 -->
-            <image wx:if="{{allQuestions[currentQuestion - 1].image}}" src="{{allQuestions[currentQuestion - 1].image}}" mode="aspectFit" class="question-image"></image>
+            <image wx:if="{{currentQuestionData.image}}" src="{{currentQuestionData.image}}" mode="aspectFit" class="question-image"></image>
         </view>
 
         <!-- 选项区域 -->
         <view class="options-container">
             <!-- 单选题 -->
-            <block wx:if="{{allQuestions[currentQuestion - 1].type === '单选题'}}">
-                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+            <block wx:if="{{currentQuestionData.type === '单选题'}}">
+                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{currentQuestionData.options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <!-- <text class="option-label">{{item}}</text> -->
-                    <text class="option-content">{{item}}</text>
+                    <text class="option-content">{{item.content}}</text>
                 </view>
             </block>
 
             <!-- 多选题 -->
-            <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
-                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
-                    <text class="option-content">{{item}}</text>
+            <block wx:if="{{currentQuestionData.type === '多选题'}}">
+                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{currentQuestionData.options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
+                    <text class="option-content">{{item.content}}</text>
                 </view>
             </block>
 
-            <block wx:if="{{allQuestions[currentQuestion - 1].type === '判断题'}}">
-                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
-                    <text class="option-content">{{item}}</text>
+            <!-- 判断题 -->
+            <!-- <block wx:if="{{currentQuestionData.type === '判断题'}}">
+                <view class="judge-options">
+                    <view class="judge-item {{answer === true? (currentQuestionData.correctAnswer === true? 'selected correct' : (isSubmitted?    'selected wrong' :'selected')) : (currentQuestionData.correctAnswer === true? (isSubmitted? 'wrong' : '') : '')}}" bindtap="selectJudge" data-value="{{true}}">
+                        <text>正确</text>
+                    </view>
+                    <view class="judge-item {{answer === false? (currentQuestionData.correctAnswer === false? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : (currentQuestionData.correctAnswer === false? (isSubmitted? 'wrong' : '') : '')}}" bindtap="selectJudge" data-value="{{false}}">
+                        <text>错误</text>
+                    </view>
+                </view>
+            </block> -->
+            <block wx:if="{{currentQuestionData.type === '判断题'}}">
+                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{currentQuestionData.options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                    <!-- <text class="option-label">{{item}}</text> -->
+                    <text class="option-content">{{item.content}}</text>
                 </view>
             </block>
 
             <!-- 填空题 -->
-            <block class="testCard" wx:if="{{allQuestions[currentQuestion - 1].type === '填空题'}}">
+            <block class="testCard" wx:if="{{currentQuestionData.type === '填空题'}}">
                 <input class="fill-blank-input {{isCorrect? 'correct' : (isSubmitted? 'wrong' : '')}}" placeholder="请输入答案" value="{{answer}}" bindinput="onInputAnswer" />
             </block>
         </view>

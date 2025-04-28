@@ -75,7 +75,7 @@ Page({
     },
     selectOption: function (e) {
         const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions } = this.data;
+        const { currentQuestion, selectedOptions, allQuestions } = this.data;
         const newSelectedOptions = [...selectedOptions];
         if (!newSelectedOptions[currentQuestion - 1]) {
             newSelectedOptions[currentQuestion - 1] = index;
@@ -86,10 +86,13 @@ Page({
         this.setData({
             selectedOptions: newSelectedOptions
         });
+        // 打印当前选中的选项
+        console.log(`第 ${currentQuestion} 题选中的选项：`, allQuestions[currentQuestion - 1].options[index]);
     },
+    // 多选题
     selectMultipleOption: function (e) {
         const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions } = this.data;
+        const { currentQuestion, selectedOptions, allQuestions } = this.data;
         const newSelectedOptions = [...selectedOptions];
         if (!newSelectedOptions[currentQuestion - 1]) {
             newSelectedOptions[currentQuestion - 1] = [index];
@@ -105,6 +108,10 @@ Page({
         this.setData({
             selectedOptions: newSelectedOptions
         });
+        // 打印当前选中的多个选项
+        const selectedIndices = newSelectedOptions[currentQuestion - 1] || [];
+        const selectedAnswers = selectedIndices.map(i => allQuestions[currentQuestion - 1].options[i]);
+        console.log(`第 ${currentQuestion} 题选中的选项：`, selectedAnswers);
     },
     onInputAnswer: function (e) {
         const { value } = e.detail;
@@ -169,6 +176,16 @@ Page({
             isSubmitted: true
         });
         console.log('提交结果：', newQuestionStates); // 打印出答题结果
+
+        // 打印所有题目选中的选项
+        console.log('所有题目选中的选项：', selectedOptions.map((selected, index) => {
+            const question = allQuestions[index];
+            if (question.type === '多选题') {
+                return selected? selected.map(i => question.options[i]) : [];
+            } else {
+                return selected!== null? question.options[selected] : null;
+            }
+        }));
     },
     onTouchStart: function (e) {
         // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
@@ -176,4 +193,4 @@ Page({
     onTouchEnd: function (e) {
         // 在这里添加触摸结束事件的处理逻辑，如果暂时没有逻辑，可以先空着
     }
-})
+})    
