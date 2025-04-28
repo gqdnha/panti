@@ -9,6 +9,20 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/practice/dailyTest/dailyTest",
+          "pathName": "pages/practice/dailyTest/dailyTest",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/practice/daily/index",
+          "pathName": "pages/practice/daily/index",
+          "query": "option=%7B%22count%22%3A20%2C%22label%22%3A%2220%E9%A2%98%2F%E6%97%A5%22%7D",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/practice/daily/index",
           "pathName": "pages/practice/daily/index",
           "query": "option=%7B%22count%22%3A20%2C%22label%22%3A%2220%E9%A2%98%2F%E6%97%A5%22%7D",

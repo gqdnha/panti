@@ -1,30 +1,36 @@
 import {
     apiGetDailyTest
 } from "../../../api/getDailyTest";
-import {apiJudgeTest} from  "../../../api/judgeTest"
+import {
+    apiJudgeTest
+} from "../../../api/judgeTest"
 // import {requst} from "../../../api/request"
 
 Page({
     data: {
-        currentQuestion: 1,
-        totalQuestions: 0,
-        remainingTime: '20:00',
-        currentQuestionData: null,
+        allQuestions: null,
         answer: '',
         showAnalysis: false,
         isCorrect: false,
         timer: null,
-        questions: [],
         touchStartX: 0,
         touchEndX: 0,
+        isAllSubmitted: false,
+
+
+        // 页面数据
+        currentQuestion: 1, //题目序号
+        totalQuestions: 0, //总数
+        remainingTime: '20:00', //倒计时
+        allAnswers: [], // 所有题目答案
         isSubmitted: false,
         isAllSubmitted: false,
-        allAnswers: []
+        allQuestions: [] //所有题目
     },
 
     onLoad: function () {
         this.startCountdown();
-        this.fetchQuestions();
+        this.getData();
     },
 
     onUnload: function () {
@@ -32,7 +38,7 @@ Page({
     },
 
     // 获取题目数据
-    fetchQuestions: function () {
+    /* fetchQuestions: function () {
         apiGetDailyTest().then(res => {
             console.log(res, '111');
             // console.log(res.data); //undefined
@@ -50,7 +56,7 @@ Page({
                 this.setData({
                     questions: newQuestions,
                     totalQuestions: newQuestions.length,
-                    currentQuestionData: newQuestions[0],
+                    allQuestions: newQuestions[0],
                     allAnswers: new Array(newQuestions.length).fill(''),
                     // content: newQuestions.options
                 }, () => {
@@ -70,29 +76,28 @@ Page({
                 icon: 'none'
             });
         });
-    },
-
-    // 验证题目数据
-    validateQuestions: function (questions) {
-        let hasInvalidData = false;
-        const requiredProps = ['questionId', 'type', 'content', 'options', 'answer'];
-        questions.forEach(question => {
-            requiredProps.forEach(prop => {
-                if (!question.hasOwnProperty(prop)) {
-                    console.error(`数据项缺失属性: ${prop}`, question);
-                    hasInvalidData = true;
-                }
-            });
-            try {
+    }, */
+    getData: function () {
+        apiGetDailyTest().then(res => {
+            console.log(res);
+            res.forEach(question => {
                 if (question.options && typeof question.options === 'string') {
-                    JSON.parse(question.options);
+                    try {
+                        question.options = JSON.parse(question.options)
+                    } catch (error) {
+                        console.log('选项解析错误：', error);
+                        question.options = []
+                    }
                 }
-            } catch (error) {
-                console.error('选项数据格式错误', question);
-                hasInvalidData = true;
-            }
-        });
-        return hasInvalidData;
+            })
+            this.setData({
+                allQuestions: res,
+                totalQuestions: res.length
+            })
+            console.log(this.data.allQuestions);
+            console.log(this.data.totalQuestions);
+            console.log(this.data.allQuestions[1].options);
+        })
     },
 
     // 开始倒计时
@@ -120,122 +125,48 @@ Page({
             clearInterval(this.data.timer);
         }
     },
-    // 上一题
-    prevQuestion: function () {
-        if (this.data.currentQuestion > 1) {
-            this.setData({
-                currentQuestion: this.data.currentQuestion - 1,
-                showAnalysis: false
-            }, () => {
-                this.loadQuestion(this.data.currentQuestion);
-            }),
-            setTimeout(() => {
-                this.loadQuestion(this.data.currentQuestion);
-            },10)
-        }
-    },
-
     // 下一题
     nextQuestion: function () {
-        if (this.data.currentQuestion < this.data.totalQuestions) {
+        const {
+            currentQuestion,
+            totalQuestions
+        } = this.data;
+        if (currentQuestion < totalQuestions) {
             this.setData({
-                    currentQuestion: this.data.currentQuestion + 1,
-                    showAnalysis: false
-                },
-                () => {
-                    this.loadQuestion(this.data.currentQuestion);
-                },
-                setTimeout(() => {
-                    this.loadQuestion(this.data.currentQuestion);
-                },10)
-            );
+                currentQuestion: currentQuestion + 1
+            });
         }
     },
-    // 加载题目
-    loadQuestion: function (questionIndex) {
-        console.log(this.data.questions);
-        const question = this.data.questions[questionIndex - 1];
-        if (question) {
-            try {
-                const records = wx.getStorageSync('answerRecords') || [];
-                const record = records.find(r => r.questionId === question.questionId);
-                const options = this.parseOptions(question);
-                if (record) {
-                    this.setData({
-                        answer: record.answer,
-                        isCorrect: record.isCorrect,
-                        isSubmitted: record.isSubmitted,
-                        'currentQuestionData.options': this.setSelectedOptions(options, record.options)
-                    }, () => {
-                        // 确保数据更新完成后再设置 currentQuestionData 和 answer
-                        this.setData({
-                            currentQuestionData: question
-                        }, () => {
-                            this.setData({
-                                answer: this.data.allAnswers[questionIndex - 1]
-                            }, () => {
-                                // 这里可以添加一些日志来确认数据是否正确更新
-                                console.log('loadQuestion 数据更新完成', this.data.currentQuestionData, this.data.answer);
-                            });
-                        });
-                    });
-                } else {
-                    this.setData({
-                        answer: '',
-                        isCorrect: false,
-                        isSubmitted: false,
-                        'currentQuestionData.options': options
-                    }, () => {
-                        // 确保数据更新完成后再设置 currentQuestionData 和 answer
-                        this.setData({
-                            currentQuestionData: question
-                        }, () => {
-                            this.setData({
-                                answer: this.data.allAnswers[questionIndex - 1]
-                            }, () => {
-                                // 这里可以添加一些日志来确认数据是否正确更新
-                                console.log('loadQuestion 数据更新完成', this.data.currentQuestionData, this.data.answer);
-                            });
-                        });
-                    });
-                }
-            } catch (error) {
-                console.error('加载题目数据时出错', error);
-                wx.showToast({
-                    title: '题目数据加载失败，请稍后重试',
-                    icon: 'none'
-                });
-            }
+    // 上一题
+    prevQuestion: function () {
+        const {
+            currentQuestion
+        } = this.data;
+        if (currentQuestion > 1) {
+            this.setData({
+                currentQuestion: currentQuestion - 1
+            });
         }
     },
 
-    // 解析选项
-    parseOptions: function (question) {
-        if(typeof question.options=="string"){
-            const options = JSON.parse(question.options)
-            return options.map((option, index) => ({
-                label: String.fromCharCode(65 + index) + '.',
-                content: option,
-                selected: false
-            }));
-        }else{
-            console.log(question.options);
-            let context=[];
-            question.options.forEach(item=>{
-                context.push(item.content)
-            })
-            return context.map((option, index) => ({
-                label: String.fromCharCode(65 + index) + '.',
-                content: option,
-                selected: false
-            }));
+    // 设置选项的选中状态
+    setSelectedOptions: function (options, recordOptions) {
+        if (recordOptions) {
+            return options.map(option => {
+                const selected = recordOptions.some(o => o.label === option.label && o.selected);
+                return {
+                    ...option,
+                    selected
+                };
+            });
         }
-               
-          
-            
-        
-        return [];
+        // 如果 recordOptions 为 undefined，将所有选项的 selected 属性设置为 false
+        return options.map(option => ({
+            ...option,
+            selected: false
+        }));
     },
+
 
     // 设置选项的选中状态
     setSelectedOptions: function (options, recordOptions) {
@@ -254,11 +185,11 @@ Page({
     // 选择单选题选项
     selectOption: function (e) {
         const index = e.currentTarget.dataset.index;
-        const options = this.setSelectedOption(this.data.currentQuestionData.options, index);
+        const options = this.setSelectedOption(this.data.allQuestions.options, index);
         console.log(options);
         const answer = options[index].label;
         this.setData({
-            'currentQuestionData.options': options,
+            'allQuestions.options': options,
             answer
         });
         this.updateAnswer(this.data.currentQuestion - 1, answer);
@@ -277,13 +208,13 @@ Page({
     // 选择多选题选项
     selectMultipleOption: function (e) {
         const index = e.currentTarget.dataset.index;
-        const options = this.toggleSelectedOption(this.data.currentQuestionData.options, index);
+        const options = this.toggleSelectedOption(this.data.allQuestions.options, index);
         const selectedOptions = options
             .filter(item => item.selected)
             .map(item => item.label)
             .join('');
         this.setData({
-            'currentQuestionData.options': options,
+            'allQuestions.options': options,
             answer: selectedOptions
         });
         this.updateAnswer(this.data.currentQuestion - 1, selectedOptions);
@@ -300,15 +231,6 @@ Page({
             }
             return item;
         });
-    },
-
-    // 选择判断题答案
-    selectJudge: function (e) {
-        const value = e.currentTarget.dataset.value;
-        this.setData({
-            answer: value
-        });
-        this.updateAnswer(this.data.currentQuestion - 1, value);
     },
 
     // 填空题输入答案
@@ -331,65 +253,67 @@ Page({
 
     // 提交所有答案
     // index.js 部分代码
-submitAllAnswers: function () {
-    if (this.isAllAnswered()) {
-        const {
-            correctCount,
-            records
-        } = this.checkAllAnswers();
-        wx.setStorageSync('answerRecords', records);
-        this.setData({
-            isAllSubmitted: true
-        });
-
-        // 构建要发送给后端的数据
-        const dataToSend = [];
-        for (let i = 0; i < this.data.totalQuestions; i++) {
-            const question = this.data.questions[i];
-            const answer = this.data.allAnswers[i];
-            dataToSend.push({
-                questionId: question.questionId,
-                answer: answer
+    submitAllAnswers: function () {
+        if (this.isAllAnswered()) {
+            const {
+                correctCount,
+                records
+            } = this.checkAllAnswers();
+            wx.setStorageSync('answerRecords', records);
+            this.setData({
+                isAllSubmitted: true
             });
-        }
 
-        // 使用封装的 apiJudgeTest 函数调用后端接口
-        apiJudgeTest({ answers: dataToSend })
-           .then(res => {
-                if (res.statusCode === 200) {
-                    // 处理后端返回的结果
-                    console.log('提交成功', res.data);
-                    wx.showModal({
-                        title: '答题结果',
-                        content: `你答对了 ${correctCount} 道题，共 ${this.data.totalQuestions} 道题。`,
-                        success: (resModal) => {
-                            if (resModal.confirm) {
-                                wx.navigateBack();
+            // 构建要发送给后端的数据
+            const dataToSend = [];
+            for (let i = 0; i < this.data.totalQuestions; i++) {
+                const question = this.data.questions[i];
+                const answer = this.data.allAnswers[i];
+                dataToSend.push({
+                    questionId: question.questionId,
+                    answer: answer
+                });
+            }
+
+            // 使用封装的 apiJudgeTest 函数调用后端接口
+            apiJudgeTest({
+                    answers: dataToSend
+                })
+                .then(res => {
+                    if (res.statusCode === 200) {
+                        // 处理后端返回的结果
+                        console.log('提交成功', res.data);
+                        wx.showModal({
+                            title: '答题结果',
+                            content: `你答对了 ${correctCount} 道题，共 ${this.data.totalQuestions} 道题。`,
+                            success: (resModal) => {
+                                if (resModal.confirm) {
+                                    wx.navigateBack();
+                                }
                             }
-                        }
-                    });
-                } else {
-                    console.error('提交失败，状态码:', res.statusCode, '响应数据:', res.data);
+                        });
+                    } else {
+                        console.error('提交失败，状态码:', res.statusCode, '响应数据:', res.data);
+                        wx.showToast({
+                            title: `提交答案失败，状态码: ${res.statusCode}`,
+                            icon: 'none'
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('请求发生错误:', err);
                     wx.showToast({
-                        title: `提交答案失败，状态码: ${res.statusCode}`,
+                        title: '提交答案失败，请稍后重试',
                         icon: 'none'
                     });
-                }
-            })
-           .catch(err => {
-                console.error('请求发生错误:', err);
-                wx.showToast({
-                    title: '提交答案失败，请稍后重试',
-                    icon: 'none'
                 });
+        } else {
+            wx.showToast({
+                title: '请回答所有问题',
+                icon: 'none'
             });
-    } else {
-        wx.showToast({
-            title: '请回答所有问题',
-            icon: 'none'
-        });
-    }
-},
+        }
+    },
 
     // 检查是否所有问题都已回答
     isAllAnswered: function () {
@@ -430,7 +354,7 @@ submitAllAnswers: function () {
     },
 
     // 检查答案是否正确
-    checkAnswer: function (question, answer) {
+    /* checkAnswer: function (question, answer) {
         if (question.type === '判断题') {
             return answer === question.answer;
         } else if (question.type === '多选题') {
@@ -441,7 +365,7 @@ submitAllAnswers: function () {
             return answer === question.answer;
         }
         return false;
-    },
+    }, */
 
     // 提取时间字符串中的分钟部分
     extractMinutes: function (timeStr) {

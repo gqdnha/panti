@@ -1,4 +1,4 @@
-<view class="container" bindtouchstart="onTouchStart" bindtouchmove="onTouchMove" bindtouchend="onTouchEnd">
+<view class="container" >
     <!-- 顶部进度条 -->
     <view class="progress-bar">
         <view class="progress-info">
@@ -25,7 +25,7 @@
         <view class="options-container">
             <!-- 单选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '单选题'}}">
-                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                <view class="option-item {{selectedOptions[currentQuestion - 1] === index? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <!-- <text class="option-label">{{item}}</text> -->
                     <text class="option-content">{{item}}</text>
                 </view>
@@ -33,24 +33,24 @@
 
             <!-- 多选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
-                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
+                <view class="option-item {{selectedOptions[currentQuestion - 1] && selectedOptions[currentQuestion - 1].indexOf(index) > -1? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                 </view>
             </block>
 
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '判断题'}}">
-                <view class="option-item {{item.selected? (isCorrect? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                <view class="option-item {{selectedOptions[currentQuestion - 1] === index? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                 </view>
             </block>
 
             <!-- 填空题 -->
             <block class="testCard" wx:if="{{allQuestions[currentQuestion - 1].type === '填空题'}}">
-                <input class="fill-blank-input {{isCorrect? 'correct' : (isSubmitted? 'wrong' : '')}}" placeholder="请输入答案" value="{{answer}}" bindinput="onInputAnswer" />
+                <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted? 'wrong' : '')}}" placeholder="请输入答案" value="{{answer}}" bindinput="onInputAnswer" />
             </block>
         </view>
         <!-- 答错时显示查看详情按钮 -->
-        <view class="view-detail-btn" wx:if="{{isSubmitted &&!isCorrect}}">
+        <view class="view-detail-btn" wx:if="{{isSubmitted &&!questionStates[currentQuestion - 1]}}">
             <button bindtap="showAnalysis">查看详情</button>
         </view>
     </view>
@@ -66,8 +66,8 @@
     <view class="analysis-modal" wx:if="{{showAnalysis}}">
         <view class="modal-content">
             <view class="result-header">
-                <text class="{{isCorrect? 'correct' : 'wrong'}}">
-                    {{isCorrect? '回答正确' : '回答错误'}}
+                <text class="{{questionStates[currentQuestion - 1]? 'correct' : 'wrong'}}">
+                    {{questionStates[currentQuestion - 1]? '回答正确' : '回答错误'}}
                 </text>
             </view>
             <view class="correct-answer">

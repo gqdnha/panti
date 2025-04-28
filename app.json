@@ -16,7 +16,8 @@
     "pages/stats/answer-stats/index",
     "pages/feedback/index",
     "pages/history/history",
-    "pages/wrongBook/wrongBook"
+    "pages/wrongBook/wrongBook",
+    "pages/practice/dailyTest/dailyTest"
   ],
   "window": {
     "backgroundTextStyle": "light",
