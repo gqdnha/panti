@@ -26,9 +26,12 @@ Page({
         isAllSubmitted: false,
         allQuestions: [], //所有题目
         selectedOptions: [], //记录每个题目的选中选项
-        questionStates: [] // 记录每个题目的答题状态（正确/错误）
+        questionStates: [], // 记录每个题目的答题状态（正确/错误）
+        showAnalysis: false, // 控制答案解析弹窗的显示状态
+        currentQuestionData: {} // 存储当前题目的详细数据，用于弹窗显示
     },
     onLoad: function () {
+        this.startCountdown()
         this.getData()
     },
     // 请求接口
@@ -125,7 +128,16 @@ Page({
     // 开始倒计时
     startCountdown: function () {
         this.clearCountdown();
-        let remainingSeconds = 1200;
+        // 获取当前时间
+        const now = new Date();
+        // 计算距离当天24:00的剩余时间（单位：秒）
+        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
+        const endOfDaySeconds = Math.floor((endOfDay - now) / 1000);
+
+        let remainingSeconds = 1200; // 初始倒计时时间
+        // 取较小值作为实际倒计时时间
+        remainingSeconds = Math.min(remainingSeconds, endOfDaySeconds);
+
         this.data.timer = setInterval(() => {
             if (remainingSeconds > 0) {
                 remainingSeconds--;
@@ -192,5 +204,18 @@ Page({
     },
     onTouchEnd: function (e) {
         // 在这里添加触摸结束事件的处理逻辑，如果暂时没有逻辑，可以先空着
+    },
+    showAnalysis: function () {
+        const { currentQuestion, allQuestions } = this.data;
+        const currentQuestionData = allQuestions[currentQuestion - 1];
+        this.setData({
+            showAnalysis: true,
+            currentQuestionData: currentQuestionData
+        });
+    },
+    closeAnalysisAndContinue: function () {
+        this.setData({
+            showAnalysis: false
+        });
     }
-})    
+})

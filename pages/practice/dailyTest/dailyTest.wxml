@@ -79,10 +79,10 @@
                 <text class="analysis-title">解析：</text>
                 <text>{{currentQuestionData.analysis}}</text>
             </view>
-            <view class="knowledge-points">
+            <!-- <view class="knowledge-points">
                 <text class="knowledge-title">知识点：</text>
                 <text>{{currentQuestionData.knowledgePoints}}</text>
-            </view>
+            </view> -->
             <view class="modal-btns">
                 <view class="btn" bindtap="closeAnalysisAndContinue">继续答题</view>
                 <!-- <view class="btn" bindtap="addToWrongBook">加入错题本</view> -->
