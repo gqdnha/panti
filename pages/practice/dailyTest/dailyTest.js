@@ -220,8 +220,6 @@ Page({
         });
 
         console.log('提交结果：', newQuestionStates);
-        console.log('所有题目用户答案：', allUserAnswers);
-
         // 调用后端接口
         apiJudgeTest(allUserAnswers)
           .then(response => {

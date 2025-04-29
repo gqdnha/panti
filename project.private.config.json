@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/wrongBook/wrongBook",
+          "pathName": "pages/wrongBook/wrongBook",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/practice/dailyTest/dailyTest",
           "pathName": "pages/practice/dailyTest/dailyTest",
           "query": "",
