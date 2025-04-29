@@ -368,7 +368,7 @@ Page({
             }
 
             // 使用封装的 apiJudgeTest 函数调用后端接口
-            apiJudgeTest({ answers: dataToSend })
+            apiJudgeTest(dataToSend)
                .then(res => {
                     if (res.statusCode === 200) {
                         // 处理后端返回的结果

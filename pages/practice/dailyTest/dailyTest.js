@@ -92,9 +92,15 @@ Page({
     selectMultipleOption: function (e) {
         const { index } = e.currentTarget.dataset;
         const { currentQuestion, selectedOptions, allQuestions } = this.data;
+
+        // 确保 currentQuestion 在有效范围内
+        if (currentQuestion < 1 || currentQuestion > this.data.totalQuestions) {
+            return;
+        }
+
         const newSelectedOptions = [...selectedOptions];
         const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
-        if (!newSelectedOptions[currentQuestion - 1]) {
+        if (!Array.isArray(newSelectedOptions[currentQuestion - 1])) {
             newSelectedOptions[currentQuestion - 1] = [optionFirstChar];
         } else {
             const currentSelected = newSelectedOptions[currentQuestion - 1];
@@ -105,10 +111,20 @@ Page({
                 currentSelected.push(optionFirstChar);
             }
         }
+
+        // 打印更新前的 selectedOptions
+        console.log('更新前的 selectedOptions:', this.data.selectedOptions);
+
         this.setData({
             selectedOptions: newSelectedOptions
+        }, () => {
+            // 打印更新后的 selectedOptions
+            console.log('更新后的 selectedOptions:', this.data.selectedOptions);
+            // 检查视图层是否接收到更新后的数据
+            const updatedSelectedOptions = this.data.selectedOptions;
+            console.log('视图层接收到的 updatedSelectedOptions:', updatedSelectedOptions);
         });
-        // 打印当前选中的多个选项首字
+
         const selectedChars = newSelectedOptions[currentQuestion - 1] || [];
         console.log(`第 ${currentQuestion} 题选中的选项首字：`, selectedChars);
     },
@@ -234,5 +250,9 @@ Page({
         this.setData({
             showAnalysis: false
         });
+    },
+    // 自定义函数，用于判断数组是否包含某个元素
+    isArrayAndIncludes: function (arr, item) {
+        return Array.isArray(arr) && arr.includes(item);
     }
-})    
+})

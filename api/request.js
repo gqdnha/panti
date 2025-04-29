@@ -1,4 +1,5 @@
 export const baseURL = "http://gqdnha.cn:8090";
+// export const baseURL = "http://172.20.10.3:8090";
 
 // 处理登录状态失效的逻辑
 const handleUnauthorized = () => {
