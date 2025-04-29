@@ -80,41 +80,37 @@ Page({
         const { index } = e.currentTarget.dataset;
         const { currentQuestion, selectedOptions, allQuestions } = this.data;
         const newSelectedOptions = [...selectedOptions];
-        if (!newSelectedOptions[currentQuestion - 1]) {
-            newSelectedOptions[currentQuestion - 1] = index;
-        } else {
-            // 如果当前题目已有选中项，先清除再设置新的选中项
-            newSelectedOptions[currentQuestion - 1] = index;
-        }
+        const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
+        newSelectedOptions[currentQuestion - 1] = optionFirstChar;
         this.setData({
             selectedOptions: newSelectedOptions
         });
-        // 打印当前选中的选项
-        console.log(`第 ${currentQuestion} 题选中的选项：`, allQuestions[currentQuestion - 1].options[index]);
+        // 打印当前选中的选项首字
+        console.log(`第 ${currentQuestion} 题选中的选项首字：`, optionFirstChar);
     },
     // 多选题
     selectMultipleOption: function (e) {
         const { index } = e.currentTarget.dataset;
         const { currentQuestion, selectedOptions, allQuestions } = this.data;
         const newSelectedOptions = [...selectedOptions];
+        const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
         if (!newSelectedOptions[currentQuestion - 1]) {
-            newSelectedOptions[currentQuestion - 1] = [index];
+            newSelectedOptions[currentQuestion - 1] = [optionFirstChar];
         } else {
             const currentSelected = newSelectedOptions[currentQuestion - 1];
-            const optionIndex = currentSelected.indexOf(index);
+            const optionIndex = currentSelected.indexOf(optionFirstChar);
             if (optionIndex > -1) {
                 currentSelected.splice(optionIndex, 1);
             } else {
-                currentSelected.push(index);
+                currentSelected.push(optionFirstChar);
             }
         }
         this.setData({
             selectedOptions: newSelectedOptions
         });
-        // 打印当前选中的多个选项
-        const selectedIndices = newSelectedOptions[currentQuestion - 1] || [];
-        const selectedAnswers = selectedIndices.map(i => allQuestions[currentQuestion - 1].options[i]);
-        console.log(`第 ${currentQuestion} 题选中的选项：`, selectedAnswers);
+        // 打印当前选中的多个选项首字
+        const selectedChars = newSelectedOptions[currentQuestion - 1] || [];
+        console.log(`第 ${currentQuestion} 题选中的选项首字：`, selectedChars);
     },
     onInputAnswer: function (e) {
         const { value } = e.detail;
@@ -162,42 +158,63 @@ Page({
     submitAllAnswers: function () {
         const { allQuestions, allAnswers, selectedOptions, questionStates } = this.data;
         const newQuestionStates = [...questionStates];
+        const allUserAnswers = [];
+
         allQuestions.forEach((question, index) => {
             const userAnswer = allAnswers[index];
             const correctAnswer = question.answer;
             let isCorrect;
+            const questionId = question.questionId;
+
             if (question.type === '单选题' || question.type === '判断题') {
-                const selectedIndex = selectedOptions[index];
-                if (selectedIndex!== undefined) {
-                    isCorrect = question.options[selectedIndex] === correctAnswer;
+                const selectedChar = selectedOptions[index];
+                if (selectedChar!== undefined) {
+                    isCorrect = selectedChar === correctAnswer[0];
                 } else {
                     isCorrect = false;
                 }
+                allUserAnswers.push({
+                    'questionId': questionId,
+                    'answer': selectedChar || ''
+                });
             } else if (question.type === '多选题') {
-                const selectedIndices = selectedOptions[index] || [];
-                const userSelectedAnswers = selectedIndices.map(i => question.options[i]);
-                isCorrect = userSelectedAnswers.every(answer => correctAnswer.includes(answer)) && correctAnswer.length === userSelectedAnswers.length;
+                const selectedChars = selectedOptions[index] || [];
+                const sortedSelectedChars = selectedChars.slice().sort();
+                const sortedAnswerString = sortedSelectedChars.join('');
+                allUserAnswers.push({
+                    'questionId': questionId,
+                    'answer': sortedAnswerString
+                });
+                const correctFirstChars = correctAnswer.split('').map(char => char.trim());
+                isCorrect = sortedAnswerString.split('').every(char => correctFirstChars.includes(char)) && correctFirstChars.length === sortedAnswerString.length;
             } else if (question.type === '填空题') {
                 isCorrect = userAnswer === correctAnswer;
+                allUserAnswers.push({
+                    'questionId': questionId,
+                    'answer': userAnswer
+                });
             }
             newQuestionStates[index] = isCorrect;
         });
+
         this.setData({
             isAllSubmitted: true,
             questionStates: newQuestionStates,
             isSubmitted: true
         });
-        console.log('提交结果：', newQuestionStates); // 打印出答题结果
 
-        // 打印所有题目选中的选项
-        console.log('所有题目选中的选项：', selectedOptions.map((selected, index) => {
-            const question = allQuestions[index];
-            if (question.type === '多选题') {
-                return selected? selected.map(i => question.options[i]) : [];
-            } else {
-                return selected!== null? question.options[selected] : null;
-            }
-        }));
+        console.log('提交结果：', newQuestionStates);
+        console.log('所有题目用户答案：', allUserAnswers);
+
+        // 调用后端接口
+        apiJudgeTest(allUserAnswers)
+          .then(response => {
+                console.log('后端返回结果：', response);
+                // 可以在这里处理后端返回的结果，例如更新页面显示等
+            })
+          .catch(error => {
+                console.error('提交答案到后端时出错：', error);
+            });
     },
     onTouchStart: function (e) {
         // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
@@ -218,4 +235,4 @@ Page({
             showAnalysis: false
         });
     }
-})
+})    

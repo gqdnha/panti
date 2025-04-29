@@ -7,7 +7,6 @@
         </view>
         <!-- 进度条 -->
         <view class="progress-track">
-            <!-- <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view> -->
             <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view>
         </view>
     </view>
@@ -25,23 +24,20 @@
         <view class="options-container">
             <!-- 单选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '单选题'}}">
-                <view class="option-item {{selectedOptions[currentQuestion - 1] === index? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
-                    <!-- <text class="option-label">{{item}}</text> -->
+                <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                 </view>
             </block>
 
             <!-- 多选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
-                <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
-                    <view class="option-item {{selectedOptions[currentQuestion - 1] && selectedOptions[currentQuestion - 1].includes(index)? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
-                        <text class="option-content">{{item}}</text>
-                    </view>
-                </block>
+                <view class="option-item {{selectedOptions[currentQuestion - 1] && selectedOptions[currentQuestion - 1].includes(item[0])? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
+                    <text class="option-content">{{item}}</text>
+                </view>
             </block>
 
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '判断题'}}">
-                <view class="option-item {{selectedOptions[currentQuestion - 1] === index? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                 </view>
             </block>
@@ -79,14 +75,9 @@
                 <text class="analysis-title">解析：</text>
                 <text>{{currentQuestionData.analysis}}</text>
             </view>
-            <!-- <view class="knowledge-points">
-                <text class="knowledge-title">知识点：</text>
-                <text>{{currentQuestionData.knowledgePoints}}</text>
-            </view> -->
             <view class="modal-btns">
                 <view class="btn" bindtap="closeAnalysisAndContinue">继续答题</view>
-                <!-- <view class="btn" bindtap="addToWrongBook">加入错题本</view> -->
             </view>
         </view>
     </view>
-</view>
+</view>    
