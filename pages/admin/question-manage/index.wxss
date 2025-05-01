@@ -112,7 +112,7 @@
 /* 列表项 */
 .list-item {
     display: grid;
-    grid-template-columns: 1fr 3fr 2.4fr 2fr;
+    grid-template-columns: .4fr 3fr 2.4fr 2fr;
     padding: 32rpx;
     align-items: center;
     border-bottom: 1rpx dashed #e9ecef;
@@ -164,7 +164,7 @@
 .btn {
     width: 50rpx;
     font-size: 20rpx;
-    padding: 16rpx 32rpx;
+    padding: 8rpx 13rpx;
     border-radius: 12rpx;
     transition: all 0.2s ease;
     text-align: center;
