@@ -1,46 +1,55 @@
-<!--pages/admin/question-manage/index.wxml-->
 <view class="container">
-  <!-- 操作按钮 -->
-<!-- <view class="action-buttons">
-    <button class="action-btn import" bindtap="importQuestions">
-        <image class="btn-icon" src="/images/import-icon.png" mode="aspectFit"></image>
-        <text>导入题目</text>
-    </button>
-    <button class="action-btn export" bindtap="exportQuestions">
-        <image class="btn-icon" src="/images/export-icon.png" mode="aspectFit"></image>
-        <text>导出题目</text>
-    </button>
-</view> -->
+    <!-- 搜索框 -->
+    <view class="search-box">
+        <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}"/>
+        <button bindtap="onSearch">搜索</button>
+    </view>
 
-  <!-- 题目列表 -->
-<view class="question-list">
-    <table class="question-table">
-        <thead class="list-header">
-            <tr class="table-header">
-                <th class="header-item">序号</th>
-                <th class="header-item">题目</th>
-                <th class="header-item">类型</th>
-                <th class="header-item">操作</th>
-            </tr>
-        </thead>
-        <tbody class="list-content">
-            <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
-                <td class="question-id">{{item.question_id}}</td>
-                <td class="question-title">{{item.content}}</td>
-                <td class="question-type">{{item.type}}</td>
-                <td class="item-actions">
-                    <view class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</view>
-                    <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</view>
-                <!-- <button class="btn-edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</button>
-                <button class="btn-delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</button> -->
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</view>    
+    <!-- 操作按钮 -->
+    <!-- <view class="action-buttons">
+        <button class="action-btn import" bindtap="importQuestions">
+            <image class="btn-icon" src="/images/import-icon.png" mode="aspectFit"></image>
+            <text>导入题目</text>
+        </button>
+        <button class="action-btn export" bindtap="exportQuestions">
+            <image class="btn-icon" src="/images/export-icon.png" mode="aspectFit"></image>
+            <text>导出题目</text>
+        </button>
+    </view> -->
+
+    <!-- 题目列表 -->
+    <view class="question-list">
+        <table class="question-table">
+            <thead class="list-header">
+                <tr class="table-header">
+                    <th class="header-item">序号</th>
+                    <th class="header-item">题目</th>
+                    <th class="header-item">类型</th>
+                    <th class="header-item">操作</th>
+                </tr>
+            </thead>
+            <tbody class="list-content">
+                <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
+                    <td class="question-id">{{item.question_id}}</td>
+                    <td class="question-title">{{item.content}}</td>
+                    <td class="question-type">{{item.type}}</td>
+                    <td class="item-actions">
+                        <view class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</view>
+                        <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</view>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </view>
+
+    <!-- 分页按钮 -->
+    <view class="pagination">
+        <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
+        <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
+    </view>
 
     <!-- 添加题目按钮 -->
     <view class="add-button" bindtap="addQuestion">
         <image class="add-icon" src="/assets/icons/add.png" mode="aspectFit"></image>
     </view>
-</view>
+</view>    

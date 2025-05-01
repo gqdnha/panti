@@ -22,10 +22,10 @@ Page({
     loadUserStats() {
         const { pageNum, pageSize } = this.data;
         const data = {
-            "department": "",
-            "userName": "",
-            "pageNum": pageNum,
-            "pageSize": pageSize
+            department: "",
+            userName: "",
+            pageNum: pageNum,
+            pageSize: pageSize
     }
         console.log(data);
         getAllUserInfo(data).then(res => {
