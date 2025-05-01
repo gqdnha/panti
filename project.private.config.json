@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/admin/user-stats/index",
+          "pathName": "pages/admin/user-stats/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "admin-答题情况",
           "pathName": "pages/admin/user-stats/index",
           "query": "",

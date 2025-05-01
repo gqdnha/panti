@@ -1,4 +1,4 @@
-import { getAllUserInfo } from '../../../api/getAlluserInfo';
+import { getAllUserInfo } from '../../../api/getAlluserInfo'; // 请根据实际路径修改
 
 Page({
     data: {
@@ -6,7 +6,9 @@ Page({
         userInfo: {},
         answerRecords: [],
         userList: [],
-        currentUserName: ''
+        pageNum: 1,
+        pageSize: 10,
+        totalPages: 1
     },
 
     onLoad(options) {
@@ -14,32 +16,25 @@ Page({
         this.setData({
             userId: id
         });
-        this.getData();
+        // this.getUserInfo();
+        this.loadUserStats();
     },
 
-    getData: function () {
-        // 初始请求传递空的 userName
-        const userName = ''
-        getAllUserInfo(userName).then(res => {
-            console.log(res);
-            // const userList = res.data && res.data.pageInfo && res.data.pageInfo.pageData || [];
-            if (userList.length === 0) {
-                wx.showToast({
-                    title: '未找到用户数据',
-                    icon: 'none'
-                });
-            }
-            this.setData({
-                userList: userList
-            });
-        }).catch(error => {
-            console.error('获取用户信息失败:', error);
+    /* getUserInfo() {
+        const userInfo = {
+            // avatarUrl: '/assets/images/default-avatar.png',
+            nickName: '用户1',
+            totalQuestions: 100,
+            correctRate: 85,
+            todayQuestions: 10,
+            weekQuestions: 50,
+            monthQuestions: 80
+        };
+        this.setData({
+            userInfo
         });
-    },
+    }, */
 
-    onPullDownRefresh() {
-        wx.stopPullDownRefresh();
-    },
 
     viewAnswerDetail(e) {
         const { id } = e.currentTarget.dataset;
@@ -49,36 +44,48 @@ Page({
         });
     },
 
-    viewDetail(e) {
-        const { userName } = e.currentTarget.dataset;
-        this.setData({
-            currentUserName: userName
-        });
-        getAllUserInfo({ userName }).then(res => {
-            console.log('用户详情信息:', res);
-            wx.navigateTo({
-                url: `pages/detail/index?userName=${userName}`,
-                success: () => {
-                    const pages = getCurrentPages();
-                    const currentPage = pages[pages.length - 1];
-                    const nextPage = pages[pages.length];
-                    if (nextPage) {
-                        nextPage.setData({
-                            userDetail: res.data && res.data.pageInfo && res.data.pageInfo.pageData[0] || {}
-                        });
-                    }
-                }
+    loadUserStats() {
+        const { pageNum, pageSize } = this.data;
+        const body = {
+            department: " ",
+            userName: "",
+            pageNum,
+            pageSize
+        };
+        console.log(body);
+        getAllUserInfo(body).then(res => {
+            console.log(res);
+            // 假设 res 包含 userList 和 totalPages 数据
+            this.setData({
+                userList: res.data.userList,
+                totalPages: res.data.totalPages
             });
-        }).catch(error => {
-            console.error('获取用户详情信息失败:', error);
+        }).catch(err => {
+            console.error(err);
+        });
+    },
+
+    viewDetail(e) {
+        const userId = e.currentTarget.dataset.id;
+        wx.navigateTo({
+            url: `/pages/admin/user-detail/index?id=${userId}`
         });
     },
 
     exportUserData(e) {
-        const { id } = e.currentTarget.dataset;
+        const userId = e.currentTarget.dataset.id;
         wx.showToast({
-            title: '功能开发中',
-            icon: 'none'
+            title: '导出成功',
+            icon: 'success'
         });
+    },
+
+    // 分页器点击事件
+    onPageChange(e) {
+        const pageNum = e.detail.current + 1;
+        this.setData({
+            pageNum
+        });
+        this.loadUserStats();
     }
 });

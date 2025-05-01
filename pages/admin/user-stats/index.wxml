@@ -1,4 +1,3 @@
-<!--pages/admin/question-manage/index.wxml-->
 <view class="container">
     <!-- 题目列表 -->
     <view class="question-list">
@@ -18,11 +17,18 @@
                     <td class="correctRate">{{item.correctRate}}%</td>
 
                     <td class="item-actions">
-                        <view class="btn edit" bindtap="viewDetail" data-userName="{{item.nickName}}">详情</view>
+                        <view class="btn edit" bindtap="viewDetail" data-id="{{item.id}}">详情</view>
                         <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view>
                     </td>
                 </tr>
             </tbody>
         </table>
     </view>
-</view>
+    <!-- 分页器 -->
+    <van-pagination
+        mode="multi"
+        current="{{pageNum - 1}}"
+        total="{{totalPages}}"
+        bind:change="onPageChange"
+    />
+</view>        
