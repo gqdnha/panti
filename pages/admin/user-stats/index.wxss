@@ -226,3 +226,52 @@ button {
 button::after {
     display: none;
 }
+
+
+/* 分页按钮样式 */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 20rpx;
+}
+
+.pagination button {
+    padding: 16rpx 32rpx;
+    background-color: #4a90e2;
+    color: #ffffff;
+    border: none;
+    border-radius: 8rpx;
+    font-size: 24rpx;
+    margin: 0 10rpx;
+}
+
+.pagination button[disabled] {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+
+/* 搜索框样式 */
+.search-box {
+    padding: 20rpx;
+    background-color: #ffffff;
+    display: flex;
+    gap: 16rpx;
+}
+
+.search-box input {
+    flex: 1;
+    padding: 16rpx;
+    border: 1rpx solid #ccc;
+    border-radius: 8rpx;
+    font-size: 24rpx;
+}
+
+.search-box button {
+    padding: 16rpx 32rpx;
+    background-color: #4a90e2;
+    color: #ffffff;
+    border: none;
+    border-radius: 8rpx;
+    font-size: 24rpx;
+}

@@ -4,19 +4,6 @@
         <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}"/>
         <button bindtap="onSearch">搜索</button>
     </view> -->
-
-    <!-- 操作按钮 -->
-    <!-- <view class="action-buttons">
-        <button class="action-btn import" bindtap="importQuestions">
-            <image class="btn-icon" src="/images/import-icon.png" mode="aspectFit"></image>
-            <text>导入题目</text>
-        </button>
-        <button class="action-btn export" bindtap="exportQuestions">
-            <image class="btn-icon" src="/images/export-icon.png" mode="aspectFit"></image>
-            <text>导出题目</text>
-        </button>
-    </view> -->
-
     <!-- 题目列表 -->
     <view class="question-list">
         <table class="question-table">

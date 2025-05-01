@@ -1,5 +1,15 @@
 import { request } from "./request";
 
+//获取用户数据
+export const getAllUserInfo = (data) => {
+    console.log(data);
+    return request({
+        url: `/mange/findUserPage`,
+        method: 'POST',
+        data
+    });
+};
+
 // 获取题目列表
 export const getAllQuestion = (data) => {
     return request({

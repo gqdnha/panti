@@ -1,20 +1,25 @@
 <view class="container">
+    <!-- 搜索框 -->
+    <view class="search-box">
+        <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}"/>
+        <button bindtap="onSearch">搜索</button>
+    </view>
     <!-- 题目列表 -->
     <view class="question-list">
         <table class="question-table">
             <thead class="list-header">
                 <tr class="table-header">
                     <th class="header-item">用户</th>
-                    <th class="header-item">答题数</th>
-                    <th class="header-item">正确率</th>
+                    <th class="header-item">部门</th>
+                    <th class="header-item">学习时间（分钟）</th>
                     <th class="header-item">操作</th>
                 </tr>
             </thead>
             <tbody class="list-content">
                 <tr class="list-item" wx:for="{{userList}}" wx:key="id">
-                    <td class="user-name">{{item.nickName}}</td>
-                    <td class="user-count">{{item.questionCount}}</td>
-                    <td class="correctRate">{{item.correctRate}}%</td>
+                    <td class="user-name">{{item.name}}</td>
+                    <td class="user-count">{{item.department}}</td>
+                    <td class="correctRate">{{item.learn_time}}</td>
 
                     <td class="item-actions">
                         <view class="btn edit" bindtap="viewDetail" data-id="{{item.id}}">详情</view>
@@ -24,11 +29,9 @@
             </tbody>
         </table>
     </view>
-    <!-- 分页器 -->
-    <van-pagination
-        mode="multi"
-        current="{{pageNum - 1}}"
-        total="{{totalPages}}"
-        bind:change="onPageChange"
-    />
-</view>        
+    <!-- 分页按钮 -->
+    <view class="pagination">
+        <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
+        <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
+    </view>
+</view>
