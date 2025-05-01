@@ -1,4 +1,20 @@
 import { request } from "./request";
+//禁用题目
+// import { request } from "./request";
+
+// 禁用题目
+export const deleteQuestion = (questionId) => {
+    console.log(questionId);
+    console.log(typeof questionId);
+    return request({
+        url: `/mange/deleteQuestion`,
+        method: 'DELETE',
+        Header: {
+            'Content-Type': 'application/json', 
+            questionId: questionId.toString()
+        },
+    });
+};
 
 //获取用户数据
 export const getAllUserInfo = (data) => {

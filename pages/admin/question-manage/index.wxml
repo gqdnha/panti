@@ -22,7 +22,7 @@
                     <td class="question-type">{{item.type}}</td>
                     <td class="item-actions">
                         <view class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</view>
-                        <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.id}}">删除</view>
+                        <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.question_id}}">禁用</view>
                     </td>
                 </tr>
             </tbody>

@@ -1,4 +1,4 @@
-import { getAllQuestion, addNewQuestion } from '../../../api/admin'
+import { getAllQuestion, addNewQuestion, deleteQuestion } from '../../../api/admin'
 Page({
     data: {
         questionList: [],
@@ -32,7 +32,6 @@ Page({
             pageSize: pageSize
         };
         console.log(data);
-        // console.log(data);
         getAllQuestion(data).then(res => {
             console.log(res);
             // 假设 res 包含 userList 和 totalPages 数据
@@ -47,6 +46,37 @@ Page({
         });
     },
 
+    deleteQuestion(e) {
+        const questionId = e.currentTarget.dataset.id.toString();
+        console.log(questionId);
+        console.log( typeof questionId);
+        wx.showModal({
+            title: '确认删除',
+            content: '确定要删除这道题目吗？',
+            success: (res) => {
+                if (res.confirm) {
+                    // 调用修改后的deleteQuestion接口，并传入questionId
+                    deleteQuestion(questionId).then(() => {
+                            wx.showToast({
+                                title: '删除成功',
+                                icon:'success'
+                            });
+                            // 删除成功后重新加载题目列表
+                            this.loadQuestions();
+                        })
+                       .catch(error => {
+                            console.error('删除题目失败:', error);
+                            wx.showToast({
+                                title: '删除题目失败',
+                                icon: 'none'
+                            });
+                        });
+                }
+            }
+        });
+    },
+
+    // 搜索
     onSearchInput(e) {
         this.setData({
             searchKeyword: e.detail.value
@@ -96,7 +126,7 @@ Page({
     exportQuestions() {
         wx.showToast({
             title: '导出成功',
-            icon: 'success'
+            icon:'success'
         })
     },
 
@@ -104,22 +134,6 @@ Page({
         const questionId = e.currentTarget.dataset.id
         wx.navigateTo({
             url: `/pages/admin/question-edit/index?id=${questionId}`
-        })
-    },
-
-    deleteQuestion(e) {
-        const questionId = e.currentTarget.dataset.id
-        wx.showModal({
-            title: '确认删除',
-            content: '确定要删除这道题目吗？',
-            success: (res) => {
-                if (res.confirm) {
-                    wx.showToast({
-                        title: '删除成功',
-                        icon: 'success'
-                    })
-                }
-            }
         })
     },
 
@@ -159,7 +173,7 @@ Page({
         addNewQuestion(newQuestion).then(res => {
             wx.showToast({
                 title: '题目添加成功',
-                icon: 'success'
+                icon:'success'
             })
             this.onAddModalClose()
             this.loadQuestions()
