@@ -112,7 +112,7 @@
 /* 列表项 */
 .list-item {
     display: grid;
-    grid-template-columns: .4fr 3fr 2.4fr 2fr;
+    grid-template-columns: 1fr 3fr 2.4fr 2fr;
     padding: 32rpx;
     align-items: center;
     border-bottom: 1rpx dashed #e9ecef;
@@ -164,7 +164,7 @@
 .btn {
     width: 50rpx;
     font-size: 20rpx;
-    padding: 8rpx 13rpx;
+    padding: 8rpx 14rpx;
     border-radius: 12rpx;
     transition: all 0.2s ease;
     text-align: center;
@@ -266,4 +266,91 @@ button {
 
 button::after {
     display: none;
+}
+
+/* 弹窗样式 */
+.modal-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #fff;
+    border-radius: 8rpx;
+    padding: 20rpx;
+    z-index: 1001;
+    width: 80%;
+}
+
+.modal-title {
+    font-size: 28rpx;
+    font-weight: bold;
+    margin-bottom: 20rpx;
+    text-align: center;
+}
+
+.modal-content {
+    margin-bottom: 20rpx;
+}
+
+.form-item {
+    margin-bottom: 16rpx;
+}
+
+.form-item label {
+    display: block;
+    font-size: 24rpx;
+    margin-bottom: 8rpx;
+}
+
+.form-item input {
+    width: 100%;
+    padding: 12rpx;
+    border: 1rpx solid #ccc;
+    border-radius: 8rpx;
+    font-size: 24rpx;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-footer button {
+    padding: 16rpx 32rpx;
+    background-color: #4a90e2;
+    color: #ffffff;
+    border: none;
+    border-radius: 8rpx;
+    font-size: 24rpx;
+    margin-left: 16rpx;
+}
+
+.modal-footer button:first-child {
+    background-color: #ccc;
+}
+
+.picker-view {
+    border: 1rpx solid #ccc;
+    border-radius: 8rpx;
+    overflow: hidden;
+}
+
+.picker-view-column {
+    padding: 16rpx;
+    font-size: 24rpx;
+    background-color: #fff;
+}
+
+.picker-view-column-selected {
+    background-color: #e9ecef;
 }    

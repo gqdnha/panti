@@ -52,4 +52,50 @@
     <view class="add-button" bindtap="addQuestion">
         <image class="add-icon" src="/assets/icons/add.png" mode="aspectFit"></image>
     </view>
+
+    <!-- 添加题目弹窗 -->
+    <view class="modal-mask" wx:if="{{isAddModalVisible}}" bindtap="onAddModalClose"></view>
+    <view class="modal" wx:if="{{isAddModalVisible}}">
+        <view class="modal-title">添加题目</view>
+        <view class="modal-content">
+            <view class="form-item">
+                <label>题目类型</label>
+                <picker mode="selector" value="{{newQuestion.type}}" bindchange="onNewQuestionInput" data-field="type">
+                    <view class="picker-view">
+                        <view wx:for="{{questionTypes}}" wx:key="index" class="picker-view-column">
+                            {{item}}
+                        </view>
+                    </view>
+                </picker>
+            </view>
+            <view class="form-item">
+                <label>题目内容</label>
+                <input type="text" data-field="content" bindinput="onNewQuestionInput" value="{{newQuestion.content}}"/>
+            </view>
+            <view class="form-item" wx:if="{{newQuestion.type.indexOf('选择题')!== -1}}">
+                <label>选项</label>
+                <input type="text" data-field="options" bindinput="onNewQuestionInput" value="{{newQuestion.options}}"/>
+            </view>
+            <view class="form-item" wx:if="{{newQuestion.type === '判断题'}}">
+                <label>答案（T.正确，F.错误）</label>
+                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}"/>
+            </view>
+            <view class="form-item" wx:if="{{newQuestion.type === '填空题' || newQuestion.type === '判断题'}}">
+                <label>答案</label>
+                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}"/>
+            </view>
+            <view class="form-item">
+                <label>分类</label>
+                <input type="text" data-field="category" bindinput="onNewQuestionInput" value="{{newQuestion.category}}"/>
+            </view>
+            <view class="form-item">
+                <label>解析</label>
+                <input type="text" data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}"/>
+            </view>
+        </view>
+        <view class="modal-footer">
+            <button bindtap="onAddModalClose">取消</button>
+            <button bindtap="onSubmitNewQuestion">提交</button>
+        </view>
+    </view>
 </view>    

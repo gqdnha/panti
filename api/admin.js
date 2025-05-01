@@ -8,5 +8,13 @@ export const getAllQuestion = (data) => {
         data
     });
 };
+// 新建题目
+export const addNewQuestion = (data) => {
+    return request({
+        url: `/mange/newQuestion`,
+        method: 'POST',
+        data
+    });
+};
 
     

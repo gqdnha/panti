@@ -1,4 +1,4 @@
-import {getAllQuestion} from '../../../api/admin'
+import { getAllQuestion, addNewQuestion } from '../../../api/admin'
 Page({
     data: {
         questionList: [],
@@ -6,7 +6,17 @@ Page({
         pageSize: 8,
         searchKeyword: '',
         isLoading: false,
-        totalPages: 1
+        totalPages: 1,
+        isAddModalVisible: false,
+        newQuestion: {
+            type: '',
+            content: '',
+            options: '',
+            answer: '',
+            category: '',
+            analysis: ''
+        },
+        questionTypes: ['单选题', '多选题', '填空题', '判断题']
     },
 
     onLoad(options) {
@@ -18,7 +28,6 @@ Page({
         this.setData({ isLoading: true })
         const { pageNum, pageSize, searchKeyword } = this.data
         const data = {
-            "eh": "",
             "category": "",
             "pageNum": pageNum,
             "pageSize": pageSize,
@@ -123,8 +132,51 @@ Page({
     },
 
     addQuestion() {
-        wx.navigateTo({
-            url: '/pages/admin/question-edit/index'
+        this.setData({
+            isAddModalVisible: true,
+            newQuestion: {
+                type: '',
+                content: '',
+                options: '',
+                answer: '',
+                category: '',
+                analysis: ''
+            }
+        })
+    },
+
+    onAddModalClose() {
+        this.setData({
+            isAddModalVisible: false
+        })
+    },
+
+    onNewQuestionInput(e) {
+        const { field } = e.currentTarget.dataset
+        const value = e.detail.value
+        this.setData({
+            newQuestion: {
+               ...this.data.newQuestion,
+                [field]: value
+            }
+        })
+    },
+
+    onSubmitNewQuestion() {
+        const { newQuestion } = this.data
+        addNewQuestion(newQuestion).then(res => {
+            wx.showToast({
+                title: '题目添加成功',
+                icon: 'success'
+            })
+            this.onAddModalClose()
+            this.loadQuestions()
+        }).catch(error => {
+            console.error('添加题目失败:', error)
+            wx.showToast({
+                title: '添加题目失败',
+                icon: 'none'
+            })
         })
     }
 })    
