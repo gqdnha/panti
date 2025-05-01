@@ -22,49 +22,41 @@ Page({
     onLoad(options) {
         this.loadQuestions()
     },
-
     loadQuestions() {
-        if (this.data.isLoading) return
-        this.setData({ isLoading: true })
-        const { pageNum, pageSize, searchKeyword } = this.data
+        const { pageNum, pageSize, searchKeyword } = this.data;
         const data = {
-            "category": "",
-            "pageNum": pageNum,
-            "pageSize": pageSize,
-            "keyword": searchKeyword
-        }
+            category: "",
+            // 判断 searchKeyword 是否有值，有则传其值，否则传空字符串
+            content: searchKeyword || "",
+            pageNum: pageNum,
+            pageSize: pageSize
+        };
+        console.log(data);
+        // console.log(data);
         getAllQuestion(data).then(res => {
             console.log(res);
-            const newQuestionList = res.pageInfo.pageData
-            const totalPages = res.pageInfo.totalPage || 1
-            if (newQuestionList.length > 0) {
-                this.setData({
-                    questionList: newQuestionList,
-                    pageNum: pageNum,
-                    totalPages: totalPages,
-                    isLoading: false
-                })
-            } else {
-                console.log('没有更多数据了');
-                this.setData({ isLoading: false })
-            }
-        }).catch(error => {
-            console.error('获取题目列表失败:', error);
-            this.setData({ isLoading: false })
-        })
+            // 假设 res 包含 userList 和 totalPages 数据
+            this.setData({
+                questionList: res.pageInfo.pageData,
+                totalPages: res.pageInfo.totalPage
+            });
+            console.log(this.data.questionList);
+            console.log(this.data.totalPages);
+        }).catch(err => {
+            console.error(err);
+        });
     },
 
     onSearchInput(e) {
         this.setData({
             searchKeyword: e.detail.value
-        })
+        });
+        console.log(this.data.searchKeyword);
     },
 
     onSearch() {
-        this.setData({
-            pageNum: 1,
-            questionList: []
-        })
+        // 重置页码为 1
+        this.setData({ pageNum: 1 });
         this.loadQuestions()
     },
 
@@ -179,4 +171,4 @@ Page({
             })
         })
     }
-})    
+})
