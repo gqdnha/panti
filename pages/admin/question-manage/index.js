@@ -1,56 +1,12 @@
 // pages/admin/question-manage/index.js
+import {getAllQuestion} from '../../../api/admin'
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
-    questionList: [
-      {
-        id: 1,
-        title: '什么是JavaScript？',
-        type: '选择题'
-      },
-      {
-        id: 2,
-        title: '解释CSS盒模型',
-        type: '简答题'
-      },
-      {
-        id: 3,
-        title: 'HTML5新特性有哪些？',
-        type: '选择题'
-      },
-      {
-        id: 1,
-        title: '什么是JavaScript？',
-        type: '选择题'
-      },
-      {
-        id: 2,
-        title: '解释CSS盒模型',
-        type: '简答题'
-      },
-      {
-        id: 3,
-        title: 'HTML5新特性有哪些？',
-        type: '选择题'
-      },{
-        id: 1,
-        title: '什么是JavaScript？',
-        type: '选择题'
-      },
-      {
-        id: 2,
-        title: '解释CSS盒模型',
-        type: '简答题'
-      },
-      {
-        id: 3,
-        title: 'HTML5新特性有哪些？',
-        type: '选择题'
-      }
-    ]
+    questionList:[]
   },
 
   /**
@@ -63,6 +19,19 @@ Page({
 
   loadQuestions() {
     // TODO: 从服务器获取题目列表
+    const data = {
+        "eh": "",
+        "category": "",
+        "pageNum": 1,
+        "pageSize": 8
+    }
+    getAllQuestion(data).then(res => {
+        console.log(res);
+        this.setData({
+            questionList:res.pageInfo.pageData
+        })
+        console.log(this.data.questionList);
+    })
   },
 
   /**

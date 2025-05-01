@@ -19,21 +19,27 @@ Page({
         // this.getUserInfo();
         this.loadUserStats();
     },
-
-    /* getUserInfo() {
-        const userInfo = {
-            // avatarUrl: '/assets/images/default-avatar.png',
-            nickName: '用户1',
-            totalQuestions: 100,
-            correctRate: 85,
-            todayQuestions: 10,
-            weekQuestions: 50,
-            monthQuestions: 80
-        };
-        this.setData({
-            userInfo
+    loadUserStats() {
+        const { pageNum, pageSize } = this.data;
+        const data = {
+            "department": "",
+            "userName": "",
+            "pageNum": pageNum,
+            "pageSize": pageSize
+    }
+        console.log(data);
+        getAllUserInfo(data).then(res => {
+            console.log(res);
+            // 假设 res 包含 userList 和 totalPages 数据
+            /* this.setData({
+                userList: res.data.userList,
+                totalPages: res.data.totalPages
+            }); */
+        }).catch(err => {
+            console.error(err);
         });
-    }, */
+    },
+
 
 
     viewAnswerDetail(e) {
@@ -41,27 +47,6 @@ Page({
         wx.showToast({
             title: '功能开发中',
             icon: 'none'
-        });
-    },
-
-    loadUserStats() {
-        const { pageNum, pageSize } = this.data;
-        const body = {
-            department: " ",
-            userName: "",
-            pageNum,
-            pageSize
-        };
-        console.log(body);
-        getAllUserInfo(body).then(res => {
-            console.log(res);
-            // 假设 res 包含 userList 和 totalPages 数据
-            this.setData({
-                userList: res.data.userList,
-                totalPages: res.data.totalPages
-            });
-        }).catch(err => {
-            console.error(err);
         });
     },
 

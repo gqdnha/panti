@@ -25,8 +25,8 @@
         </thead>
         <tbody class="list-content">
             <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
-                <td class="question-id">{{item.id}}</td>
-                <td class="question-title">{{item.title}}</td>
+                <td class="question-id">{{item.question_id}}</td>
+                <td class="question-title">{{item.content}}</td>
                 <td class="question-type">{{item.type}}</td>
                 <td class="item-actions">
                     <view class="btn edit" bindtap="editQuestion" data-id="{{item.id}}">编辑</view>

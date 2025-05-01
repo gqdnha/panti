@@ -1,11 +1,11 @@
 import { request } from "./request";
 
-export const getAllUserInfo = (body) => {
-    console.log(body);
+export const getAllUserInfo = (data) => {
+    console.log(data);
     return request({
         url: `/mange/findUserPage`,
         method: 'GET',
-        body
+        data
     });
 };
 

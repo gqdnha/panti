@@ -68,8 +68,8 @@
     width: 100vw ;
     display: grid;
     /* grid-template-columns: 1fr 3fr 1.5fr 2fr; */
-    padding: 20rpx;
-    font-size: 28rpx;
+    /* padding: 20rpx; */
+    font-size: 24rpx;
     color: #636e72;
     background: #f8f9fa;
     font-weight: 600;
@@ -77,8 +77,8 @@
 }
 .table-header {
     display: grid;
+    /* grid-template-columns: 0.8fr 3fr 1.8fr 1.8fr 2fr; */
     grid-template-columns: 1fr 3fr 2.4fr 2fr;
-
 }
   
 .list-content {
@@ -89,7 +89,9 @@
   /* 列表项 */
 .list-item {
     display: grid;
-    grid-template-columns: 1fr 3fr 1.8fr 2fr;
+    /* grid-template-columns: 0.5fr 3fr 1.8fr 1.8fr 2fr; */
+    grid-template-columns: 1fr 3fr 2.4fr 2fr;
+
     padding: 32rpx;
     align-items: center;
     border-bottom: 1rpx dashed #e9ecef;
