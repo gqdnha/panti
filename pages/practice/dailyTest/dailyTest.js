@@ -1,6 +1,7 @@
 import {
     apiGetDailyTest
 } from "../../../api/getDailyTest";
+import {addLearnTime} from '../../../api/addLearnTime'
 import {
     apiJudgeTest
 } from "../../../api/judgeTest"
@@ -172,7 +173,7 @@ Page({
         }
     },
     submitAllAnswers: function () {
-        const { allQuestions, allAnswers, selectedOptions, questionStates } = this.data;
+        const { allQuestions, allAnswers, selectedOptions, questionStates, remainingTime } = this.data;
         const newQuestionStates = [...questionStates];
         const allUserAnswers = [];
 
@@ -220,6 +221,14 @@ Page({
         });
 
         console.log('提交结果：', newQuestionStates);
+
+        // 计算使用的时间（只保留分钟）
+        const [minutesStr] = remainingTime.split(':');
+        const usedMinutes = 20 - parseInt(minutesStr, 10);
+        console.log(`本次答题使用的时间为：${usedMinutes} 分钟`);
+        addLearnTime(usedMinutes).then(res => {
+            console.log(res);
+        })
         // 调用后端接口
         apiJudgeTest(allUserAnswers)
           .then(response => {
