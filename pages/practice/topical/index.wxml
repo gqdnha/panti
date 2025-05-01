@@ -3,24 +3,18 @@
     <!-- 头部区域 -->
     <view class="header">
         <view class="nav">
-            <view class="nav-item {{level === '初级' ? 'active' : ''}}" bindtap="changeLevel" data-level="初级">初级</view>
-            <view class="nav-item {{level === '中级' ? 'active' : ''}}" bindtap="changeLevel" data-level="中级">中级</view>
-            <view class="nav-item {{level === '2025年能力提升' ? 'active' : ''}}" bindtap="changeLevel" data-level="2025年能力提升">2025年能力提升</view>
+            <view class="nav-item {{eh === '简单' ? 'active' : ''}}" bindtap="changeLevel" data-eh="简单">简单</view>
+            <view class="nav-item {{eh === '中等' ? 'active' : ''}}" bindtap="changeLevel" data-eh="中等">中等</view>
+            <view class="nav-item {{eh === '困难' ? 'active' : ''}}" bindtap="changeLevel" data-eh="困难">困难</view>
         </view>
     </view>
     <!-- 内容区域 -->
     <view class="content">
         <!-- 分类练习 -->
-        <view class="category" wx:for="{{currentCategories}}" wx:key="id" bindtap="goToPracticePage" data-category-id="{{item.id}}">
-            <view class="category-name">{{item.name}}</view>
-            <view class="category-status">{{categoryStatus[item.id]}}</view>
-            <view class="category-icon" style="background-image: url({{item.icon}});"></view>
-        </view>
-        <!-- 综合练习 -->
-        <view class="category">
-            <view class="category-name">综合练习</view>
-            <view class="category-status">{{comprehensiveStatus}}</view>
-            <view class="category-icon" style="background-image: url({{comprehensiveIcon}});"></view>
+        <view class="category" wx:for="{{currentCategories}}" wx:key="id" bindtap="goToPracticePage" data-category-id="{{item.question_id}}">
+            <view class="category-name">{{item.category}}</view>
+            <view class="category-status">{{item.type}}</view>
+            <!-- <view class="category-icon" style="background-image: url({{item.icon}});"></view> -->
         </view>
     </view>
 </view>    

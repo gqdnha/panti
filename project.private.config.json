@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/practice/topical/index",
+          "pathName": "pages/practice/topical/index",
+          "query": "category=%E6%B3%95%E5%BE%8B%E6%B3%95%E8%A7%84",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/wrongBook/wrongBook",
           "pathName": "pages/wrongBook/wrongBook",
           "query": "",
