@@ -1,185 +1,84 @@
-// pages/admin/user-stats/index.js
-Page({
+import { getAllUserInfo } from '../../../api/getAlluserInfo';
 
-    /**
-     * 页面的初始数据
-     */
+Page({
     data: {
         userId: null,
         userInfo: {},
         answerRecords: [],
-        userList: [{
-                id: 1,
-                avatarUrl: '/images/default-avatar.png',
-                nickName: '用户1',
-                questionCount: 12000,
-                correctRate: 85
-            },
-            {
-                id: 2,
-                avatarUrl: '/images/default-avatar.png',
-                nickName: '用户2',
-                questionCount: 98,
-                correctRate: 92
-            },
-            {
-                id: 3,
-                avatarUrl: '/images/default-avatar.png',
-                nickName: '用户3',
-                questionCount: 156,
-                correctRate: 78
-            }
-        ]
+        userList: [],
+        currentUserName: ''
     },
 
-    /**
-     * 生命周期函数--监听页面加载
-     */
     onLoad(options) {
-        const {
-            id
-        } = options;
+        const { id } = options;
         this.setData({
             userId: id
         });
-        this.getUserInfo();
-        this.getAnswerRecords();
-        this.loadUserStats();
+        this.getData();
     },
 
-    /**
-     * 生命周期函数--监听页面初次渲染完成
-     */
-    onReady() {
-
+    getData: function () {
+        // 初始请求传递空的 userName
+        const userName = ''
+        getAllUserInfo(userName).then(res => {
+            console.log(res);
+            // const userList = res.data && res.data.pageInfo && res.data.pageInfo.pageData || [];
+            if (userList.length === 0) {
+                wx.showToast({
+                    title: '未找到用户数据',
+                    icon: 'none'
+                });
+            }
+            this.setData({
+                userList: userList
+            });
+        }).catch(error => {
+            console.error('获取用户信息失败:', error);
+        });
     },
 
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow() {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide() {
-
-    },
-
-    /**
-     * 生命周期函数--监听页面卸载
-     */
-    onUnload() {
-
-    },
-
-    /**
-     * 页面相关事件处理函数--监听用户下拉动作
-     */
     onPullDownRefresh() {
-        this.getUserInfo();
-        this.getAnswerRecords();
         wx.stopPullDownRefresh();
     },
 
-    /**
-     * 页面上拉触底事件的处理函数
-     */
-    onReachBottom() {
-
-    },
-
-    /**
-     * 用户点击右上角分享
-     */
-    onShareAppMessage() {
-
-    },
-
-    getUserInfo() {
-        // TODO: 从服务器获取用户信息
-        // 这里使用模拟数据
-        const userInfo = {
-            avatarUrl: '/assets/images/default-avatar.png',
-            nickName: '用户1',
-            totalQuestions: 100,
-            correctRate: 85,
-            todayQuestions: 10,
-            weekQuestions: 50,
-            monthQuestions: 80
-        };
-
-        this.setData({
-            userInfo
-        });
-    },
-
-    getAnswerRecords() {
-        // TODO: 从服务器获取答题记录
-        // 这里使用模拟数据
-        const answerRecords = [{
-                id: 1,
-                title: 'JavaScript基础测试',
-                time: '2024-03-20 14:30',
-                questionCount: 20,
-                correctRate: 90,
-                duration: 30
-            },
-            {
-                id: 2,
-                title: 'Vue.js进阶测试',
-                time: '2024-03-19 16:45',
-                questionCount: 15,
-                correctRate: 85,
-                duration: 25
-            },
-            {
-                id: 3,
-                title: 'React基础测试',
-                time: '2024-03-18 10:20',
-                questionCount: 25,
-                correctRate: 80,
-                duration: 35
-            }
-        ];
-
-        this.setData({
-            answerRecords
-        });
-    },
-
     viewAnswerDetail(e) {
-        const {
-            id
-        } = e.currentTarget.dataset;
-        // TODO: 跳转到答题详情页面
+        const { id } = e.currentTarget.dataset;
         wx.showToast({
             title: '功能开发中',
             icon: 'none'
         });
     },
 
-    loadUserStats() {
-        // TODO: 从服务器获取用户答题数据
-    },
-
-    // 查看用户详情
     viewDetail(e) {
-        const userId = e.currentTarget.dataset.id
-        wx.navigateTo({
-            url: `/pages/admin/user-detail/index?id=${userId}`
-        })
+        const { userName } = e.currentTarget.dataset;
+        this.setData({
+            currentUserName: userName
+        });
+        getAllUserInfo({ userName }).then(res => {
+            console.log('用户详情信息:', res);
+            wx.navigateTo({
+                url: `pages/detail/index?userName=${userName}`,
+                success: () => {
+                    const pages = getCurrentPages();
+                    const currentPage = pages[pages.length - 1];
+                    const nextPage = pages[pages.length];
+                    if (nextPage) {
+                        nextPage.setData({
+                            userDetail: res.data && res.data.pageInfo && res.data.pageInfo.pageData[0] || {}
+                        });
+                    }
+                }
+            });
+        }).catch(error => {
+            console.error('获取用户详情信息失败:', error);
+        });
     },
 
-    // 导出用户数据
     exportUserData(e) {
-        const userId = e.currentTarget.dataset.id
-        // TODO: 实现导出用户数据的功能
+        const { id } = e.currentTarget.dataset;
         wx.showToast({
-            title: '导出成功',
-            icon: 'success'
-        })
+            title: '功能开发中',
+            icon: 'none'
+        });
     }
-})
+});

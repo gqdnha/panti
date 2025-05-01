@@ -45,10 +45,10 @@ Page({
         });
     },
     goToPracticePage(e) {
-        const question_id = e.currentTarget.dataset.question_id;
-        console.log('点击分类练习，categoryId:', question_id);
+        const categoryId = e.currentTarget.dataset.categoryId;
+        console.log('点击分类练习，categoryId:', categoryId);
         wx.navigateTo({
-            url: `pages/practice/topical/index?question_id=${question_id}&eh=${this.data.eh}`
+            url: `pages/practice/topical/index?categoryId=${categoryId}&eh=${this.data.eh}`
         });
     }
 });    

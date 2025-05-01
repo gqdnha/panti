@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "admin-答题情况",
+          "pathName": "pages/admin/user-stats/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/practice/topical/index",
           "pathName": "pages/practice/topical/index",
           "query": "category=%E6%B3%95%E5%BE%8B%E6%B3%95%E8%A7%84",
