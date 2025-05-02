@@ -16,7 +16,8 @@ Page({
             category: '',
             analysis: ''
         },
-        questionTypes: ['单选题', '多选题', '填空题', '判断题']
+        questionTypes: ['单选题', '多选题', '填空题', '判断题'],
+        newQuestionTypeIndex: 0
     },
 
     onLoad(options) {
@@ -49,7 +50,7 @@ Page({
     deleteQuestion(e) {
         const questionId = e.currentTarget.dataset.id.toString();
         console.log(questionId);
-        console.log( typeof questionId);
+        console.log(typeof questionId);
         wx.showModal({
             title: '确认删除',
             content: '确定要删除这道题目吗？',
@@ -57,20 +58,20 @@ Page({
                 if (res.confirm) {
                     // 调用修改后的deleteQuestion接口，并传入questionId
                     deleteQuestion(questionId).then(() => {
-                            wx.showToast({
-                                title: '删除成功',
-                                icon:'success'
-                            });
-                            // 删除成功后重新加载题目列表
-                            this.loadQuestions();
-                        })
-                       .catch(error => {
-                            console.error('删除题目失败:', error);
-                            wx.showToast({
-                                title: '删除题目失败',
-                                icon: 'none'
-                            });
+                        wx.showToast({
+                            title: '删除成功',
+                            icon:'success'
                         });
+                        // 删除成功后重新加载题目列表
+                        this.loadQuestions();
+                    })
+                   .catch(error => {
+                        console.error('删除题目失败:', error);
+                        wx.showToast({
+                            title: '删除题目失败',
+                            icon: 'none'
+                        });
+                    });
                 }
             }
         });
@@ -147,14 +148,26 @@ Page({
                 answer: '',
                 category: '',
                 analysis: ''
-            }
-        })
+            },
+            newQuestionTypeIndex: 0
+        }, () => {
+            this.onQuestionTypeChange({ detail: { value: 0 } });
+        });
     },
 
     onAddModalClose() {
         this.setData({
             isAddModalVisible: false
         })
+    },
+
+    onQuestionTypeChange(e) {
+        const index = e.detail.value;
+        const type = this.data.questionTypes[index];
+        this.setData({
+            newQuestionTypeIndex: index,
+            'newQuestion.type': type
+        });
     },
 
     onNewQuestionInput(e) {
@@ -169,7 +182,11 @@ Page({
     },
 
     onSubmitNewQuestion() {
-        const { newQuestion } = this.data
+        let { newQuestion } = this.data;
+        // 这里不再将选项转为数组，直接使用字符串
+        if (newQuestion.type === '单选题' || newQuestion.type === '多选题') {
+            newQuestion.options = newQuestion.options.trim();
+        }
         addNewQuestion(newQuestion).then(res => {
             wx.showToast({
                 title: '题目添加成功',
