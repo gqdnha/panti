@@ -1,10 +1,13 @@
-// pages/admin/dashboard/index.js
+import {getAllUserInfo} from '../../../api/admin'
+
 Page({
 
   /**
    * 页面的初始数据
    */
   data: {
+    pageNum:1,
+    pageSize:1,
     totalUsers: 0,
     todayUsers: 0,
     avgCorrectRate: 0
@@ -15,17 +18,28 @@ Page({
    */
   onLoad(options) {
     // 加载数据
-    this.loadDashboardData()
+    this.loadUserStats()
   },
+  loadUserStats() {
+    const { pageNum, pageSize } = this.data;
+    const data = {
+        department: "",
+        pageNum: pageNum,
+        pageSize: pageSize
+    };
+    console.log(data);
+    getAllUserInfo(data).then(res => {
+        console.log(res.pageInfo);
+        // 假设 res 包含 userList 和 totalPages 数据
+        this.setData({
+            totalUsers: res.pageInfo.totalSize
+        });
+        console.log(this.data.totalUsers);
+    }).catch(err => {
+        console.error(err);
+    });
+},
 
-  loadDashboardData() {
-    // TODO: 从服务器获取数据
-    this.setData({
-      totalUsers: 128,
-      todayUsers: 12,
-      avgCorrectRate: 85
-    })
-  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成

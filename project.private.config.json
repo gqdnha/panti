@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/admin/dashboard/index",
+          "pathName": "pages/admin/dashboard/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "题目管理",
           "pathName": "pages/admin/question-manage/index",
           "query": "",
