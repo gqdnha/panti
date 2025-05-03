@@ -2,6 +2,17 @@ import {
     request
 } from "./request";
 
+// 添加法律条文
+export const addLawsApi = (regulationName,data) => {
+    console.log(regulationName,data);
+    // console.log(questionId);
+    return request({
+        url: `/mange/updateQuestion?regulationName=${regulationName}`,
+        method: 'POST',
+        data
+    });
+};
+
 // 获取一个题的错误率
 export const getWrongQuestionPercent = (questionId) => {
         // console.log(questionId);
@@ -32,15 +43,7 @@ export const updateQuestion = (questionId,data) => {
         data
     });
 };
-/* export const updateQuestion = (header, data) => {
-    console.log('即将发送的请求头:',header);
-    console.log('即将发送的数据:', data);
-    return request({
-        url: `/mange/updateQuestion`,
-        method: 'POST',
-        data
-    });
-}; */
+
 
 // 禁用题目
 export const deleteQuestionApi = (questionId) => {

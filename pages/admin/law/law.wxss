@@ -353,8 +353,10 @@ button::after {
 
 .picker-view-column-selected {
     background-color: #e9ecef;
-}    
-textarea{
+}
+
+textarea {
     font-size: 28rpx;
     height: 120rpx;
 }
+    

@@ -1,84 +1,43 @@
-import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail ,getWrongQuestionPercent } from '../../../api/admin';
+import {
+    addLawsApi
+} from '../../../api/admin';
 
 Page({
-    data: { 
-        newLaw:'',
-        isEditModalVisible: false,
+    data: {
+        // 法律名
+        regulationName: '',
+        // 文件路径
+        files: '',
+        isAddModalVisible: false,
+        // 法律列表数据
+        lawList: [],
+        pageNum: 1,
+        totalPages: 1
     },
 
     onLoad(options) {
-        // this.loadQuestions();
+        this.loadLaws();
     },
 
-
-    // 删除法律（修改）
-    deleteQuestion(e) {
-        const questionId = e.currentTarget.dataset.id;
-        wx.showModal({
-            title: '确认删除',
-            content: '确定要删除这道题目吗？',
-            success: (res) => {
-                if (res.confirm) {
-                    deleteQuestionApi(questionId).then(() => {
-                        wx.showToast({
-                            title: '删除成功',
-                            icon:'success'
-                        });
-                        this.loadQuestions();
-                    }).catch(error => {
-                        console.error('删除题目失败:', error);
-                        wx.showToast({
-                            title: '删除题目失败',
-                            icon: 'none'
-                        });
-                    });
-                }
-            }
+    // 加载法律列表
+    loadLaws() {
+        // 这里模拟请求数据，实际使用时替换为真实接口调用
+        const mockData = [
+            { id: 1, name: ' 法律 1', category: ' 类别 1' },
+            { id: 2, name: ' 法律 2', category: ' 类别 2' },
+            { id: 3, name: ' 法律 3', category: ' 类别 3' }
+        ];
+        this.setData({
+            lawList: mockData
         });
     },
 
-    onNextPage() {
-        const { pageNum, totalPages } = this.data;
-        if (pageNum < totalPages) {
-            this.setData({ pageNum: pageNum + 1 });
-            this.loadQuestions();
-        } else {
-            wx.showToast({
-                title: '已经是最后一页了',
-                icon: 'none'
-            });
-        }
-    },
-
-    onPreviousPage() {
-        const { pageNum } = this.data;
-        if (pageNum > 1) {
-            this.setData({ pageNum: pageNum - 1 });
-            this.loadQuestions();
-        } else {
-            wx.showToast({
-                title: '已经是第一页了',
-                icon: 'none'
-            });
-        }
-    },
-
-    // 添加题目
-    addQuestion() {
+    // 添加法律
+    addLaw() {
         this.setData({
             isAddModalVisible: true,
-            newQuestion: {
-                type: '',
-                content: '',
-                options: '',
-                answer: '',
-                category: '',
-                analysis: '',
-                eh:''
-            },
-            newQuestionTypeIndex: 0
-        }, () => {
-            this.onQuestionTypeChange({ detail: { value: 0 } });
+            regulationName: '',
+            files: ''
         });
     },
 
@@ -88,41 +47,110 @@ Page({
         });
     },
 
-    onQuestionTypeChange(e) {
-        const index = e.detail.value;
-    },
-
-    onInputChange(e, target) {
-        const { field } = e.currentTarget.dataset;
+    onRegulationNameInput(e) {
         const value = e.detail.value;
         this.setData({
-            [target]: {
-               ...this.data[target],
-                [field]: value
+            regulationName: value
+        });
+        console.log(this.data.regulationName);
+    },
+
+    // 文件上传
+    uploadFile() {
+        wx.chooseMessageFile({
+            count: 1, // 只允许选择一个文件
+            type: 'file',
+            extensions: ['doc', 'docx', 'pdf'], // 限制文件类型为.doc、.docx 和.pdf
+            success: (res) => {
+                const tempFilePaths = res.tempFiles[0].path;
+                this.setData({
+                    files: tempFilePaths
+                }, () => {
+                    console.log('files 已设置为:', this.data.files);
+                });
+            },
+            fail: (err) => {
+                console.error(' 选择文件失败:', err);
             }
         });
     },
 
-    onNewQuestionInput(e) {
-        this.onInputChange(e, 'newQuestion');
-    },
-
     // 添加 提交
-    onSubmitNewQuestion() {
-        let { newQuestion } = this.data;
-        addNewQuestion(newQuestion).then(res => {
+    onSubmitNewLaw() {
+        const {
+            regulationName,
+            files
+        } = this.data;
+        if (!regulationName || !files) {
             wx.showToast({
-                title: '题目添加成功',
-                icon:'success'
-            });
-            this.onAddModalClose();
-            this.loadQuestions();
-        }).catch(error => {
-            console.error('添加题目失败:', error);
-            wx.showToast({
-                title: '添加题目失败',
+                title: ' 请输入法律名并上传文件 ',
                 icon: 'none'
             });
+            return;
+        }
+
+        const fileName = files.split('/').pop();
+        wx.uploadFile({
+            url: `/regulation/addRegulation?regulationName=${regulationName}`,
+            files: files,
+            name: 'files',
+            formData: {
+                regulationName,
+                fileName
+            },
+            success: (res) => {
+                const data = JSON.parse(res.data);
+                console.log(data);
+                wx.showToast({
+                    title: ' 法律添加成功 ',
+                    icon:'success'
+                });
+                this.onAddModalClose();
+                this.loadLaws();
+            },
+            fail: (error) => {
+                console.error(' 添加法律失败:', error);
+                wx.showToast({
+                    title: ' 添加法律失败 ',
+                    icon: 'none'
+                });
+            }
         });
     },
-});    
+
+    onNextPage() {
+        const {
+            pageNum,
+            totalPages
+        } = this.data;
+        if (pageNum < totalPages) {
+            this.setData({
+                pageNum: pageNum + 1
+            });
+            this.loadLaws();
+        } else {
+            wx.showToast({
+                title: ' 已经是最后一页了 ',
+                icon: 'none'
+            });
+        }
+    },
+
+    onPreviousPage() {
+        const {
+            pageNum
+        } = this.data;
+        if (pageNum > 1) {
+            this.setData({
+                pageNum: pageNum - 1
+            });
+            this.loadLaws();
+        } else {
+            wx.showToast({
+                title: ' 已经是第一页了 ',
+                icon: 'none'
+            });
+        }
+    }
+});
+    
