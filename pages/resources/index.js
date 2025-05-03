@@ -1,66 +1,56 @@
-// pages/resources/index.js
+import {
+    getLawsData
+} from '../../api/getLaws'
+
 Page({
 
-  /**
-   * 页面的初始数据
-   */
-  data: {
+    data: {
+        totalPages:0,
+        lawList:[],
+        pageNum:1,
+        pageSize:10
+    },
 
-  },
+    onLoad(options) {
+        this.loadLaws()
+    },
+    // 加载法律列表
+    loadLaws() {
+        const {
+            pageNum,
+            pageSize
+        } = this.data;
+        const data = {
+            regulationName: "",
+            pageNum: pageNum,
+            pageSize: pageSize
+        };
+        console.log(data);
+        getLawsData(data).then(res => {
+            console.log(res);
+            // 假设 res 包含 userList 和 totalPages 数据
+            this.setData({
+                lawList: res.pageInfo.pageData,
+                totalPages: res.pageInfo.totalPage
+            });
+        }).catch(err => {
+            console.error(err);
+        });
+    },
 
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad(options) {
+    /**
+     * 生命周期函数--监听页面显示
+     */
+    onShow() {
 
-  },
+    },
 
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady() {
+    /**
+     * 生命周期函数--监听页面隐藏
+     */
+    onHide() {
 
-  },
+    },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow() {
 
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide() {
-
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload() {
-
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh() {
-
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom() {
-
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage() {
-
-  }
 })
