@@ -103,6 +103,9 @@
                     </view>
                 </picker>
             </view>
+            <view class="modal-content" value="{{editQuestionTypeIndex}}">
+                <label>正确率：{{wrongQuestionPercent}}%</label>
+            </view>
             <view class="form-item">
                 <label>题目内容</label>
                 <!-- 将input改为textarea -->
@@ -141,4 +144,4 @@
             <button bindtap="onSubmitEditQuestion">提交</button>
         </view>
     </view>
-</view>    
+</view>

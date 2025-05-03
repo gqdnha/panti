@@ -2,6 +2,16 @@ import {
     request
 } from "./request";
 
+// 获取一个题的错误率
+export const getWrongQuestionPercent = (questionId) => {
+        // console.log(questionId);
+    return request({
+        url: `/wrongQuestion/getWrongQuestionPercent?questionId=${questionId}`,
+        method: 'GET',
+    });
+};
+
+
 // 查看题目详情
 export const getQuestionDetail = (questionId) => {
     return request({

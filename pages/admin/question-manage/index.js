@@ -1,7 +1,10 @@
-import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail } from '../../../api/admin';
+import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail ,getWrongQuestionPercent } from '../../../api/admin';
 
 Page({
     data: {
+        // 正确率
+        wrongQuestionPercent:'',
+        
         questionList: [],
         pageNum: 1,
         pageSize: 8,
@@ -27,7 +30,8 @@ Page({
             options: '',
             answer: '',
             category: '',
-            analysis: ''
+            analysis: '',
+            
         },
         editQuestionTypeIndex: 0
     },
@@ -136,9 +140,10 @@ Page({
 
     editQuestion(e) {
         const questionId = e.currentTarget.dataset.id;
-        console.log(questionId);
+        // console.log(questionId);
+        // 获取详细信息
         getQuestionDetail(questionId).then((res) => {
-            console.log(res);
+            // console.log(res);
             const typeIndex = this.data.questionTypes.indexOf(res.type);
             this.setData({
                 isEditModalVisible: true,
@@ -153,9 +158,7 @@ Page({
                     eh:res.eh
                 },
                 editQuestionTypeIndex: typeIndex
-            }, () => {
-                console.log('已设置编辑弹窗数据:', this.data.editQuestion); 
-            });
+            })
         }).catch((err) => {
             console.error('获取题目详情失败:', err);
             wx.showToast({
@@ -163,6 +166,15 @@ Page({
                 icon: 'none'
             });
         });
+
+        // 获取正确率
+        getWrongQuestionPercent(questionId).then(res => {
+            // console.log(res);
+            this.setData({
+                wrongQuestionPercent:res*100
+            })
+            console.log(this.data.wrongQuestionPercent);
+        })
 
     },
 
