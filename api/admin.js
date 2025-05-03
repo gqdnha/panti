@@ -30,7 +30,7 @@ export const deleteQuestion = (questionId) => {
     console.log(typeof questionId);
     return request({
         url: `/mange/deleteQuestion`,
-        method: 'DELETE',
+        method: 'POST',
         header: {
             'Content-Type': 'application/json', 
             questionId: questionId.toString()

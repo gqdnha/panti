@@ -1,4 +1,5 @@
 // pages/user-info/index.js
+import {getUserInfo} from '../../api/getUserInfo'
 Page({
 
     /**
@@ -17,7 +18,6 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
-        this.getUserInfo();
         this.getStudyStats();
     },
 
@@ -33,7 +33,6 @@ Page({
      */
     onShow() {
         // 每次显示页面时更新数据
-        this.getUserInfo();
         this.getStudyStats();
     },
 
@@ -72,23 +71,23 @@ Page({
 
     },
 
-    getUserInfo() {
-        const userInfo = wx.getStorageSync('userInfo');
-        this.setData({
-            userInfo
-        });
-    },
+
     // 从服务器获取学习统计数据
     getStudyStats() {
+        getUserInfo().then(res => {
+            console.log(res);
+            this.setData({
+                studyStats: {
+                    totalQuestions: res.count,
+                    correctRate: res.rightPercent * 100,
+                    totalTime: 120
+                }
+            });
+        })
         // TODO: 从服务器获取学习统计数据
         // 这里使用模拟数据
-        this.setData({
-            studyStats: {
-                totalQuestions: 100,
-                correctRate: 85,
-                totalTime: 120
-            }
-        });
+        
+        console.log(studyStats);
     },
 
 
