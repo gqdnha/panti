@@ -1,6 +1,7 @@
 import {
     addLawsApi
 } from '../../../api/admin';
+import {getLawsData} from '../../../api/getLaws'
 
 Page({
     data: {
@@ -12,7 +13,8 @@ Page({
         // 法律列表数据
         lawList: [],
         pageNum: 1,
-        totalPages: 1
+        totalPages: 1,
+        pageSize:10
     },
 
     onLoad(options) {
@@ -21,16 +23,25 @@ Page({
 
     // 加载法律列表
     loadLaws() {
-        // 这里模拟请求数据，实际使用时替换为真实接口调用
-        const mockData = [
-            { id: 1, name: ' 法律 1', category: ' 类别 1' },
-            { id: 2, name: ' 法律 2', category: ' 类别 2' },
-            { id: 3, name: ' 法律 3', category: ' 类别 3' }
-        ];
-        this.setData({
-            lawList: mockData
+        const {pageNum, pageSize } = this.data;
+        const data = {
+            regulationName: "",
+            pageNum: pageNum,
+            pageSize: pageSize
+        };
+        console.log(data);
+        getLawsData(data).then(res => {
+            console.log(res);
+            // 假设 res 包含 userList 和 totalPages 数据
+            this.setData({
+                lawList: res.pageInfo.pageData,
+                totalPages: res.pageInfo.totalPage
+            });
+        }).catch(err => {
+            console.error(err);
         });
     },
+    
 
     // 添加法律
     addLaw() {

@@ -56,7 +56,7 @@ export const deleteQuestionApi = (questionId) => {
 
 // 获取用户数据
 export const getAllUserInfo = (data) => {
-    console.log(data);
+    // console.log(data);
     return request({
         url: `/mange/findUserPage`,
         method: 'POST',

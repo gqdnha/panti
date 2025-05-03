@@ -1,11 +1,11 @@
 import {request} from "./request";
 
 
-export const getWrongQuestion = () => {
-    const userId = getUserId()
+export const getLawsData = (data) => {
+    console.log(data);
     return request({
-        // url: `/dailyQuestion/getEverydayQuestion/${data}`,
-        url:`/wrongQuestion/getWrongQuestion?userId=${userId}`,
-        method: 'GET'
+        url:`/regulation/getRegulation`,
+        method: 'POST',
+        data
     })
 }

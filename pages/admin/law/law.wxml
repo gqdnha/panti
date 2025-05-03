@@ -13,10 +13,11 @@
             <tbody class="list-content">
                 <tr class="list-item" wx:for="{{lawList}}" wx:key="id">
                     <td class="question-id">{{item.id}}</td>
-                    <td class="question-title">{{item.name}}</td>
-                    <td class="question-type">{{item.category}}</td>
+                    <td class="question-title">{{item.regulation_name}}</td>
+                    <!-- <td class="question-type">{{item.create_date}}</td> -->
                     <td class="item-actions">
                         <!-- 这里可以添加编辑、删除等操作按钮 -->
+                        <view>删除</view>
                     </td>
                 </tr>
             </tbody>
