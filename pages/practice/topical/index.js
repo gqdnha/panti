@@ -1,4 +1,5 @@
-import {getAllQuestion} from "../../../api/getAllQuestion";
+// import {getAllQuestion} from "../../../api/getAllQuestion";
+import {getAllQuestion} from "../../../api/admin";
 
 Page({
     data: {
