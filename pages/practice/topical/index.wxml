@@ -14,7 +14,6 @@
         <view class="category" wx:for="{{currentCategories}}" wx:key="id" bindtap="goToPracticePage" data-category-id="{{item.question_id}}">
             <view class="category-name">{{item.category}}</view>
             <view class="category-status">{{item.type}}</view>
-            <!-- <view class="category-icon" style="background-image: url({{item.icon}});"></view> -->
         </view>
     </view>
 </view>    

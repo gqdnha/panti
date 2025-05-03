@@ -17,7 +17,8 @@
     "pages/feedback/index",
     "pages/history/history",
     "pages/wrongBook/wrongBook",
-    "pages/practice/dailyTest/dailyTest"
+    "pages/practice/dailyTest/dailyTest",
+    "pages/admin/law/law"
   ],
   "window": {
     "backgroundTextStyle": "light",

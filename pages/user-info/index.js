@@ -84,10 +84,6 @@ Page({
                 }
             });
         })
-        // TODO: 从服务器获取学习统计数据
-        // 这里使用模拟数据
-        
-        console.log(studyStats);
     },
 
 

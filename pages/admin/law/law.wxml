@@ -1,0 +1,147 @@
+<view class="container">
+    <!-- 搜索框 -->
+    <!-- <view class="search-box">
+        <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}"/>
+        <button bindtap="onSearch">搜索</button>
+    </view> -->
+    <!-- 题目列表 -->
+    <view class="question-list">
+        <table class="question-table">
+            <thead class="list-header">
+                <tr class="table-header">
+                    <th class="header-item">序号</th>
+                    <th class="header-item">题目</th>
+                    <th class="header-item">类型</th>
+                    <th class="header-item">操作</th>
+                </tr>
+            </thead>
+            <tbody class="list-content">
+                <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
+                    <td class="question-id">{{item.question_id}}</td>
+                    <td class="question-title">{{item.content}}</td>
+                    <td class="question-type">{{item.type}}</td>
+                    <td class="item-actions">
+                        <view class="btn edit" bindtap="editQuestion" data-id="{{item.question_id}}">编辑</view>
+                        <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.question_id}}">禁用</view>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </view>
+
+    <!-- 分页按钮 -->
+    <view class="pagination">
+        <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
+        <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
+    </view>
+
+    <!-- 添加题目按钮 -->
+    <view class="add-button" bindtap="addQuestion">
+        <image class="add-icon" src="/assets/icons/add.png" mode="aspectFit"></image>
+    </view>
+
+    <!-- 添加题目弹窗 -->
+    <view class="modal-mask" wx:if="{{isAddModalVisible}}" bindtap="onAddModalClose"></view>
+    <view class="modal" wx:if="{{isAddModalVisible}}">
+        <view class="modal-title">添加题目</view>
+        <view class="modal-content">
+            <view class="form-item">
+                <label>题目类型</label>
+                <picker mode="selector" range="{{questionTypes}}" value="{{newQuestionTypeIndex}}" bindchange="onQuestionTypeChange">
+                    <view class="picker-view">
+                        {{questionTypes[newQuestionTypeIndex]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="form-item">
+                <label>题目内容</label>
+                <!-- 将input改为textarea -->
+                <textarea data-field="content" bindinput="onNewQuestionInput" value="{{newQuestion.content}}"></textarea>
+            </view>
+            <view class="form-item" wx:if="{{newQuestion.type === '单选题' || newQuestion.type === '多选题'}}">
+                <label>选项（多个选项用逗号分隔）</label>
+                <input type="text" data-field="options" bindinput="onNewQuestionInput" value="{{newQuestion.options}}" />
+            </view>
+            <view class="form-item" wx:if="{{newQuestion.type === '单选题' || newQuestion.type === '多选题' || newQuestion.type === '判断题'}}">
+                <label>答案（选项）</label>
+                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}" />
+            </view>
+            <view class="form-item" wx:if="{{newQuestion.type === '填空题'}}">
+                <label>答案</label>
+                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}" />
+            </view>
+            <view class="form-item">
+                <label>分类</label>
+                <input type="text" data-field="category" bindinput="onNewQuestionInput" value="{{newQuestion.category}}" />
+            </view>
+            <view class="form-item">
+                <label>难易</label>
+                <input type="text" data-field="eh" bindinput="onNewQuestionInput" value="{{newQuestion.eh}}" />
+            </view>
+            <view class="form-item">
+                <label>解析</label>
+                <!-- 将input改为textarea -->
+                <textarea data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}"></textarea>
+            </view>
+        </view>
+        <view class="modal-footer">
+            <button bindtap="onAddModalClose">取消</button>
+            <button bindtap="onSubmitNewQuestion">提交</button>
+        </view>
+    </view>
+
+    <!-- 编辑题目弹窗 -->
+    <view class="modal-mask" wx:if="{{isEditModalVisible}}" bindtap="onEditModalClose"></view>
+    <view class="modal" wx:if="{{isEditModalVisible}}">
+        <view class="modal-title">编辑题目</view>
+        <view class="modal-content">
+            <view class="form-item">
+                <label>题目类型</label>
+                <picker mode="selector" range="{{questionTypes}}" value="{{editQuestionTypeIndex}}" bindchange="onEditQuestionTypeChange">
+                    <view class="picker-view">
+                        {{questionTypes[editQuestionTypeIndex]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="modal-content" value="{{editQuestionTypeIndex}}">
+                <label>正确率：{{wrongQuestionPercent}}%</label>
+            </view>
+            <view class="form-item">
+                <label>题目内容</label>
+                <!-- 将input改为textarea -->
+                <textarea data-field="content" bindinput="onEditQuestionInput" value="{{editQuestion.content}}"></textarea>
+            </view>
+            <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题'}}">
+                <label>选项（多个选项用逗号分隔）</label>
+                <!-- <input type="text" data-field="options" bindinput="onEditQuestionInput" value="{{editQuestion.options}}" /> -->
+                <textarea data-field="options" bindinput="onEditQuestionInput" value="{{editQuestion.options}}"></textarea>
+
+            </view>
+            <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题' || editQuestion.type === '判断题'}}">
+                <label>答案（选项）</label>
+                <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" />
+            </view>
+            <view class="form-item" wx:if="{{editQuestion.type === '填空题'}}">
+                <label>答案</label>
+                <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" />
+            </view>
+            <view class="form-item">
+                <label>分类</label>
+                <input type="text" data-field="category" bindinput="onEditQuestionInput" value="{{editQuestion.category}}" />
+            </view>
+            <view class="form-item">
+                <label>难易</label>
+                <input type="text" data-field="eh" bindinput="onEditQuestionInput" value="{{editQuestion.eh}}" />
+            </view>
+            <view class="form-item">
+                <label>解析</label>
+                <!-- 将input改为textarea -->
+                <textarea data-field="analysis" bindinput="onEditQuestionInput" value="{{editQuestion.analysis}}"></textarea>
+            </view>
+        </view>
+        <view class="modal-footer">
+            <button bindtap="onEditModalClose">取消</button>
+            <button bindtap="onSubmitEditQuestion">提交</button>
+        </view>
+    </view>
+</view>

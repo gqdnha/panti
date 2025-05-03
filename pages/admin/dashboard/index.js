@@ -102,5 +102,11 @@ Page({
     wx.navigateTo({
       url: '/pages/admin/question-manage/index'
     })
+  },
+  // 导航到法律管理页面
+  navigateToLawManage() {
+    wx.navigateTo({
+      url: '/pages/admin/law/law'
+    })
   }
 })
