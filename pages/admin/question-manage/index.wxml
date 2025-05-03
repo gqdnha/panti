@@ -75,6 +75,10 @@
                 <input type="text" data-field="category" bindinput="onNewQuestionInput" value="{{newQuestion.category}}" />
             </view>
             <view class="form-item">
+                <label>难易</label>
+                <input type="text" data-field="eh" bindinput="onNewQuestionInput" value="{{newQuestion.eh}}" />
+            </view>
+            <view class="form-item">
                 <label>解析</label>
                 <!-- 将input改为textarea -->
                 <textarea data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}"></textarea>
@@ -123,6 +127,10 @@
                 <input type="text" data-field="category" bindinput="onEditQuestionInput" value="{{editQuestion.category}}" />
             </view>
             <view class="form-item">
+                <label>难易</label>
+                <input type="text" data-field="eh" bindinput="onEditQuestionInput" value="{{editQuestion.eh}}" />
+            </view>
+            <view class="form-item">
                 <label>解析</label>
                 <!-- 将input改为textarea -->
                 <textarea data-field="analysis" bindinput="onEditQuestionInput" value="{{editQuestion.analysis}}"></textarea>
@@ -133,4 +141,4 @@
             <button bindtap="onSubmitEditQuestion">提交</button>
         </view>
     </view>
-</view>
+</view>    

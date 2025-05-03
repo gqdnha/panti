@@ -1,40 +1,43 @@
-import { request } from "./request";
+import {
+    request
+} from "./request";
 
 // 查看题目详情
 export const getQuestionDetail = (questionId) => {
     return request({
         url: `/question/findQuestionDetail/${questionId}`,
         method: 'GET',
-        header: {
+        headers: {
             'Content-Type': 'application/json'
         }
     });
 };
 
 // 编辑题目
-export const updateQuestion = (header, data) => {
+export const updateQuestion = (questionId,data) => {
+    console.log(questionId);
     return request({
-        url: `/admin/question/update`,
+        url: `/mange/updateQuestion?questionId=${questionId}`,
         method: 'POST',
-        header: {
-           ...header,
-            'Content-Type': 'application/json'
-        },
         data
     });
 };
+/* export const updateQuestion = (header, data) => {
+    console.log('即将发送的请求头:',header);
+    console.log('即将发送的数据:', data);
+    return request({
+        url: `/mange/updateQuestion`,
+        method: 'POST',
+        data
+    });
+}; */
 
 // 禁用题目
-export const deleteQuestion = (questionId) => {
+export const deleteQuestionApi = (questionId) => {
     console.log(questionId);
-    console.log(typeof questionId);
     return request({
-        url: `/mange/deleteQuestion`,
+        url: `/mange/deleteQuestion?questionId=${questionId}`,
         method: 'POST',
-        header: {
-            'Content-Type': 'application/json', 
-            questionId: questionId.toString()
-        }
     });
 };
 

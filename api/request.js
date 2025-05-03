@@ -32,15 +32,17 @@ export const request = function request(option) {
     let token = `Bearer ${wx.getStorageSync("gs-token")}`;
     return new Promise((resolve, reject) => {
         let header = {
-            "content-type": "application/json",
+            "Content-Type": "application/json", // 修改为正确的大小写
             Authorization: token
         };
         wx.request({
             url: baseURL + option.url,
             method: option.method,
-            data: option.data === undefined? "" : JSON.stringify(option.data),
+            // 根据后端接口要求，灵活处理 data
+            data: option.data || "", 
             header: header,
-            params:option.params === undefined? "" : JSON.stringify(option.params),
+            // 根据后端接口要求，灵活处理 params
+            params: option.params || "", 
             timeout: 5000,
             success(res) {
                 console.log('request success: 响应数据:', res);
@@ -48,6 +50,14 @@ export const request = function request(option) {
                     resolve(res.data.data);
                 } else if (res.statusCode === 401) {
                     reject(handleUnauthorized());
+                } else if (res.statusCode === 400) {
+                    // 进一步分析 400 错误的原因
+                    console.log('request success: 400 Bad Request, 详细信息:', res.data);
+                    wx.showToast({
+                        title: res.data.error || "请求参数错误",
+                        icon: "none"
+                    });
+                    reject(res.data.error || "请求参数错误");
                 } else {
                     reject(handleBusinessError(res));
                 }

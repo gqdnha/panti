@@ -1,4 +1,4 @@
-import { getAllQuestion, addNewQuestion, deleteQuestion, updateQuestion, getQuestionDetail } from '../../../api/admin';
+import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail } from '../../../api/admin';
 
 Page({
     data: {
@@ -50,18 +50,22 @@ Page({
                 totalPages: res.pageInfo.totalPage
             });
         }).catch(err => {
-            console.error(err);
+            console.error('加载题目列表失败:', err);
+            wx.showToast({
+                title: '加载题目列表失败',
+                icon: 'none'
+            });
         });
     },
 
     deleteQuestion(e) {
-        const questionId = e.currentTarget.dataset.id.toString();
+        const questionId = e.currentTarget.dataset.id;
         wx.showModal({
             title: '确认删除',
             content: '确定要删除这道题目吗？',
             success: (res) => {
                 if (res.confirm) {
-                    deleteQuestion(questionId).then(() => {
+                    deleteQuestionApi(questionId).then(() => {
                         wx.showToast({
                             title: '删除成功',
                             icon:'success'
@@ -132,18 +136,21 @@ Page({
 
     editQuestion(e) {
         const questionId = e.currentTarget.dataset.id;
+        console.log(questionId);
         getQuestionDetail(questionId).then((res) => {
+            console.log(res);
             const typeIndex = this.data.questionTypes.indexOf(res.type);
             this.setData({
                 isEditModalVisible: true,
                 editQuestion: {
-                    id: res.id,
+                    id:res.questionId,
                     type: res.type,
                     content: res.content,
                     options: res.options,
                     answer: res.answer,
                     category: res.category,
-                    analysis: res.analysis
+                    analysis: res.analysis,
+                    eh:res.eh
                 },
                 editQuestionTypeIndex: typeIndex
             }, () => {
@@ -151,9 +158,15 @@ Page({
             });
         }).catch((err) => {
             console.error('获取题目详情失败:', err);
+            wx.showToast({
+                title: '获取题目详情失败',
+                icon: 'none'
+            });
         });
+
     },
 
+    // 添加题目
     addQuestion() {
         this.setData({
             isAddModalVisible: true,
@@ -163,7 +176,8 @@ Page({
                 options: '',
                 answer: '',
                 category: '',
-                analysis: ''
+                analysis: '',
+                eh:''
             },
             newQuestionTypeIndex: 0
         }, () => {
@@ -186,21 +200,53 @@ Page({
         });
     },
 
-    onNewQuestionInput(e) {
+    onInputChange(e, target) {
         const { field } = e.currentTarget.dataset;
         const value = e.detail.value;
         this.setData({
-            newQuestion: {
-               ...this.data.newQuestion,
+            [target]: {
+               ...this.data[target],
                 [field]: value
             }
         });
+    },
+
+    onNewQuestionInput(e) {
+        this.onInputChange(e, 'newQuestion');
+    },
+
+    validateQuestion(question) {
+        if (!question.content) {
+            wx.showToast({
+                title: '题目内容不能为空',
+                icon: 'none'
+            });
+            return false;
+        }
+        if ((question.type === '单选题' || question.type === '多选题') &&!question.options) {
+            wx.showToast({
+                title: '选项不能为空',
+                icon: 'none'
+            });
+            return false;
+        }
+        if (!question.answer) {
+            wx.showToast({
+                title: '答案不能为空',
+                icon: 'none'
+            });
+            return false;
+        }
+        return true;
     },
 
     onSubmitNewQuestion() {
         let { newQuestion } = this.data;
         if (newQuestion.type === '单选题' || newQuestion.type === '多选题') {
             newQuestion.options = newQuestion.options.trim();
+        }
+        if (!this.validateQuestion(newQuestion)) {
+            return;
         }
         addNewQuestion(newQuestion).then(res => {
             wx.showToast({
@@ -234,14 +280,7 @@ Page({
     },
 
     onEditQuestionInput(e) {
-        const { field } = e.currentTarget.dataset;
-        const value = e.detail.value;
-        this.setData({
-            editQuestion: {
-               ...this.data.editQuestion,
-                [field]: value
-            }
-        });
+        this.onInputChange(e, 'editQuestion');
     },
 
     onSubmitEditQuestion() {
@@ -249,10 +288,14 @@ Page({
         if (editQuestion.type === '单选题' || editQuestion.type === '多选题') {
             editQuestion.options = editQuestion.options.trim();
         }
-        const header = {
-            questionid: editQuestion.id
-        };
-        updateQuestion(header, editQuestion).then(res => {
+        if (!this.validateQuestion(editQuestion)) {
+            return;
+        }
+
+        const questionId = editQuestion.id 
+        console.log(questionId);
+        // 编辑题目
+        updateQuestion(questionId, editQuestion).then(res => {
             wx.showToast({
                 title: '题目编辑成功',
                 icon:'success'
@@ -267,4 +310,4 @@ Page({
             });
         });
     }
-});
+});    
