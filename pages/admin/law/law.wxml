@@ -59,9 +59,6 @@
             </view>
         </view>
 
-
-
-
         <view class="modal-footer">
             <button bindtap="onAddModalClose">取消</button>
             <button bindtap="onSubmitNewLaw">提交</button>

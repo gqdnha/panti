@@ -6,14 +6,14 @@ import {
 export const deleteLawApi = (regulationId) => {
     console.log(regulationId);
     return request({
-        url: `/mange/deleteRegulation?regulationId=${regulationId}`,
+        url: `/mange/deleteRegulation?regulationId=${regulationId}&regulationType=${regulationType}`,
         method: 'POST',
     });
 };
 
 
 // 添加法律条文
-export const addLawsApi = (regulationName,data) => {
+export const addLawsApi = (regulationName,regulationType,data) => {
     console.log(regulationName,data);
     // console.log(questionId);
     return request({

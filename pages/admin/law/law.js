@@ -2,6 +2,7 @@ import {
     addLawsApi,deleteLawApi
 } from '../../../api/admin';
 import {getLawsData} from '../../../api/getLaws'
+import { baseURL } from '../../../api/request'
 
 Page({
     data: {
@@ -11,6 +12,7 @@ Page({
         regulationName: '',
         // 文件路径
         files: '',
+        fileName: '',
         isAddModalVisible: false,
         // 法律列表数据
         lawList: [],
@@ -34,7 +36,6 @@ Page({
         console.log(data);
         getLawsData(data).then(res => {
             console.log(res);
-            // 假设 res 包含 userList 和 totalPages 数据
             this.setData({
                 lawList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage
@@ -43,8 +44,8 @@ Page({
         }).catch(err => {
             console.error(err);
         });
-        
     },
+
     // 删除法律
     deleteLaw(e) {
         const lawId = e.currentTarget.dataset.id;
@@ -71,14 +72,15 @@ Page({
             }
         });
     },
-    
 
     // 添加法律
     addLaw() {
         this.setData({
             isAddModalVisible: true,
             regulationName: '',
-            files: ''
+            regulationType: '',
+            files: '',
+            fileName: ''
         });
     },
 
@@ -89,36 +91,51 @@ Page({
     },
 
     onRegulationNameInput(e) {
-        const value = e.detail.value;
         this.setData({
-            regulationName: value
+            regulationName: e.detail.value
         });
-        console.log(this.data.regulationName);
     },
-    onRegulationTypeInput (e) {
-        const value = e.detail.value;
+
+    onRegulationTypeInput(e) {
         this.setData({
-            regulationType: value
+            regulationType: e.detail.value
         });
-        console.log(this.data.regulationName);
     },
 
     // 文件上传
     uploadFile() {
         wx.chooseMessageFile({
-            count: 1, // 只允许选择一个文件
+            count: 1,
             type: 'file',
-            extensions: ['doc', 'docx', 'pdf'], // 限制文件类型为.doc、.docx 和.pdf
+            extensions: ['doc', 'docx', 'pdf'],
             success: (res) => {
-                const tempFilePaths = res.tempFiles[0].path;
+                const file = res.tempFiles[0];
+                // 检查文件大小，限制为10MB
+                if (file.size > 10 * 1024 * 1024) {
+                    wx.showToast({
+                        title: '文件大小不能超过10MB',
+                        icon: 'none'
+                    });
+                    return;
+                }
+                
                 this.setData({
-                    files: tempFilePaths
+                    files: file.path,
+                    fileName: file.name
                 }, () => {
-                    console.log('files 已设置为:', this.data.files);
+                    console.log('文件已选择:', this.data.files);
+                    wx.showToast({
+                        title: '文件选择成功',
+                        icon: 'success'
+                    });
                 });
             },
             fail: (err) => {
-                console.error(' 选择文件失败:', err);
+                console.error('选择文件失败:', err);
+                wx.showToast({
+                    title: '选择文件失败',
+                    icon: 'none'
+                });
             }
         });
     },
@@ -127,41 +144,79 @@ Page({
     onSubmitNewLaw() {
         const {
             regulationName,
+            regulationType,
             files
         } = this.data;
-        if (!regulationName || !files) {
+        
+        if (!regulationName) {
             wx.showToast({
-                title: ' 请输入法律名并上传文件 ',
+                title: '请输入法律名称',
+                icon: 'none'
+            });
+            return;
+        }
+        
+        if (!regulationType) {
+            wx.showToast({
+                title: '请输入法律类别',
+                icon: 'none'
+            });
+            return;
+        }
+        
+        if (!files) {
+            wx.showToast({
+                title: '请选择要上传的文件',
                 icon: 'none'
             });
             return;
         }
 
-        const fileName = files.split('/').pop();
+        wx.showLoading({
+            title: '上传中...',
+            mask: true
+        });
+
+        const fileName = this.data.fileName;
         wx.uploadFile({
-            url: `/regulation/addRegulation?regulationName=${regulationName}`,
-            files: files,
-            name: 'files',
+            url: `${baseURL}/regulation/addRegulation`,
+            filePath: files,
+            name: 'file',
             formData: {
                 regulationName,
+                regulationType,
                 fileName
             },
             success: (res) => {
-                const data = JSON.parse(res.data);
-                console.log(data);
-                wx.showToast({
-                    title: ' 法律添加成功 ',
-                    icon:'success'
-                });
-                this.onAddModalClose();
-                this.loadLaws();
+                try {
+                    const data = JSON.parse(res.data);
+                    if (data.code === 200) {
+                        wx.showToast({
+                            title: '添加成功',
+                            icon: 'success'
+                        });
+                        this.onAddModalClose();
+                        this.loadLaws();
+                    } else {
+                        throw new Error(data.message || '添加失败');
+                    }
+                } catch (error) {
+                    console.error('解析响应失败:', error);
+                    wx.showToast({
+                        title: error.message || '添加失败',
+                        icon: 'none'
+                    });
+                }
             },
             fail: (error) => {
-                console.error(' 添加法律失败:', error);
+                console.error('上传文件失败:', error);
                 wx.showToast({
-                    title: ' 添加法律失败 ',
+                    title: '上传失败，请检查网络',
                     icon: 'none'
                 });
+            },
+            complete: () => {
+                wx.hideLoading();
             }
         });
     },
@@ -178,7 +233,7 @@ Page({
             this.loadLaws();
         } else {
             wx.showToast({
-                title: ' 已经是最后一页了 ',
+                title: '已经是最后一页了',
                 icon: 'none'
             });
         }
@@ -195,7 +250,7 @@ Page({
             this.loadLaws();
         } else {
             wx.showToast({
-                title: ' 已经是第一页了 ',
+                title: '已经是第一页了',
                 icon: 'none'
             });
         }
