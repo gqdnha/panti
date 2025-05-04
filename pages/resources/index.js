@@ -50,6 +50,7 @@ Page({
     // 查看详情
     lookDetil(e) {
         const lawId = e.currentTarget.dataset.id;
+        console.log(lawId);
         const lawItem = this.data.lawList.find(item => item.id === lawId);
         if (lawItem) {
             wx.navigateTo({

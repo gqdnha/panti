@@ -3,7 +3,7 @@
   "projectname": "%E4%B8%87%E5%85%83%E9%A1%B9%E7%9B%AE%EF%BC%88%E6%9E%B6%E5%AD%90%EF%BC%89",
   "setting": {
     "compileHotReLoad": true,
-    "urlCheck": false
+    "urlCheck": true
   },
   "condition": {
     "miniprogram": {

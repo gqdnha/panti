@@ -72,11 +72,11 @@
                 </text>
             </view>
             <view class="correct-answer">
-                <text>正确答案：{{currentQuestionData.answer}}</text>
+                <text>正确答案：{{detailData.answer}}</text>
             </view>
             <view class="analysis-content">
                 <text class="analysis-title">解析：</text>
-                <text>{{currentQuestionData.analysis}}</text>
+                <text>{{detailData.analysis}}</text>
             </view>
             <view class="modal-btns">
                 <view class="btn" bindtap="closeAnalysisAndContinue">继续答题</view>

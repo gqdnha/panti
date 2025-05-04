@@ -15,6 +15,9 @@ Page({
          analysis : '', //解析
          eh : '', //难易状况 */
 
+        //  查看详情
+        detailData:{},
+
         // 页面数据
         currentQuestion: 1, //题目序号
         totalQuestions: 0, //总数
@@ -188,6 +191,10 @@ Page({
       .then(response => {
             console.log('后端返回结果：', response);
             // 可以在这里处理后端返回的结果，例如更新页面显示等
+            this.setData({
+                detailData:response[0]
+            })
+            console.log(this.data.detailData);
         })
       .catch(error => {
             console.error('提交答案到后端时出错：', error);
