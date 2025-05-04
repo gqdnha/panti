@@ -74,10 +74,10 @@
                 <label>分类</label>
                 <input type="text" data-field="category" bindinput="onNewQuestionInput" value="{{newQuestion.category}}" />
             </view>
-            <view class="form-item">
+            <!-- <view class="form-item">
                 <label>难易</label>
                 <input type="text" data-field="eh" bindinput="onNewQuestionInput" value="{{newQuestion.eh}}" />
-            </view>
+            </view> -->
             <view class="form-item">
                 <label>解析</label>
                 <!-- 将input改为textarea -->

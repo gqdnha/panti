@@ -16,7 +16,9 @@
     "pages/stats/answer-stats/index",
     "pages/feedback/index",
     "pages/wrongBook/wrongBook",
-    "pages/admin/law/law"
+    "pages/admin/law/law",
+    "pages/practice/topcical_type/topical_type",
+    "pages/practice/topical_question/topical_question"
   ],
   "window": {
     "backgroundTextStyle": "light",

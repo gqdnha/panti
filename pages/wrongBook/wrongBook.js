@@ -142,64 +142,52 @@ Page({
         });
     },
     submitSingleAnswer: function () {
-    const { allQuestions, allAnswers, selectedOptions, questionStates, currentQuestion } = this.data;
-    const newQuestionStates = [...questionStates];
-    const newIsSubmitted = [...this.data.isSubmitted];
-    const question = allQuestions[currentQuestion - 1];
-    const userAnswer = allAnswers[currentQuestion - 1];
-    const correctAnswer = question.answer;
-    let isCorrect;
-    const questionId = question.questionId;
-    let userAnswerToSubmit;
-
-    if (question.type === '单选题' || question.type === '判断题') {
-        const selectedChar = selectedOptions[currentQuestion - 1];
-        userAnswerToSubmit = selectedChar || '';
-        console.log('提交的答案是：', userAnswerToSubmit); // 添加打印语句
-    } else if (question.type === '多选题') {
-        const selectedChars = selectedOptions[currentQuestion - 1] || [];
-        const sortedSelectedChars = selectedChars.slice().sort();
-        const sortedAnswerString = sortedSelectedChars.join('');
-        userAnswerToSubmit = sortedAnswerString;
-        // 检查 correctAnswer 是否为 null 或 undefined
-        if (correctAnswer) {
-            const correctFirstChars = correctAnswer.split('').map(char => char.trim());
-            isCorrect = sortedAnswerString.split('').every(char => correctFirstChars.includes(char)) && correctFirstChars.length === sortedAnswerString.length;
-        } else {
-            isCorrect = false;
+        const { allQuestions, allAnswers, selectedOptions, questionStates, currentQuestion } = this.data;
+        const newQuestionStates = [...questionStates];
+        const newIsSubmitted = [...this.data.isSubmitted];
+        const question = allQuestions[currentQuestion - 1];
+        const userAnswer = allAnswers[currentQuestion - 1];
+        let userAnswerToSubmit;
+    
+        if (question.type === '单选题' || question.type === '判断题') {
+            const selectedChar = selectedOptions[currentQuestion - 1];
+            userAnswerToSubmit = selectedChar || '';
+        } else if (question.type === '多选题') {
+            const selectedChars = selectedOptions[currentQuestion - 1] || [];
+            const sortedSelectedChars = selectedChars.slice().sort();
+            const sortedAnswerString = sortedSelectedChars.join('');
+            userAnswerToSubmit = sortedAnswerString;
+        } else if (question.type === '填空题') {
+            userAnswerToSubmit = userAnswer;
         }
-        console.log('提交的答案是：', userAnswerToSubmit); // 添加打印语句
-    } else if (question.type === '填空题') {
-        isCorrect = userAnswer === correctAnswer;
-        userAnswerToSubmit = userAnswer;
-        console.log('提交的答案是：', userAnswerToSubmit); // 添加打印语句
-    }
-    newQuestionStates[currentQuestion - 1] = isCorrect;
-    newIsSubmitted[currentQuestion - 1] = true;
-
-    this.setData({
-        questionStates: newQuestionStates,
-        isSubmitted: newIsSubmitted
-    });
-
-    console.log('提交结果：', newQuestionStates);
-    // 调用后端接口
-    apiJudgeWrongQuestion([{
-        'questionId': questionId,
-        'answer': userAnswerToSubmit
-    }])
-      .then(response => {
-            console.log('后端返回结果：', response);
-            // 可以在这里处理后端返回的结果，例如更新页面显示等
-            this.setData({
-                detailData:response[0]
-            })
-            console.log(this.data.detailData);
-        })
-      .catch(error => {
-            console.error('提交答案到后端时出错：', error);
+    
+        newIsSubmitted[currentQuestion - 1] = true;
+    
+        this.setData({
+            isSubmitted: newIsSubmitted
         });
-},
+    
+        apiJudgeWrongQuestion([{
+            'questionId': question.questionId,
+            'answer': userAnswerToSubmit
+        }])
+           .then(response => {
+                console.log('后端返回结果：', response);
+                const result = response[0];
+                const isCorrect = result.rightOrWrong === '对';
+                newQuestionStates[currentQuestion - 1] = isCorrect;
+                this.setData({
+                    questionStates: newQuestionStates,
+                    detailData: result
+                }, () => {
+                    // 在这里可以添加一些额外的逻辑，确保页面正确更新
+                    console.log('questionStates 更新后:', this.data.questionStates);
+                });
+            })
+           .catch(error => {
+                console.error('提交答案到后端时出错：', error);
+            });
+    },
 
     showAnalysis: function () {
         const { currentQuestion, allQuestions } = this.data;

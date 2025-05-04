@@ -1,55 +1,44 @@
-// import {getAllQuestion} from "../../../api/getAllQuestion";
-import {getAllQuestion} from "../../../api/admin";
 
 Page({
     data: {
-        eh: '简单', 
-        currentCategories: [],
-        categoryStatus: {},
-    },
-    onLoad() {
-        this.setData({
-            currentCategories: []
-        });
-        this.initCategoryStatus();
-        this.getAllData();
-    },
-    // 获取后端数据
-    getAllData: async function() {
-        try {
-            const res = await getAllQuestion({ eh: this.data.eh });
-            console.log(res); 
-            this.setData({
-                currentCategories : res.pageInfo.pageData
-            })
-            console.log(this.data.currentCategories);
-            // console.log(this.data.currentCategories.pageInfo.pageData);
-        } catch (error) {
-            console.error('获取问题数据失败:', error);
-        }
-
-    },
-    changeLevel: function (e) {
-        const newEh = e.currentTarget.dataset.eh;
-        this.setData({
-            eh: newEh
-        });
-        this.getAllData();
-    },
-    initCategoryStatus() {
-        const statusObj = {};
-        this.data.currentCategories.forEach(item => {
-            statusObj[item.id] = '0/0题';
-        });
-        this.setData({
-            categoryStatus: statusObj
-        });
+        questionList: [],
+        totalPages: 0,
+        currentCategories: [
+            {
+                id: 1,
+                category: '法律'
+            },
+            {
+                id: 2,
+                category: '大气'
+            },
+            {
+                id: 3,
+                category: '科学'
+            },
+            {
+                id: 4,
+                category: '技术'
+            },
+            {
+                id: 5,
+                category: '艺术'
+            },
+            {
+                id: 6,
+                category: '体育'
+            },
+            {
+                id: 7,
+                category: '娱乐'
+            },
+        ],
     },
     goToPracticePage(e) {
-        const categoryId = e.currentTarget.dataset.categoryId;
-        console.log('点击分类练习，categoryId:', categoryId);
+        const category = e.currentTarget.dataset.category;
+        console.log('点击分类练习，category:', category);
         wx.navigateTo({
-            url: `pages/practice/topical/index?categoryId=${categoryId}&eh=${this.data.eh}`
+            url: `/pages/practice/topcical_type/topical_type?category=${encodeURIComponent(category)}`
         });
     }
-});    
+});

@@ -1,6 +1,9 @@
 import { getAllUserInfo } from '../../../api/admin'
+import {getUserInfo} from '../../../api/getUserInfo'
 Page({
     data: {
+        // 正确率
+        rightPercent:0,
         userId: null,
         userInfo: {},
         answerRecords: [],
@@ -8,7 +11,9 @@ Page({
         pageNum: 1,
         pageSize: 8,
         totalPages: 1,
-        searchKeyword: ''
+        searchKeyword: '',
+        showUserDetailModal: false, // 控制用户详情模态框的显示与隐藏
+        currentUserDetail: {} // 当前要显示详情的用户信息
     },
 
     onLoad(options) {
@@ -60,9 +65,24 @@ Page({
     },
 
     viewDetail(e) {
-        const userId = e.currentTarget.dataset.id;
-        wx.navigateTo({
-            url: `/pages/admin/user-detail/index?id=${userId}`
+        const { id } = e.currentTarget.dataset;
+        const user = this.data.userList.find(item => item.id === id);
+        this.setData({
+            showUserDetailModal: true,
+            currentUserDetail: user
+        });
+        getUserInfo().then(res => {
+            console.log(res);
+            this.setData({
+                rightPercent:res.rightPercent*100
+            })
+            console.log(this.data.rightPercent);
+        })
+    },
+
+    closeUserDetailModal() {
+        this.setData({
+            showUserDetailModal: false
         });
     },
 
@@ -153,4 +173,4 @@ Page({
             }
         });
     }
-});    
+});

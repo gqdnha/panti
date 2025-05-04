@@ -15,7 +15,7 @@ export const getWrongQuestion = () => {
 export const apiJudgeWrongQuestion = (data) => {
     const userId = getUserId();
     return request({
-        url: `/dailyQuestion/judgeQuestion?userId=${userId}`,
+        url: `/wrongQuestion/judgeWrongQuestion?userId=${userId}`,
         method: 'POST',
         data
     });

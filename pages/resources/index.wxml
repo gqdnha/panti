@@ -34,10 +34,6 @@
         <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
     </view>
 
-    <!-- 添加法律按钮 -->
-    <view class="add-button" bindtap="addLaw">
-        <image class="add-icon" src="/assets/icons/add.png" mode="aspectFit"></image>
-    </view>
 
     <!-- 添加法律弹窗 -->
     <view class="modal-mask" wx:if="{{isAddModalVisible}}" bindtap="onAddModalClose"></view>

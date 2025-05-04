@@ -1,19 +1,10 @@
 <!-- 专题练习 -->
 <view class="container">
-    <!-- 头部区域 -->
-    <view class="header">
-        <view class="nav">
-            <view class="nav-item {{eh === '简单' ? 'active' : ''}}" bindtap="changeLevel" data-eh="简单">简单</view>
-            <view class="nav-item {{eh === '中等' ? 'active' : ''}}" bindtap="changeLevel" data-eh="中等">中等</view>
-            <view class="nav-item {{eh === '困难' ? 'active' : ''}}" bindtap="changeLevel" data-eh="困难">困难</view>
-        </view>
-    </view>
     <!-- 内容区域 -->
     <view class="content">
         <!-- 分类练习 -->
-        <view class="category" wx:for="{{currentCategories}}" wx:key="id" bindtap="goToPracticePage" data-category-id="{{item.question_id}}">
+        <view class="category" wx:for="{{currentCategories}}" wx:key="id" bindtap="goToPracticePage" data-category="{{item.category}}">
             <view class="category-name">{{item.category}}</view>
-            <view class="category-status">{{item.type}}</view>
         </view>
     </view>
 </view>    
