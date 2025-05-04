@@ -15,9 +15,7 @@
     "pages/resources/index",
     "pages/stats/answer-stats/index",
     "pages/feedback/index",
-    "pages/history/history",
     "pages/wrongBook/wrongBook",
-    "pages/practice/dailyTest/dailyTest",
     "pages/admin/law/law"
   ],
   "window": {
