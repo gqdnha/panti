@@ -2,6 +2,16 @@ import {
     request
 } from "./request";
 
+// 删除法律 
+export const deleteLawApi = (regulationId) => {
+    console.log(regulationId);
+    return request({
+        url: `/mange/deleteRegulation?regulationId=${regulationId}`,
+        method: 'POST',
+    });
+};
+
+
 // 添加法律条文
 export const addLawsApi = (regulationName,data) => {
     console.log(regulationName,data);

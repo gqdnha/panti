@@ -1,10 +1,12 @@
 import {
-    addLawsApi
+    addLawsApi,deleteLawApi
 } from '../../../api/admin';
 import {getLawsData} from '../../../api/getLaws'
 
 Page({
     data: {
+        // 法律分类
+        regulationType:'',
         // 法律名
         regulationName: '',
         // 文件路径
@@ -37,8 +39,36 @@ Page({
                 lawList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage
             });
+            console.log(this.data.lawList);
         }).catch(err => {
             console.error(err);
+        });
+        
+    },
+    // 删除法律
+    deleteLaw(e) {
+        const lawId = e.currentTarget.dataset.id;
+        console.log(lawId);
+        wx.showModal({
+            title: '确认删除',
+            content: '确定要删除这条法律文件吗？',
+            success: (res) => {
+                if (res.confirm) {
+                    deleteLawApi(lawId).then(() => {
+                        wx.showToast({
+                            title: '删除成功',
+                            icon:'success'
+                        });
+                        this.loadLaws();
+                    }).catch(error => {
+                        console.error('删除法律失败:', error);
+                        wx.showToast({
+                            title: '删除法律失败',
+                            icon: 'none'
+                        });
+                    });
+                }
+            }
         });
     },
     
@@ -62,6 +92,13 @@ Page({
         const value = e.detail.value;
         this.setData({
             regulationName: value
+        });
+        console.log(this.data.regulationName);
+    },
+    onRegulationTypeInput (e) {
+        const value = e.detail.value;
+        this.setData({
+            regulationType: value
         });
         console.log(this.data.regulationName);
     },

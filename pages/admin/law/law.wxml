@@ -1,5 +1,10 @@
 <view class="container">
-    <!-- 法律列表 -->
+    <!-- 搜索框 -->
+    <!-- <view class="search-box">
+        <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}"/>
+        <button bindtap="onSearch">搜索</button>
+    </view> -->
+    <!-- 题目列表 -->
     <view class="question-list">
         <table class="question-table">
             <thead class="list-header">
@@ -14,10 +19,9 @@
                 <tr class="list-item" wx:for="{{lawList}}" wx:key="id">
                     <td class="question-id">{{item.id}}</td>
                     <td class="question-title">{{item.regulation_name}}</td>
-                    <!-- <td class="question-type">{{item.create_date}}</td> -->
+                    <td class="question-type">{{item.regulation_type}}</td>
                     <td class="item-actions">
-                        <!-- 这里可以添加编辑、删除等操作按钮 -->
-                        <view>删除</view>
+                        <view class="btn delete" bindtap="deleteLaw" data-id="{{item.id}}">删除</view>
                     </td>
                 </tr>
             </tbody>
@@ -45,15 +49,22 @@
                 <input type="text" bindinput="onRegulationNameInput" value="{{regulationName}}"></input>
             </view>
             <view class="form-item">
+                <label>分类</label>
+                <input type="text" bindinput="onRegulationTypeInput" value="{{regulationType}}"></input>
+            </view>
+            <view class="form-item">
                 <label>上传文件</label>
                 <button bindtap="uploadFile">选择 Word 或 PDF 文件</button>
                 <view wx:if="{{files}}">已选择文件: {{files}}</view>
             </view>
         </view>
+
+
+
+
         <view class="modal-footer">
             <button bindtap="onAddModalClose">取消</button>
             <button bindtap="onSubmitNewLaw">提交</button>
         </view>
     </view>
 </view>
-    

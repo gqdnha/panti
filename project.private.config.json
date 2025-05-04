@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/admin/law/law",
+          "pathName": "pages/admin/law/law",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "法律管理",
           "pathName": "pages/admin/law/law",
           "query": "",
