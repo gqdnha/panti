@@ -3,17 +3,26 @@ import {
 } from '../../api/getLaws'
 
 Page({
-
     data: {
-        totalPages:0,
-        lawList:[],
-        pageNum:1,
-        pageSize:10
+        // 法律分类
+        regulationType: '',
+        // 法律名
+        regulationName: '',
+        // 文件路径
+        files: '',
+        fileName: '',
+        isAddModalVisible: false,
+        // 法律列表数据
+        lawList: [],
+        pageNum: 1,
+        totalPages: 1,
+        pageSize: 10
     },
 
     onLoad(options) {
-        this.loadLaws()
+        this.loadLaws();
     },
+
     // 加载法律列表
     loadLaws() {
         const {
@@ -28,29 +37,59 @@ Page({
         console.log(data);
         getLawsData(data).then(res => {
             console.log(res);
-            // 假设 res 包含 userList 和 totalPages 数据
             this.setData({
                 lawList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage
             });
+            console.log(this.data.lawList);
         }).catch(err => {
             console.error(err);
         });
     },
 
-    /**
-     * 生命周期函数--监听页面显示
-     */
-    onShow() {
-
+    // 查看详情
+    lookDetil(e) {
+        const lawId = e.currentTarget.dataset.id;
+        const lawItem = this.data.lawList.find(item => item.id === lawId);
+        if (lawItem) {
+            wx.navigateTo({
+                url: `/pages/resources/detail/index?id=${lawId}&name=${lawItem.regulation_name}&type=${lawItem.regulation_type}`
+            });
+        }
     },
 
-    /**
-     * 生命周期函数--监听页面隐藏
-     */
-    onHide() {
-
+    onNextPage() {
+        const {
+            pageNum,
+            totalPages
+        } = this.data;
+        if (pageNum < totalPages) {
+            this.setData({
+                pageNum: pageNum + 1
+            });
+            this.loadLaws();
+        } else {
+            wx.showToast({
+                title: '已经是最后一页了',
+                icon: 'none'
+            });
+        }
     },
 
-
-})
+    onPreviousPage() {
+        const {
+            pageNum
+        } = this.data;
+        if (pageNum > 1) {
+            this.setData({
+                pageNum: pageNum - 1
+            });
+            this.loadLaws();
+        } else {
+            wx.showToast({
+                title: '已经是第一页了',
+                icon: 'none'
+            });
+        }
+    }
+});

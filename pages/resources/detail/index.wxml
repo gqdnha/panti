@@ -1,0 +1,22 @@
+<view class="container">
+    <!-- 标题栏 -->
+    <view class="header">
+        <view class="title">{{lawName}}</view>
+        <view class="type">类别：{{lawType}}</view>
+    </view>
+
+    <!-- 内容区域 -->
+    <view class="content">
+        <view class="loading" wx:if="{{loading}}">
+            <text>加载中...</text>
+        </view>
+        <view class="text-content" wx:else>
+            {{content}}
+        </view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="footer">
+        <button class="download-btn" bindtap="downloadFile">下载文件</button>
+    </view>
+</view> 
