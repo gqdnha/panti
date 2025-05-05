@@ -2,11 +2,13 @@ import {request} from "./request"
 import {getUserId} from './getUserId'
 
 // 获取错题本的题目
-export const getWrongQuestion = () => {
+export const getWrongQuestion = (data) => {
     const userId = getUserId()
+    const type = data
+    console.log(type);
     return request({
         // url: `/dailyQuestion/getEverydayQuestion/${data}`,
-        url:`/wrongQuestion/getWrongQuestion?userId=${userId}`,
+        url:`/wrongQuestion/getWrongQuestion?userId=${userId}&type=${type}`,
         method: 'GET'
     })
 }

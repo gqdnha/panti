@@ -18,7 +18,8 @@
     "pages/wrongBook/wrongBook",
     "pages/admin/law/law",
     "pages/practice/topcical_type/topical_type",
-    "pages/practice/topical_question/topical_question"
+    "pages/practice/topical_question/topical_question",
+    "pages/wrongBook_type/wrongBook_type"
   ],
   "window": {
     "backgroundTextStyle": "light",
