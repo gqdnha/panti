@@ -1,5 +1,4 @@
-/* import { getLawsData } from '../../';
-import { baseURL } from '../../../api/request'; */
+import { getLawsData } from '../../../api/getLaws';
 
 Page({
     data: {

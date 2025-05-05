@@ -188,8 +188,7 @@ Page({
                 options: '',
                 answer: '',
                 category: '',
-                analysis: '',
-                eh:''
+                analysis: ''
             },
             newQuestionTypeIndex: 0
         }, () => {
