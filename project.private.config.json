@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/admin/law/law",
+          "pathName": "pages/admin/law/law",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/practice/topical_question/topical_question",
           "pathName": "pages/practice/topical_question/topical_question",
           "query": "category=%25E6%25B3%2595%25E5%25BE%258B&questionType=%25E5%258D%2595%25E9%2580%2589",

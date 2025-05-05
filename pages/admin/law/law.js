@@ -3,12 +3,11 @@ import {
     deleteLawApi
 } from '../../../api/admin';
 import { getLawsData } from '../../../api/getLaws'
-import { baseURL } from '../../../api/request'
 
 Page({
     data: {
         // 法律分类选项
-        regulationTypes: ['类型1', '类型2', '类型3'], // 请根据实际情况修改
+        regulationTypes: ['类型1', '类型2', '类型3'], 
         // 当前选择的法律分类索引
         regulationTypeIndex: 0,
         // 法律名
@@ -46,6 +45,10 @@ Page({
             console.log(this.data.lawList);
         }).catch(err => {
             console.error(err);
+            wx.showToast({
+                title: '获取法律列表失败，请稍后重试',
+                icon: 'none'
+            });
         });
     },
 
@@ -81,7 +84,7 @@ Page({
         this.setData({
             isAddModalVisible: true,
             regulationName: '',
-            regulationTypeIndex: 0, // 重置分类索引
+            regulationTypeIndex: 0, 
             files: '',
             fileName: ''
         });
@@ -164,7 +167,7 @@ Page({
 
         if (!regulationType) {
             wx.showToast({
-                title: '请输入法律类别',
+                title: '请选择法律类别',
                 icon: 'none'
             });
             return;
@@ -183,47 +186,36 @@ Page({
             mask: true
         });
 
-        const fileName = this.data.fileName;
-        wx.uploadFile({
-            url: `${baseURL}/regulation/addRegulation`,
-            filePath: files,
-            name: 'file',
-            formData: {
-                regulationName,
-                regulationType,
-                fileName
-            },
-            success: (res) => {
-                try {
-                    const data = JSON.parse(res.data);
-                    if (data.code === 200) {
-                        wx.showToast({
-                            title: '添加成功',
-                            icon:'success'
-                        });
-                        this.onAddModalClose();
-                        this.loadLaws();
-                    } else {
-                        throw new Error(data.message || '添加失败');
-                    }
-                } catch (error) {
-                    console.error('解析响应失败:', error);
-                    wx.showToast({
-                        title: error.message || '添加失败',
-                        icon: 'none'
-                    });
-                }
-            },
-            fail: (error) => {
-                console.error('上传文件失败:', error);
+        const formData = {
+            regulationName,
+            regulationType,
+            files: {
+                uri: files,
+                name: this.data.fileName
+            }
+        };
+        addLawsApi(formData).then((res) => {
+            if (res.code === 200) {
                 wx.showToast({
-                    title: '上传失败，请检查网络',
+                    title: '添加成功',
+                    icon:'success'
+                });
+                this.onAddModalClose();
+                this.loadLaws();
+            } else {
+                wx.showToast({
+                    title: res.message || '添加失败',
                     icon: 'none'
                 });
-            },
-            complete: () => {
-                wx.hideLoading();
             }
+        }).catch((error) => {
+            console.error('上传文件失败:', error);
+            wx.showToast({
+                title: '上传失败，请检查网络',
+                icon: 'none'
+            });
+        }).finally(() => {
+            wx.hideLoading();
         });
     },
 

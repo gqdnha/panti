@@ -23,7 +23,7 @@
 
                     <td class="item-actions">
                         <view class="btn edit" bindtap="viewDetail" data-id="{{item.id}}">详情</view>
-                        <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view>
+                        <!-- <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view> -->
                     </td>
                 </tr>
             </tbody>
@@ -47,17 +47,30 @@
                 <label>姓名：</label>
                 <text>{{currentUserDetail.name}}</text>
             </view>
+
             <view class="detail-item">
                 <label>部门：</label>
                 <text>{{currentUserDetail.department}}</text>
             </view>
+
             <view class="detail-item">
                 <label>学习时间（分钟）：</label>
                 <text>{{currentUserDetail.learn_time}}</text>
             </view>
+
             <view class="detail-item">
                 <label>正确率</label>
                 <text>{{rightPercent}} %</text>
+            </view>
+
+            <!-- 错题本 -->
+            <view class="detail-item" bindtap="goToOneWronBook">
+                <label>错题本</label>
+                <text>{{rightPercent}} %</text>
+            </view>
+            <!-- 每日练习 情况 -->
+            <view class="detail-item" bindtap="goToOneDaily">
+                <label>每日练习</label>
             </view>
         </view>
     </view>

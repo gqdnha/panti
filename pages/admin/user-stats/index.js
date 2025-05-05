@@ -85,14 +85,15 @@ Page({
             showUserDetailModal: false
         });
     },
-
-    exportUserData(e) {
+    
+    //导出
+    /* exportUserData(e) {
         const userId = e.currentTarget.dataset.id;
         wx.showToast({
             title: '导出成功',
             icon: 'success'
         });
-    },
+    }, */
 
     onNextPage() {
         const { pageNum, totalPages } = this.data;
@@ -172,5 +173,17 @@ Page({
                 [field]: value
             }
         });
-    }
+    },
+
+    goToOneWronBook() {
+        const type = e.currentTarget.dataset.type;
+        wx.navigateTo({
+            url: `/pages/practice/topical/index?category=${category}`
+        });
+    },
+    goToOneDaily() {
+        wx.navigateTo({
+            url: `/pages/practice/topical/index?category=${category}`
+        });
+    },
 });

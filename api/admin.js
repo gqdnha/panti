@@ -1,25 +1,41 @@
 import {
     request
 } from "./request";
-
+import {getUserId} from './getUserId'
 // 删除法律 
 export const deleteLawApi = (regulationId) => {
+    // const userId = getUserId()
+    const userId = 2
+
     console.log(regulationId);
+    console.log(userId);
     return request({
-        url: `/mange/deleteRegulation?regulationId=${regulationId}&regulationType=${regulationType}`,
+        url: `/regulation/deleteFavoriteRegulation?regulationId=${regulationId}&userId=${userId}`,
         method: 'POST',
     });
 };
 
 
 // 添加法律条文
-export const addLawsApi = (regulationName,regulationType,data) => {
-    console.log(regulationName,data);
-    // console.log(questionId);
+
+/* export const addLawsApi = (regulationName, regulationType, data) => {
+    const userId = getUserId();
+    console.log(regulationName, regulationType, data.files);
     return request({
-        url: `/mange/updateQuestion?regulationName=${regulationName}`,
+        url: `/regulation/addRegulation?regulationName=${encodeURIComponent(regulationName)}&regulationType=${encodeURIComponent(regulationType)}&userId=${userId}`,
         method: 'POST',
-        data
+    });
+}; */
+export const addLawsApi = (data) => {
+    const { regulationName, regulationType, files } = data;
+    const userId = getUserId();
+    console.log(regulationName, regulationType, files);
+    return request({
+        url: `/regulation/addRegulation?regulationName=${encodeURIComponent(regulationName)}&regulationType=${encodeURIComponent(regulationType)}&userId=${userId}`,
+        method: 'POST',
+        formData: {
+            files: files.uri
+        }
     });
 };
 
