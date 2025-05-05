@@ -54,13 +54,28 @@
                 </picker>
             </view>
             <view class="form-item">
+                <label>分类</label>
+                <picker mode="selector" range="{{categories}}" value="{{newCategoryIndex}}" bindchange="onCategoryChange">
+                    <view class="picker-view">
+                        {{categories[newCategoryIndex]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="form-item">
                 <label>题目内容</label>
-                <!-- 将input改为textarea -->
                 <textarea data-field="content" bindinput="onNewQuestionInput" value="{{newQuestion.content}}"></textarea>
             </view>
             <view class="form-item" wx:if="{{newQuestion.type === '单选题' || newQuestion.type === '多选题'}}">
-                <label>选项（多个选项用逗号分隔）</label>
-                <input type="text" data-field="options" bindinput="onNewQuestionInput" value="{{newQuestion.options}}" />
+                <label>选项</label>
+                <view class="option-item">A. <input type="text" data-field="option1" bindinput="onNewQuestionInput" value="{{newQuestion.option1}}" /></view>
+                <view class="option-item">B. <input type="text" data-field="option2" bindinput="onNewQuestionInput" value="{{newQuestion.option2}}" /></view>
+                <view class="option-item">C. <input type="text" data-field="option3" bindinput="onNewQuestionInput" value="{{newQuestion.option3}}" /></view>
+                <view class="option-item">D. <input type="text" data-field="option4" bindinput="onNewQuestionInput" value="{{newQuestion.option4}}" /></view>
+            </view>
+            <view class="form-item" wx:if="{{newQuestion.type === '判断题'}}">
+                <label>选项</label>
+                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onNewQuestionInput" value="{{newQuestion.optionT}}" /></view>
+                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onNewQuestionInput" value="{{newQuestion.optionF}}" /></view>
             </view>
             <view class="form-item" wx:if="{{newQuestion.type === '单选题' || newQuestion.type === '多选题' || newQuestion.type === '判断题'}}">
                 <label>答案（选项）</label>
@@ -71,16 +86,7 @@
                 <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}" />
             </view>
             <view class="form-item">
-                <label>分类</label>
-                <input type="text" data-field="category" bindinput="onNewQuestionInput" value="{{newQuestion.category}}" />
-            </view>
-            <!-- <view class="form-item">
-                <label>难易</label>
-                <input type="text" data-field="eh" bindinput="onNewQuestionInput" value="{{newQuestion.eh}}" />
-            </view> -->
-            <view class="form-item">
                 <label>解析</label>
-                <!-- 将input改为textarea -->
                 <textarea data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}"></textarea>
             </view>
         </view>
@@ -103,19 +109,32 @@
                     </view>
                 </picker>
             </view>
-            <view class="modal-content" value="{{editQuestionTypeIndex}}">
+            <view class="form-item">
+                <label>分类</label>
+                <picker mode="selector" range="{{categories}}" value="{{editCategoryIndex}}" bindchange="onEditCategoryChange">
+                    <view class="picker-view">
+                        {{categories[editCategoryIndex]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="modal-content">
                 <label>正确率：{{wrongQuestionPercent}}%</label>
             </view>
             <view class="form-item">
                 <label>题目内容</label>
-                <!-- 将input改为textarea -->
                 <textarea data-field="content" bindinput="onEditQuestionInput" value="{{editQuestion.content}}"></textarea>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题'}}">
-                <label>选项（多个选项用逗号分隔）</label>
-                <!-- <input type="text" data-field="options" bindinput="onEditQuestionInput" value="{{editQuestion.options}}" /> -->
-                <textarea data-field="options" bindinput="onEditQuestionInput" value="{{editQuestion.options}}"></textarea>
-
+                <label>选项</label>
+                <view class="option-item">A. <input type="text" data-field="option1" bindinput="onEditQuestionInput" value="{{editQuestion.option1}}" /></view>
+                <view class="option-item">B. <input type="text" data-field="option2" bindinput="onEditQuestionInput" value="{{editQuestion.option2}}" /></view>
+                <view class="option-item">C. <input type="text" data-field="option3" bindinput="onEditQuestionInput" value="{{editQuestion.option3}}" /></view>
+                <view class="option-item">D. <input type="text" data-field="option4" bindinput="onEditQuestionInput" value="{{editQuestion.option4}}" /></view>
+            </view>
+            <view class="form-item" wx:if="{{editQuestion.type === '判断题'}}">
+                <label>选项</label>
+                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onEditQuestionInput" value="{{editQuestion.optionT}}" /></view>
+                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onEditQuestionInput" value="{{editQuestion.optionF}}" /></view>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题' || editQuestion.type === '判断题'}}">
                 <label>答案（选项）</label>
@@ -126,16 +145,11 @@
                 <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" />
             </view>
             <view class="form-item">
-                <label>分类</label>
-                <input type="text" data-field="category" bindinput="onEditQuestionInput" value="{{editQuestion.category}}" />
-            </view>
-            <view class="form-item">
                 <label>难易</label>
                 <input type="text" data-field="eh" bindinput="onEditQuestionInput" value="{{editQuestion.eh}}" />
             </view>
             <view class="form-item">
                 <label>解析</label>
-                <!-- 将input改为textarea -->
                 <textarea data-field="analysis" bindinput="onEditQuestionInput" value="{{editQuestion.analysis}}"></textarea>
             </view>
         </view>
@@ -144,4 +158,4 @@
             <button bindtap="onSubmitEditQuestion">提交</button>
         </view>
     </view>
-</view>
+</view>    

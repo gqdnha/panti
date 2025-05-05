@@ -50,7 +50,11 @@
             </view>
             <view class="form-item">
                 <label>分类</label>
-                <input type="text" bindinput="onRegulationTypeInput" value="{{regulationType}}"></input>
+                <picker mode="selector" range="{{regulationTypes}}" value="{{regulationTypeIndex}}" bindchange="onRegulationTypeChange">
+                    <view class="picker-view">
+                        {{regulationTypes[regulationTypeIndex]}}
+                    </view>
+                </picker>
             </view>
             <view class="form-item">
                 <label>上传文件</label>

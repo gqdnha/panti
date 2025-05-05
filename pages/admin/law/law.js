@@ -1,13 +1,16 @@
 import {
-    addLawsApi,deleteLawApi
+    addLawsApi,
+    deleteLawApi
 } from '../../../api/admin';
-import {getLawsData} from '../../../api/getLaws'
+import { getLawsData } from '../../../api/getLaws'
 import { baseURL } from '../../../api/request'
 
 Page({
     data: {
-        // 法律分类
-        regulationType:'',
+        // 法律分类选项
+        regulationTypes: ['类型1', '类型2', '类型3'], // 请根据实际情况修改
+        // 当前选择的法律分类索引
+        regulationTypeIndex: 0,
         // 法律名
         regulationName: '',
         // 文件路径
@@ -18,7 +21,7 @@ Page({
         lawList: [],
         pageNum: 1,
         totalPages: 1,
-        pageSize:10
+        pageSize: 10
     },
 
     onLoad(options) {
@@ -27,7 +30,7 @@ Page({
 
     // 加载法律列表
     loadLaws() {
-        const {pageNum, pageSize } = this.data;
+        const { pageNum, pageSize } = this.data;
         const data = {
             regulationName: "",
             pageNum: pageNum,
@@ -78,7 +81,7 @@ Page({
         this.setData({
             isAddModalVisible: true,
             regulationName: '',
-            regulationType: '',
+            regulationTypeIndex: 0, // 重置分类索引
             files: '',
             fileName: ''
         });
@@ -96,9 +99,12 @@ Page({
         });
     },
 
-    onRegulationTypeInput(e) {
+    onRegulationTypeChange(e) {
+        const index = e.detail.value;
+        const type = this.data.regulationTypes[index];
         this.setData({
-            regulationType: e.detail.value
+            regulationTypeIndex: index,
+            regulationType: type
         });
     },
 
@@ -118,7 +124,7 @@ Page({
                     });
                     return;
                 }
-                
+
                 this.setData({
                     files: file.path,
                     fileName: file.name
@@ -126,7 +132,7 @@ Page({
                     console.log('文件已选择:', this.data.files);
                     wx.showToast({
                         title: '文件选择成功',
-                        icon: 'success'
+                        icon:'success'
                     });
                 });
             },
@@ -147,7 +153,7 @@ Page({
             regulationType,
             files
         } = this.data;
-        
+
         if (!regulationName) {
             wx.showToast({
                 title: '请输入法律名称',
@@ -155,7 +161,7 @@ Page({
             });
             return;
         }
-        
+
         if (!regulationType) {
             wx.showToast({
                 title: '请输入法律类别',
@@ -163,7 +169,7 @@ Page({
             });
             return;
         }
-        
+
         if (!files) {
             wx.showToast({
                 title: '请选择要上传的文件',
@@ -193,7 +199,7 @@ Page({
                     if (data.code === 200) {
                         wx.showToast({
                             title: '添加成功',
-                            icon: 'success'
+                            icon:'success'
                         });
                         this.onAddModalClose();
                         this.loadLaws();
@@ -256,4 +262,3 @@ Page({
         }
     }
 });
-    

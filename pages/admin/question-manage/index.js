@@ -1,10 +1,9 @@
-import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail ,getWrongQuestionPercent } from '../../../api/admin';
+import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent } from '../../../api/admin';
 
 Page({
     data: {
         // 正确率
-        wrongQuestionPercent:'',
-        
+        wrongQuestionPercent: '',
         questionList: [],
         pageNum: 1,
         pageSize: 8,
@@ -15,13 +14,20 @@ Page({
         newQuestion: {
             type: '',
             content: '',
-            options: '',
+            option1: '',
+            option2: '',
+            option3: '',
+            option4: '',
+            optionT: '',
+            optionF: '',
             answer: '',
             category: '',
             analysis: ''
         },
         questionTypes: ['单选题', '多选题', '填空题', '判断题'],
         newQuestionTypeIndex: 0,
+        categories: ['分类1', '分类2', '分类3'], // 可根据实际情况修改
+        newCategoryIndex: 0,
         isEditModalVisible: false,
         editQuestion: {
             id: '',
@@ -31,7 +37,7 @@ Page({
             answer: '',
             category: '',
             analysis: '',
-            
+            eh: ''
         },
         editQuestionTypeIndex: 0
     },
@@ -140,24 +146,23 @@ Page({
 
     editQuestion(e) {
         const questionId = e.currentTarget.dataset.id;
-        // console.log(questionId);
-        // 获取详细信息
         getQuestionDetail(questionId).then((res) => {
-            // console.log(res);
             const typeIndex = this.data.questionTypes.indexOf(res.type);
+            const categoryIndex = this.data.categories.indexOf(res.category);
             this.setData({
                 isEditModalVisible: true,
                 editQuestion: {
-                    id:res.questionId,
+                    id: res.questionId,
                     type: res.type,
                     content: res.content,
                     options: res.options,
                     answer: res.answer,
                     category: res.category,
                     analysis: res.analysis,
-                    eh:res.eh
+                    eh: res.eh
                 },
-                editQuestionTypeIndex: typeIndex
+                editQuestionTypeIndex: typeIndex,
+                editCategoryIndex: categoryIndex
             })
         }).catch((err) => {
             console.error('获取题目详情失败:', err);
@@ -167,15 +172,12 @@ Page({
             });
         });
 
-        // 获取正确率
         getWrongQuestionPercent(questionId).then(res => {
-            // console.log(res);
             this.setData({
-                wrongQuestionPercent:res*100
+                wrongQuestionPercent: res * 100
             })
             console.log(this.data.wrongQuestionPercent);
         })
-
     },
 
     // 添加题目
@@ -185,14 +187,21 @@ Page({
             newQuestion: {
                 type: '',
                 content: '',
-                options: '',
+                option1: '',
+                option2: '',
+                option3: '',
+                option4: '',
+                optionT: '',
+                optionF: '',
                 answer: '',
                 category: '',
                 analysis: ''
             },
-            newQuestionTypeIndex: 0
+            newQuestionTypeIndex: 0,
+            newCategoryIndex: 0
         }, () => {
             this.onQuestionTypeChange({ detail: { value: 0 } });
+            this.onCategoryChange({ detail: { value: 0 } });
         });
     },
 
@@ -208,6 +217,15 @@ Page({
         this.setData({
             newQuestionTypeIndex: index,
             'newQuestion.type': type
+        });
+    },
+
+    onCategoryChange(e) {
+        const index = e.detail.value;
+        const category = this.data.categories[index];
+        this.setData({
+            newCategoryIndex: index,
+            'newQuestion.category': category
         });
     },
 
@@ -234,7 +252,14 @@ Page({
             });
             return false;
         }
-        if ((question.type === '单选题' || question.type === '多选题') &&!question.options) {
+        if ((question.type === '单选题' || question.type === '多选题') && (!question.option1 ||!question.option2 ||!question.option3 ||!question.option4)) {
+            wx.showToast({
+                title: '选项不能为空',
+                icon: 'none'
+            });
+            return false;
+        }
+        if (question.type === '判断题' && (!question.optionT ||!question.optionF)) {
             wx.showToast({
                 title: '选项不能为空',
                 icon: 'none'
@@ -254,11 +279,16 @@ Page({
     onSubmitNewQuestion() {
         let { newQuestion } = this.data;
         if (newQuestion.type === '单选题' || newQuestion.type === '多选题') {
-            newQuestion.options = newQuestion.options.trim();
+            newQuestion.options = `["A.${newQuestion.option1}","B.${newQuestion.option2}","C.${newQuestion.option3}","D.${newQuestion.option4}"]`;
+        } else if (newQuestion.type === '判断题') {
+            newQuestion.options = `["T.${newQuestion.optionT}","F.${newQuestion.optionF}"]`;
         }
+
         if (!this.validateQuestion(newQuestion)) {
             return;
         }
+        console.log(newQuestion);
+
         addNewQuestion(newQuestion).then(res => {
             wx.showToast({
                 title: '题目添加成功',
@@ -290,6 +320,15 @@ Page({
         });
     },
 
+    onEditCategoryChange(e) {
+        const index = e.detail.value;
+        const category = this.data.categories[index];
+        this.setData({
+            editCategoryIndex: index,
+            'editQuestion.category': category
+        });
+    },
+
     onEditQuestionInput(e) {
         this.onInputChange(e, 'editQuestion');
     },
@@ -297,15 +336,22 @@ Page({
     onSubmitEditQuestion() {
         let { editQuestion } = this.data;
         if (editQuestion.type === '单选题' || editQuestion.type === '多选题') {
-            editQuestion.options = editQuestion.options.trim();
+            const optionsArray = JSON.parse(editQuestion.options);
+            editQuestion.option1 = optionsArray[0].substring(2);
+            editQuestion.option2 = optionsArray[1].substring(2);
+            editQuestion.option3 = optionsArray[2].substring(2);
+            editQuestion.option4 = optionsArray[3].substring(2);
+        } else if (editQuestion.type === '判断题') {
+            const optionsArray = JSON.parse(editQuestion.options);
+            editQuestion.optionT = optionsArray[0].substring(2);
+            editQuestion.optionF = optionsArray[1].substring(2);
         }
+
         if (!this.validateQuestion(editQuestion)) {
             return;
         }
 
-        const questionId = editQuestion.id 
-        console.log(questionId);
-        // 编辑题目
+        const questionId = editQuestion.id;
         updateQuestion(questionId, editQuestion).then(res => {
             wx.showToast({
                 title: '题目编辑成功',
