@@ -1,0 +1,10 @@
+<!-- 专题练习 -->
+<view class="container">
+    <!-- 内容区域 -->
+    <view class="content">
+        <!-- 分类练习 -->
+        <view class="category" wx:for="{{currentCategories}}" wx:key="id" bindtap="goToPracticePage" data-category="{{item.category}}">
+            <view class="category-name">{{item.category}}</view>
+        </view>
+    </view>
+</view>    

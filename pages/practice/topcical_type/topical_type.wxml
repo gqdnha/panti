@@ -1,14 +1,6 @@
-<!-- pages/practice/topical_type/topical_type.wxml -->
-<!-- <view class="container">
-    <view class="category-title">{{category}} 分类练习</view>
-    <view class="question-types" wx:for="{{questionTypes}}" wx:key="*this" bindtap="goToQuestionPage" data-type="{{item}}">
-        <view class="question-type">{{item}}</view>
-    </view>
-</view> -->
-
 <!-- 专题练习 -->
 <view class="container">
-    <view class="category-title">{{category}} 分类练习</view>
+    <view class="type-title">{{category}} 分类练习</view>
 
     <!-- 内容区域 -->
     <view class="content">

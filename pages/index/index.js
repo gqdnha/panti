@@ -164,13 +164,13 @@ Page({
             url: `/pages/practice/daily/index?option=${JSON.stringify(option)}`
         });
     },
-    // 资料库
+    // 法律
     goToResources(e) {
         const {
             category
         } = e.currentTarget.dataset;
         wx.navigateTo({
-            url: `/pages/resources/index?category=${category}`
+            url: `/pages/resources/law_type/index?category=${category}`
         });
     },
     // 综合题相关功能
