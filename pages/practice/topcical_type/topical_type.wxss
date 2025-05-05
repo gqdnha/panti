@@ -1,1 +1,96 @@
-/* pages/practice/topcical_type/topical_type.wxss */
+/* 全局样式 */
+page {
+    font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+}
+
+/* 容器样式 */
+.container {
+    width: 100vw;
+    padding: 24rpx;
+}
+
+/* 头部样式 */
+.header {
+    width: 100vw;
+}
+.type-title {
+    font-size: 60rpx;
+}
+
+.nav {
+    display: flex;
+    margin-left: 20rpx;
+    margin-bottom: 30rpx;
+}
+
+.nav-item {
+    padding: 12rpx 24rpx;
+    margin-right: 20rpx;
+    border-radius: 20rpx;
+    background-color: #e8e8e8;
+    color: #666;
+    font-size: 28rpx;
+    transition: all 0.3s ease;
+}
+
+.nav-item.active {
+    background-color: #1890ff;
+    color: #fff;
+    box-shadow: 0 4rpx 8rpx rgba(24, 144, 255, 0.2);
+}
+
+.nav-item:hover {
+    transform: translateY(-2rpx);
+    box-shadow: 0 6rpx 12rpx rgba(0, 0, 0, 0.1);
+}
+
+/* 内容区域样式 */
+.content {
+    margin-top: 30rpx;
+    width: 100vw;
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between; */
+}
+
+.category {
+    margin-left: 15rpx;
+    margin-right: 15rpx;
+    width: 45%;
+    height: 220rpx;
+    background-color: #fff;
+    border-radius: 16rpx;
+    margin-bottom: 32rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+}
+
+.category:hover {
+    transform: translateY(-4rpx);
+    box-shadow: 0 8rpx 16rpx rgba(0, 0, 0, 0.1);
+}
+
+.category-name {
+    font-size: 36rpx;
+    margin-bottom: 16rpx;
+    color: #333;
+    font-weight: 600;
+}
+
+.category-status {
+    font-size: 24rpx;
+    color: #999;
+}
+
+.category-icon {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 50%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    margin-top: 16rpx;
+}

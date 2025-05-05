@@ -1,5 +1,6 @@
 <!-- 专题练习 -->
 <view class="container">
+<view>题目类型</view>
     <!-- 内容区域 -->
     <view class="content">
         <!-- 分类练习 -->
