@@ -76,7 +76,7 @@
 
 .table-header {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 2fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
 }
 .header-item {
     margin: auto;
@@ -91,7 +91,7 @@
 /* 列表项 */
 .list-item {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr 2fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
     padding: 32rpx;
     align-items: center;
     transition: all 0.3s ease;
@@ -140,8 +140,8 @@
 /* 操作按钮组 */
 .item-actions {
     display: flex;
-    gap: 16rpx;
-    justify-content: flex-end;
+    /* gap: 16rpx; */
+    justify-content: center;
 }
 
 .btn {
