@@ -73,7 +73,6 @@
             </view>
             <view class="question-statuses">
                 <view class="question-status-item" wx:for="{{questionStatuses}}" wx:key="index" bindtap="jumpToQuestion" data-index="{{item.index}}">
-                    <!-- <text class="{{item.highlightClass}}">{{item.index}}. </text> -->
                     <text class="{{item.isAnswered? 'answered' : 'unanswered'}}">{{item.index}}</text>
                 </view>
             </view>
@@ -87,20 +86,4 @@
     <view class="analysis-modal" wx:if="{{showAnalysis}}">
         <view class="modal-content">
             <view class="result-header">
-                <text class="{{questionStates[currentQuestion - 1]? 'correct' : 'wrong'}}">
-                    {{questionStates[currentQuestion - 1]? '回答正确' : '回答错误'}}
-                </text>
-            </view>
-            <view class="correct-answer">
-                <text>正确答案：{{currentQuestionData.answer}}</text>
-            </view>
-            <view class="analysis-content">
-                <text class="analysis-title">解析：</text>
-                <text>{{currentQuestionData.analysis}}</text>
-            </view>
-            <view class="modal-btns">
-                <view class="btn" bindtap="closeAnalysisAndContinue">继续答题</view>
-            </view>
-        </view>
-    </view>
-</view>    
+                <text class="{{questionStates[current

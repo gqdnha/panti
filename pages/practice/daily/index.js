@@ -199,9 +199,19 @@ Page({
         }
     },
     submitAllAnswers: function () {
-        const { allQuestions, allAnswers, selectedOptions, questionStates } = this.data;
+        const { allQuestions, allAnswers, selectedOptions, questionStates, answerSheetStates } = this.data;
         const newQuestionStates = [...questionStates];
         const allUserAnswers = [];
+
+        // 检查是否所有题目都已作答
+        const allAnswered = answerSheetStates.every(state => state === true);
+        if (!allAnswered) {
+            wx.showToast({
+                title: '请作答所有题目',
+                icon: 'none'
+            });
+            return;
+        }
 
         allQuestions.forEach((question, index) => {
             const userAnswer = allAnswers[index];
@@ -307,4 +317,4 @@ Page({
         });
         this.closeAnswerSheetModal();
     }
-})    
+})
