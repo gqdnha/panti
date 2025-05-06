@@ -75,7 +75,7 @@ Page({
         getAllQuestion(data).then(res => {
             console.log('获取到的题目数据:', res);
             // 对获取到的questionList中的每个题目进行处理
-            const questionList = res.pageInfo.pageData.map(question => {
+            const newQuestionList = res.pageInfo.pageData.map(question => {
                 if (question.options) {
                     try {
                         question.options = JSON.parse(question.options);
@@ -87,13 +87,15 @@ Page({
                 console.log('单个题目数据:', question);
                 return question;
             });
+            const currentQuestionList = this.data.questionList;
+            const combinedQuestionList = currentQuestionList.concat(newQuestionList);
             this.setData({
-                questionList,
+                questionList: combinedQuestionList,
                 totalQuestions: res.pageInfo.totalSize,
-                questionList: questionList,
-                questionStates: new Array(questionList.length).fill(null), // 初始化题目状态数组
-                selectedOptions: new Array(questionList.length).fill(null), // 初始化选中选项数组
-                isSubmitted: new Array(questionList.length).fill(false) // 初始化题目提交状态数组
+                questionStates: new Array(combinedQuestionList.length).fill(null), // 初始化题目状态数组
+                selectedOptions: new Array(combinedQuestionList.length).fill(null), // 初始化选中选项数组
+                isSubmitted: new Array(combinedQuestionList.length).fill(false), // 初始化题目提交状态数组
+                pageNum: this.data.pageNum + 1
             });
             console.log('设置到data中的题目数据:', this.data.questionList);
             console.log(this.data.totalQuestions);
@@ -109,12 +111,16 @@ Page({
         const {
             currentQuestion,
             totalQuestions,
-            selectedOptions
+            questionList
         } = this.data;
         if (currentQuestion < totalQuestions) {
             this.setData({
                 currentQuestion: currentQuestion + 1
             });
+            // 检查是否需要加载新的题目
+            if (currentQuestion + 1 >= questionList.length - 2) {
+                this.loadQuestions();
+            }
         }
     },
     prevQuestion: function () {
@@ -310,4 +316,4 @@ Page({
             showAnalysis: false
         });
     },
-})
+})    
