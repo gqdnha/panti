@@ -20,7 +20,8 @@
     "pages/practice/topcical_type/topical_type",
     "pages/practice/topical_question/topical_question",
     "pages/wrongBook_type/wrongBook_type",
-    "pages/resources/detail/index"
+    "pages/resources/detail/index",
+    "pages/canMistake20/canMistake20"
   ],
   "window": {
     "backgroundTextStyle": "light",

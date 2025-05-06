@@ -166,11 +166,17 @@ Page({
     },
     // 法律
     goToResources(e) {
-        const {
+        /* const {
             category
-        } = e.currentTarget.dataset;
+        } = e.currentTarget.dataset; */
         wx.navigateTo({
-            url: `/pages/resources/law_type/index?category=${category}`
+            url: `/pages/resources/law_type/index`
+        });
+    },
+    // 易错二十题
+    goToMistake(e) {
+        wx.navigateTo({
+            url: `/pages/canMistake20/canMistake20`
         });
     },
     // 综合题相关功能
