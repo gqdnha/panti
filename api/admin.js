@@ -2,6 +2,7 @@ import {
     request
 } from "./request";
 import {getUserId} from './getUserId'
+import { baseURL } from "./request";
 // 删除法律 
 export const deleteLawApi = (regulationId) => {
     // const userId = getUserId()
@@ -17,25 +18,50 @@ export const deleteLawApi = (regulationId) => {
 
 
 // 添加法律条文
-
-/* export const addLawsApi = (regulationName, regulationType, data) => {
-    const userId = getUserId();
-    console.log(regulationName, regulationType, data.files);
-    return request({
-        url: `/regulation/addRegulation?regulationName=${encodeURIComponent(regulationName)}&regulationType=${encodeURIComponent(regulationType)}&userId=${userId}`,
-        method: 'POST',
+export const addLawsApi = (regulationType, data) => {
+    console.log('开始上传文件，参数：', {
+        regulationType,
+        regulationName: data.regulationName,
+        filePath: data.file
     });
-}; */
-export const addLawsApi = (data) => {
-    const { regulationName, regulationType, files } = data;
-    const userId = getUserId();
-    console.log(regulationName, regulationType, files);
-    return request({
-        url: `/regulation/addRegulation?regulationName=${encodeURIComponent(regulationName)}&regulationType=${encodeURIComponent(regulationType)}&userId=${userId}`,
-        method: 'POST',
-        formData: {
-            files: files.uri
-        }
+
+    return new Promise((resolve, reject) => {
+        wx.uploadFile({
+            url: `${baseURL}/regulation/addRegulation`,
+            filePath: data.file,
+            name: 'files',  // 文件参数名必须是files
+            formData: {
+                regulationName: data.regulationName,
+                regulationType: regulationType,
+                userId: 2
+            },
+            header: {
+                'content-type': 'multipart/form-data'
+            },
+            success: (res) => {
+                console.log('上传响应：', res);
+                try {
+                    const response = JSON.parse(res.data);
+                    if (response.code === 200) {
+                        resolve(response.data);
+                    } else {
+                        console.error('上传失败，服务器响应：', response);
+                        reject(response.message || '添加失败');
+                    }
+                } catch (error) {
+                    console.error('解析响应失败：', error, '原始响应：', res.data);
+                    reject('解析响应失败');
+                }
+            },
+            fail: (error) => {
+                console.error('上传请求失败：', error);
+                if (error.errMsg.includes('domain list')) {
+                    reject('请在小程序管理后台配置服务器域名');
+                } else {
+                    reject(error.errMsg || '上传失败');
+                }
+            }
+        });
     });
 };
 

@@ -119,6 +119,8 @@ Page({
             extensions: ['doc', 'docx', 'pdf'],
             success: (res) => {
                 const file = res.tempFiles[0];
+                console.log('选择的文件信息：', file);
+                
                 // 检查文件大小，限制为10MB
                 if (file.size > 10 * 1024 * 1024) {
                     wx.showToast({
@@ -127,15 +129,18 @@ Page({
                     });
                     return;
                 }
-
+                
                 this.setData({
                     files: file.path,
                     fileName: file.name
                 }, () => {
-                    console.log('文件已选择:', this.data.files);
+                    console.log('文件已选择，当前状态：', {
+                        files: this.data.files,
+                        fileName: this.data.fileName
+                    });
                     wx.showToast({
                         title: '文件选择成功',
-                        icon:'success'
+                        icon: 'success'
                     });
                 });
             },
@@ -154,9 +159,17 @@ Page({
         const {
             regulationName,
             regulationType,
-            files
+            files,
+            fileName
         } = this.data;
-
+        
+        console.log('提交表单数据：', {
+            regulationName,
+            regulationType,
+            files,
+            fileName
+        });
+        
         if (!regulationName) {
             wx.showToast({
                 title: '请输入法律名称',
@@ -164,15 +177,15 @@ Page({
             });
             return;
         }
-
+        
         if (!regulationType) {
             wx.showToast({
-                title: '请选择法律类别',
+                title: '请输入法律类别',
                 icon: 'none'
             });
             return;
         }
-
+        
         if (!files) {
             wx.showToast({
                 title: '请选择要上传的文件',
@@ -186,33 +199,24 @@ Page({
             mask: true
         });
 
-        const formData = {
-            regulationName,
-            regulationType,
-            files: {
-                uri: files,
-                name: this.data.fileName
-            }
-        };
-        addLawsApi(formData).then((res) => {
-            if (res.code === 200) {
-                wx.showToast({
-                    title: '添加成功',
-                    icon:'success'
-                });
-                this.onAddModalClose();
-                this.loadLaws();
-            } else {
-                wx.showToast({
-                    title: res.message || '添加失败',
-                    icon: 'none'
-                });
-            }
-        }).catch((error) => {
-            console.error('上传文件失败:', error);
+        // 使用addLawsApi上传文件
+        addLawsApi(regulationType, {
+            file: files,
+            regulationName: regulationName
+        }).then(res => {
+            console.log('上传成功，响应：', res);
             wx.showToast({
-                title: '上传失败，请检查网络',
-                icon: 'none'
+                title: '添加成功',
+                icon: 'success'
+            });
+            this.onAddModalClose();
+            this.loadLaws();
+        }).catch(error => {
+            console.error('添加法律失败:', error);
+            wx.showToast({
+                title: typeof error === 'string' ? error : '添加失败',
+                icon: 'none',
+                duration: 2000
             });
         }).finally(() => {
             wx.hideLoading();
