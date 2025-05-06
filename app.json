@@ -22,7 +22,10 @@
     "pages/wrongBook_type/wrongBook_type",
     "pages/resources/detail/index",
     "pages/canMistake20/canMistake20",
-    "pages/admin/mistake20/mistake20"
+    "pages/admin/mistake20/mistake20",
+    "pages/userPages/oneDaily/oneDaily",
+    "pages/userPages/oneWrongBook/ontWrongBook",
+    "pages/userPages/oneWrongBook_type/ontWrongBook_type"
   ],
   "window": {
     "backgroundTextStyle": "light",

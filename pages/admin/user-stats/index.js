@@ -1,5 +1,6 @@
 import { getAllUserInfo } from '../../../api/admin'
 import {getUserInfo} from '../../../api/getUserInfo'
+
 Page({
     data: {
         // 正确率
@@ -176,14 +177,20 @@ Page({
     },
 
     goToOneWrongBook() {
-        const type = e.currentTarget.dataset.type;
+        const currentUserId = this.data.currentUserDetail.user_id;
+        console.log(currentUserId);
         wx.navigateTo({
-            url: `/pages/practice/topical/index?category=${category}`
+            url: `/pages/userPages/oneWrongBook/ontWrongBook?id=${currentUserId}`
         });
     },
-    goToOneDaily() {
+
+    goToOneDaily(e) {
+        const currentUserId = this.data.currentUserDetail.user_id;
+        console.log(currentUserId);
+
         wx.navigateTo({
-            url: `/pages/practice/topical/index?category=${category}`
+            // url: `/pages/userPages/oneWrongBook/ontWrongBook?id=${currentUserId}`
+            url: `/pages/userPages/oneDaily/oneDaily?id=${currentUserId}`
         });
     },
 });
