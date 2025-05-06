@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/resources/detail/index",
+          "pathName": "pages/resources/detail/index",
+          "query": "category=%25E6%25B3%2595%25E5%25BE%258B",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/admin/mistake20/mistake20",
           "pathName": "pages/admin/mistake20/mistake20",
           "query": "",

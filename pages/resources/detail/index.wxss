@@ -11,52 +11,56 @@
     margin-bottom: 20rpx;
 }
 
-.title {
-    font-size: 36rpx;
-    font-weight: bold;
-    margin-bottom: 20rpx;
-}
-
 .type {
     font-size: 28rpx;
     color: #666;
 }
 
+/* 列表区域 */
 .content {
-    background-color: #fff;
+    width: 90vw;
+    /* background-color: #fff; */
     padding: 30rpx;
     border-radius: 10rpx;
     min-height: 60vh;
 }
 
-.loading {
+/* 列表 */
+.law-list {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 200rpx;
-    color: #999;
+    flex-direction: column;
+    
 }
 
-.text-content {
-    font-size: 30rpx;
-    line-height: 1.6;
-    white-space: pre-wrap;
-}
-
-.footer {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 20rpx;
+/* 列表块 */
+.law-list-item {
+    margin-top: 5rpx;
+    height: 150rpx;
     background-color: #fff;
-    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 20rpx;
+}
+.law-list-item image {
+    width: 120rpx;
+    height: 120rpx;
+}
+.detil {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
 }
 
-.download-btn {
-    background-color: #07c160;
-    color: #fff;
-    border-radius: 50rpx;
-    font-size: 32rpx;
-    padding: 20rpx 0;
-} 
+.detil {
+    margin-left: 20rpx;
+}
+.regulation_name {
+    margin-bottom: 10rpx;
+}
+
+.regulation_type {
+    color: #666;
+    font-size: 25rpx;
+    margin-top: 5rpx;
+}

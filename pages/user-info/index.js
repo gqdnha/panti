@@ -74,11 +74,11 @@ Page({
     // 从服务器获取学习统计数据
     getStudyStats() {
         getUserInfo().then(res => {
-            console.log(res);
+            console.log(res.rightPercent);
             this.setData({
                 studyStats: {
                     totalQuestions: res.count,
-                    correctRate: res.rightPercent * 100,
+                    correctRate: res.rightPercent,
                     totalTime: 120
                 }
             });

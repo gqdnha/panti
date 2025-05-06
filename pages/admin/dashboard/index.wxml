@@ -1,47 +1,47 @@
 <!--pages/admin/dashboard/index.wxml-->
 <view class="container">
-  <!-- 顶部统计卡片 -->
-  <view class="stats-cards">
-    <view class="stats-card">
-      <view class="stats-title">总用户数</view>
-      <view class="stats-value">{{totalUsers}}</view>
-    </view>
-    <view class="stats-card">
-      <view class="stats-title">今日用户</view>
-      <view class="stats-value">{{todayUsers}}</view>
-    </view>
-    <view class="stats-card">
-      <view class="stats-title">平均正确率</view>
-      <view class="stats-value">{{avgCorrectRate}}%</view>
-    </view>
-  </view>
-
-  <!-- 功能卡片 -->
-  <view class="function-cards">
-    <view class="function-card" bindtap="navigateToUserStats">
-      <image class="card-icon" src="/assets/icons/统计.png " mode="aspectFit"></image>
-      <view class="card-title">答题情况</view>
-      <view class="card-desc">查看用户答题数据统计</view>
-    </view>
-    
-    <view class="function-card" bindtap="navigateToQuestionManage">
-      <image class="card-icon" src="/assets/icons/題目管理.png" mode="aspectFit"></image>
-      <view class="card-title">题目管理</view>
-      <view class="card-desc">管理题目数据</view>
-
-    </view>
-    
-    <view class="function-card" bindtap="navigateToLawManage">
-      <image class="card-icon" src="/assets/icons/法律管理.png" mode="aspectFit"></image>
-      <view class="card-title">法律管理</view>
-      <view class="card-desc">管理题目数据法律题目数据</view>
+    <!-- 顶部统计卡片 -->
+    <view class="stats-cards">
+        <view class="stats-card">
+            <view class="stats-title">总用户数</view>
+            <view class="stats-value">{{totalUsers}}</view>
+        </view>
+        <view class="stats-card">
+            <view class="stats-title">今日用户</view>
+            <view class="stats-value">{{todayUsers}}</view>
+        </view>
+        <view class="stats-card">
+            <view class="stats-title">完成率</view>
+            <view class="stats-value">{{avgCorrectRate}}%</view>
+        </view>
     </view>
 
-    <view class="function-card" bindtap="navigateTo20Mistake">
-      <image class="card-icon" src="/assets/icons/顺序练习.png" mode="aspectFit"></image>
-      <view class="card-title">法律管理</view>
-      <view class="card-desc">易错20题</view>
-    </view>
+    <!-- 功能卡片 -->
+    <view class="function-cards">
+        <view class="function-card" bindtap="navigateToUserStats">
+            <image class="card-icon" src="/assets/icons/统计.png " mode="aspectFit"></image>
+            <view class="card-title">答题情况</view>
+            <view class="card-desc">查看用户答题数据统计</view>
+        </view>
 
-  </view>
+        <view class="function-card" bindtap="navigateToQuestionManage">
+            <image class="card-icon" src="/assets/icons/題目管理.png" mode="aspectFit"></image>
+            <view class="card-title">题目管理</view>
+            <view class="card-desc">管理题目数据</view>
+
+        </view>
+
+        <view class="function-card" bindtap="navigateToLawManage">
+            <image class="card-icon" src="/assets/icons/法律管理.png" mode="aspectFit"></image>
+            <view class="card-title">法律管理</view>
+            <view class="card-desc">管理题目数据法律题目数据</view>
+        </view>
+
+        <view class="function-card" bindtap="navigateTo20Mistake">
+            <image class="card-icon" src="/assets/icons/顺序练习.png" mode="aspectFit"></image>
+            <view class="card-title">易错20题</view>
+            <view class="card-desc">查看易错20题</view>
+        </view>
+
+    </view>
 </view>

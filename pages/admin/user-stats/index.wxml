@@ -47,6 +47,10 @@
                 <label>姓名：</label>
                 <text>{{currentUserDetail.name}}</text>
             </view>
+            <view class="detail-item">
+                <label>手机号：</label>
+                <text>{{currentUserDetail.phone}}</text>
+            </view>
 
             <view class="detail-item">
                 <label>部门：</label>
@@ -64,9 +68,9 @@
             </view>
 
             <!-- 错题本 -->
-            <view class="detail-item" bindtap="goToOneWronBook">
+            <view class="detail-item" bindtap="goToOneWrongBook">
                 <label>错题本</label>
-                <text>{{rightPercent}} %</text>
+                <!-- <text>{{rightPercent}} %</text> -->
             </view>
             <!-- 每日练习 情况 -->
             <view class="detail-item" bindtap="goToOneDaily">

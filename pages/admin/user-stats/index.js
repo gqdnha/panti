@@ -175,7 +175,7 @@ Page({
         });
     },
 
-    goToOneWronBook() {
+    goToOneWrongBook() {
         const type = e.currentTarget.dataset.type;
         wx.navigateTo({
             url: `/pages/practice/topical/index?category=${category}`
