@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/userPages/oneDaily/oneDaily",
+          "pathName": "pages/userPages/oneDaily/oneDaily",
+          "query": "id=2",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/admin/user-stats/index",
           "pathName": "pages/admin/user-stats/index",
           "query": "",
