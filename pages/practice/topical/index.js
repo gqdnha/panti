@@ -6,7 +6,7 @@ Page({
         currentCategories: [
             {
                 id: 1,
-                category: '法律'
+                category: '行政执法规定'
             },
             {
                 id: 2,

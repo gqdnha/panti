@@ -46,7 +46,7 @@ Page({
             category,
             type
         });
-        console.log('接收到的类别:', category);
+        console.log('接收到的类别:', this.data.category);
         console.log('接收到的类别:', type);
         // this.getData();
         // 假设这里接收学习时长，可根据实际情况修改
@@ -63,12 +63,14 @@ Page({
             pageSize
         } = this.data;
         const data = {
-            category: "",
-            content: "",
+            category: this.data.category,
+            // content: "",
             pageNum: pageNum,
-            pageSize: pageSize
+            pageSize: pageSize,
             // 需要加type,等后端
+            type: this.data.type
         };
+        console.log(data);
 
         getAllQuestion(data).then(res => {
             console.log('获取到的题目数据:', res);

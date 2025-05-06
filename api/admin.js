@@ -5,8 +5,7 @@ import {getUserId} from './getUserId'
 import { baseURL } from "./request";
 // 删除法律 
 export const deleteLawApi = (regulationId) => {
-    // const userId = getUserId()
-    const userId = 2
+    const userId = getUserId()
 
     console.log(regulationId);
     console.log(userId);
@@ -67,7 +66,7 @@ export const addLawsApi = (regulationType, data) => {
 
 // 获取一个题的错误率
 export const getWrongQuestionPercent = (questionId) => {
-        // console.log(questionId);
+    
     return request({
         url: `/wrongQuestion/getWrongQuestionPercent?questionId=${questionId}`,
         method: 'GET',
@@ -118,6 +117,7 @@ export const getAllUserInfo = (data) => {
 
 // 获取题目列表
 export const getAllQuestion = (data) => {
+    console.log(data);
     return request({
         url: `/question/findNewsPage`,
         method: 'POST',

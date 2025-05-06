@@ -5,7 +5,7 @@
     <!-- 内容区域 -->
     <view class="content">
         <!-- 分类练习 -->
-        <view class="category" wx:for="{{questionTypes}}" wx:key="*this" bindtap="goToQuestionPage" data-category="{{item}}">
+        <view class="category" wx:for="{{questionTypes}}" wx:key="*this" bindtap="goToQuestionPage" data-Type="{{item}}">
             <view class="category-name">{{item}}</view>
         </view>
     </view>
