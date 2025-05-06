@@ -32,7 +32,7 @@ export const addLawsApi = (regulationType, data) => {
             formData: {
                 regulationName: data.regulationName,
                 regulationType: regulationType,
-                userId: 2
+                userId: 1
             },
             header: {
                 'content-type': 'multipart/form-data'

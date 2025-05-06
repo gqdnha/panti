@@ -1,4 +1,3 @@
-// pages/user-info/index.js
 import {getUserInfo} from '../../api/getUserInfo'
 Page({
 
@@ -133,10 +132,10 @@ Page({
     },
     // 去错题本
     goToWrongQuestions() {
-       /*  if (!this.data.userInfo) {
-            this.showLoginTip();
-            return;
-        } */
+        /*  if (!this.data.userInfo) {
+             this.showLoginTip();
+             return;
+         } */
         wx.navigateTo({
             url: '/pages/wrongBook/wrongBook'
         });
@@ -152,4 +151,12 @@ Page({
             url: '/pages/history/history'
         });
     },
-})
+
+    navigateToLoginIfNotLoggedIn() {
+        if (!this.data.userInfo) {
+            wx.navigateTo({
+                url: '/pages/login/index'
+            });
+        }
+    }
+})    

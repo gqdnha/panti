@@ -1,12 +1,11 @@
-<!--pages/user-info/index.wxml-->
 <view class="container">
     <!-- 用户信息卡片 -->
     <view class="user-card">
         <view class="user-info">
-            <image class="avatar" src="{{userInfo.avatarUrl || '/assets/icons/user.png'}}" mode="aspectFill"></image>
+            <image class="avatar" src="{{userInfo.avatarUrl || '/assets/icons/user.png'}}" mode="aspectFill" bindtap="navigateToLoginIfNotLoggedIn"></image>
             <view class="user-detail">
-                <view class="nickname">{{userInfo.nickName || '未登录'}}</view>
-                <view class="phone">{{userInfo.phone || '点击登录'}}</view>
+                <view class="nickname" bindtap="navigateToLoginIfNotLoggedIn">{{userInfo.nickName || '未登录'}}</view>
+                <view class="phone">{{userInfo.phone || ''}}</view>
             </view>
         </view>
         <!-- 设置 -->
@@ -50,4 +49,4 @@
         <!-- <button class="logout-btn" bindtap="handleLogout">退出登录</button> -->
         <button class="logout-btn" bindtap="handleLogout"> 退出登录 </button>
     </view>
-</view>
+</view>    

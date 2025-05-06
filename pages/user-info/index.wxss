@@ -155,4 +155,4 @@
 
 .logout-btn::after {
     border: none;
-}
+}    
