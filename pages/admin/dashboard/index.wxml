@@ -37,10 +37,10 @@
       <view class="card-desc">管理题目数据法律题目数据</view>
     </view>
 
-    <view class="function-card" bindtap="navigateToLawManage">
-      <image class="card-icon" src="/assets/icons/法律管理.png" mode="aspectFit"></image>
+    <view class="function-card" bindtap="navigateTo20Mistake">
+      <image class="card-icon" src="/assets/icons/顺序练习.png" mode="aspectFit"></image>
       <view class="card-title">法律管理</view>
-      <view class="card-desc">管理题目数据法律题目数据</view>
+      <view class="card-desc">易错20题</view>
     </view>
 
   </view>

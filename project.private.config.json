@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/admin/mistake20/mistake20",
+          "pathName": "pages/admin/mistake20/mistake20",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/canMistake20/canMistake20",
           "pathName": "pages/canMistake20/canMistake20",
           "query": "",

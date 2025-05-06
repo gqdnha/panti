@@ -108,5 +108,12 @@ Page({
     wx.navigateTo({
       url: '/pages/admin/law/law'
     })
+  },
+  // 易错20题
+  navigateTo20Mistake() {
+    wx.navigateTo({
+        // url: '/pages/admin/mistake20/mistake20'
+        url: '/pages/canMistake20/canMistake20'
+      })
   }
 })
