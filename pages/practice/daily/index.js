@@ -28,7 +28,12 @@ Page({
         selectedOptions: [], //记录每个题目的选中选项
         questionStates: [], // 记录每个题目的答题状态（正确/错误）
         showAnalysis: false, // 控制答案解析弹窗的显示状态
-        currentQuestionData: {} // 存储当前题目的详细数据，用于弹窗显示
+        currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
+
+        // 新增：答题卡状态，记录每个题目是否已作答
+        answerSheetStates: [],
+        showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
+        questionStatuses: [], // 存储题目作答情况数据
     },
     onLoad: function () {
         this.startCountdown()
@@ -52,7 +57,8 @@ Page({
                 allQuestions: res,
                 totalQuestions: res.length,
                 questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
-                selectedOptions: new Array(res.length).fill(null) // 初始化选中选项数组
+                selectedOptions: new Array(res.length).fill(null), // 初始化选中选项数组
+                answerSheetStates: new Array(res.length).fill(false), // 初始化答题卡状态数组，默认都未作答
             })
             console.log(this.data.allQuestions);
             console.log(this.data.totalQuestions);
@@ -87,6 +93,13 @@ Page({
         });
         // 打印当前选中的选项首字
         console.log(`第 ${currentQuestion} 题选中的选项首字：`, optionFirstChar);
+
+        // 更新答题卡状态为已作答
+        const answerSheetStates = [...this.data.answerSheetStates];
+        answerSheetStates[currentQuestion - 1] = true;
+        this.setData({
+            answerSheetStates: answerSheetStates
+        });
     },
     // 多选题
     selectMultipleOption: function (e) {
@@ -127,6 +140,13 @@ Page({
 
         const selectedChars = newSelectedOptions[currentQuestion - 1] || [];
         console.log(`第 ${currentQuestion} 题选中的选项首字：`, selectedChars);
+
+        // 更新答题卡状态为已作答
+        const answerSheetStates = [...this.data.answerSheetStates];
+        answerSheetStates[currentQuestion - 1] = true;
+        this.setData({
+            answerSheetStates: answerSheetStates
+        });
     },
     onInputAnswer: function (e) {
         const { value } = e.detail;
@@ -135,6 +155,13 @@ Page({
         newAllAnswers[currentQuestion - 1] = value;
         this.setData({
             allAnswers: newAllAnswers
+        });
+
+        // 更新答题卡状态为已作答
+        const answerSheetStates = [...this.data.answerSheetStates];
+        answerSheetStates[currentQuestion - 1] = true;
+        this.setData({
+            answerSheetStates: answerSheetStates
         });
     },
     // 开始倒计时
@@ -252,5 +279,32 @@ Page({
     // 自定义函数，用于判断数组是否包含某个元素
     isArrayAndIncludes: function (arr, item) {
         return Array.isArray(arr) && arr.includes(item);
+    },
+    // 新增：点击答题卡的事件处理函数
+    showAnswerSheet: function () {
+        const { answerSheetStates } = this.data;
+        const questionStatuses = answerSheetStates.map((state, index) => ({
+            index: index + 1,
+            isAnswered: state,
+            highlightClass: state? 'answered-highlight' : 'unanswered-dark'
+        }));
+        this.setData({
+            showAnswerSheetModal: true,
+            questionStatuses: questionStatuses
+        });
+    },
+    // 新增：关闭答题卡弹窗的函数
+    closeAnswerSheetModal: function () {
+        this.setData({
+            showAnswerSheetModal: false
+        });
+    },
+    // 新增：点击答题卡上的题目跳转到对应题目的函数
+    jumpToQuestion: function (e) {
+        const { index } = e.currentTarget.dataset;
+        this.setData({
+            currentQuestion: index
+        });
+        this.closeAnswerSheetModal();
     }
-})
+})    

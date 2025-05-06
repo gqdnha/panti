@@ -292,6 +292,80 @@
     background-color: #0066cc;
     color: #fff;
 }
+
 .view-detail-btn {
     margin-top: 50rpx;
 }
+
+/* 新增：答题卡按钮样式 */
+.answer-sheet-btn {
+    padding: 20rpx 40rpx;
+    border-radius: 8rpx;
+    font-size: 30rpx;
+    text-align: center;
+    background-color: #f8f9fa;
+    color: #666;
+    margin: 20rpx 0;
+}
+
+/* 新增：答题卡弹窗样式 */
+.answer-sheet-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.answer-sheet-modal.modal-content {
+    width: 80%;
+    max-height: 80vh;
+    background-color: #fff;
+    border-radius: 10rpx;
+    padding: 30rpx;
+    overflow-y: auto;
+}
+
+.question-statuses {
+    margin-bottom: 20rpx;
+    display: flex;
+    flex-wrap: wrap;
+    /* justify-content: space-between; */
+}
+
+.question-status-item {
+    margin: 15rpx;
+    height: 70rpx;
+    width: 70rpx;
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    border: 1rpx solid rgb(177, 177, 177); /* 设置边框 */
+    margin-bottom: 10rpx;
+    padding: 10rpx;
+    border-radius: 8rpx;
+    transition: all 0.3s ease;
+}
+
+.answered {
+    color: #52c41a;
+}
+
+.unanswered {
+    color: #f5222d;
+}
+
+/* 新增：已作答高亮样式 */
+.answered-highlight {
+    color: #52c41a;
+    font-weight: bold;
+}
+/* 新增：未作答暗着样式 */
+.unanswered-dark {
+    color: #ccc;
+}    
