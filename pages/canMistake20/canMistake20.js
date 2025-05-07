@@ -2,9 +2,10 @@ import {
     get20Mistake
 } from "../../api/get20Mistake";
 import {addLearnTime} from '../../api/addLearnTime'
-/* import {
+import {
     apiJudgeTest
-} from "../../../api/judgeTest" */
+} from "../../api/judgeTest"
+// import {dailyQuestionCount} from '../../api/dailyQuestionCount'
 Page({
     data: {
         // 后端数据
