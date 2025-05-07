@@ -78,7 +78,7 @@ Page({
             this.setData({
                 studyStats: {
                     totalQuestions: res.count,
-                    correctRate: res.rightPercent,
+                    correctRate: res.rightPercent*100,
                     totalTime: 120
                 }
             });
@@ -87,12 +87,12 @@ Page({
 
 
     navigateToSettings() {
-        if (!this.data.userInfo) {
+        /* if (!this.data.userInfo) {
             this.showLoginTip();
             return;
-        }
+        } */
         wx.navigateTo({
-            url: '/pages/settings/index'
+            url: '/pages/setting/setting'
         });
     },
 
