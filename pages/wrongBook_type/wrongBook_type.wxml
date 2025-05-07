@@ -38,11 +38,6 @@
                       data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                 </view>
-                <!-- 调试信息 -->
-                <view class="debug-info">
-                    <view>当前题目：{{currentQuestion}}</view>
-                    <view>已选选项：{{selectedOptions[currentQuestion - 1] ? selectedOptions[currentQuestion - 1].join(',') : '未选择'}}</view>
-                </view>
             </block>
 
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '判断题'}}">
