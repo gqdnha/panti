@@ -38,6 +38,7 @@ Page({
         showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
         questionStatuses: [], // 存储题目作答情况数据
         optionStates: [], // 存储每个题目的选项状态
+        startTime: 0, // 新增：记录开始时间
     },
     onLoad: function () {
         this.startCountdown()
@@ -212,6 +213,10 @@ Page({
         this.clearCountdown();
         // 获取当前时间
         const now = new Date();
+        // 记录开始时间
+        this.setData({
+            startTime: now.getTime()
+        });
         // 计算距离当天24:00的剩余时间（单位：秒）
         const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
         const endOfDaySeconds = Math.floor((endOfDay - now) / 1000);
@@ -248,7 +253,8 @@ Page({
             selectedOptions,
             questionStates,
             answerSheetStates,
-            optionStates
+            optionStates,
+            startTime
         } = this.data;
         const newQuestionStates = [...questionStates];
         const allUserAnswers = [];
@@ -338,6 +344,14 @@ Page({
             isSubmitted: true
         });
 
+        // 计算使用的时间
+        const endTime = new Date().getTime();
+        const usedTime = endTime - startTime;
+        const minutes = Math.floor(usedTime / (1000 * 60));
+        console.log(`使用了 ${minutes} 分钟`);
+        addLearnTime(minutes).then(res => {
+            console.log('传时间');
+        })
         // 调用后端接口
         apiJudgeTest(allUserAnswers).then(response => {
                 console.log('后端返回结果：', response);
@@ -410,4 +424,4 @@ Page({
         });
         this.closeAnswerSheetModal();
     }
-})
+})    

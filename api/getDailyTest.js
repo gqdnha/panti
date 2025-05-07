@@ -13,7 +13,8 @@ export const apiGetoneDailyTest = (data) => {
 
 // 获取每日练习20题
 export const apiGetDailyTest = () => {
-    const userId = getUserId()
+    const userId = 2
+    // const userId = getUserId()
     return request({
         // url: `/dailyQuestion/getEverydayQuestion/${data}`,
         url:`/dailyQuestion/getEverydayQuestion?userId=${userId}`,
