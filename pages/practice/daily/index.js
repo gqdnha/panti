@@ -34,6 +34,7 @@ Page({
         answerSheetStates: [],
         showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
         questionStatuses: [], // 存储题目作答情况数据
+        optionStates: [], // 存储每个题目的选项状态
     },
     onLoad: function () {
         this.startCountdown()
@@ -42,29 +43,42 @@ Page({
     // 请求接口
     getData: function () {
         apiGetDailyTest().then(res => {
-            console.log(res);
-            res.forEach(question => {
+            console.log('获取到的原始数据：', res);
+            
+            res.forEach((question, index) => {
                 if (question.options && typeof question.options === 'string') {
                     try {
-                        question.options = JSON.parse(question.options)
+                        question.options = JSON.parse(question.options);
+                        console.log(`题目${index + 1}的选项：`, question.options);
                     } catch (error) {
                         console.log('选项解析错误：', error);
-                        question.options = []
+                        question.options = [];
                     }
                 }
-            })
+            });
+            
+            // 初始化选中选项数组和选项状态数组
+            const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
+            const initialOptionStates = res.map(question => 
+                new Array(question.options.length).fill(false)
+            );
+            
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
-                questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
-                selectedOptions: new Array(res.length).fill(null), // 初始化选中选项数组
-                answerSheetStates: new Array(res.length).fill(false), // 初始化答题卡状态数组，默认都未作答
-            })
-            console.log(this.data.allQuestions);
-            console.log(this.data.totalQuestions);
-            console.log(this.data.allQuestions[1].options);
-
-        })
+                questionStates: new Array(res.length).fill(null),
+                selectedOptions: initialSelectedOptions,
+                optionStates: initialOptionStates,
+                answerSheetStates: new Array(res.length).fill(false)
+            }, () => {
+                console.log('初始化完成：', {
+                    totalQuestions: this.data.totalQuestions,
+                    firstQuestionOptions: this.data.allQuestions[0].options,
+                    selectedOptions: this.data.selectedOptions,
+                    optionStates: this.data.optionStates
+                });
+            });
+        });
     },
     nextQuestion: function () {
         const { currentQuestion, totalQuestions, selectedOptions } = this.data;
@@ -104,48 +118,49 @@ Page({
     // 多选题
     selectMultipleOption: function (e) {
         const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions, allQuestions } = this.data;
+        const { currentQuestion, selectedOptions, allQuestions, optionStates } = this.data;
 
-        // 确保 currentQuestion 在有效范围内
-        if (currentQuestion < 1 || currentQuestion > this.data.totalQuestions) {
-            return;
-        }
-
-        const newSelectedOptions = [...selectedOptions];
-        const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
-        if (!Array.isArray(newSelectedOptions[currentQuestion - 1])) {
-            newSelectedOptions[currentQuestion - 1] = [optionFirstChar];
-        } else {
-            const currentSelected = newSelectedOptions[currentQuestion - 1];
-            const optionIndex = currentSelected.indexOf(optionFirstChar);
-            if (optionIndex > -1) {
-                currentSelected.splice(optionIndex, 1);
-            } else {
-                currentSelected.push(optionFirstChar);
-            }
-        }
-
-        // 打印更新前的 selectedOptions
-        console.log('更新前的 selectedOptions:', this.data.selectedOptions);
-
-        this.setData({
-            selectedOptions: newSelectedOptions
-        }, () => {
-            // 打印更新后的 selectedOptions
-            console.log('更新后的 selectedOptions:', this.data.selectedOptions);
-            // 检查视图层是否接收到更新后的数据
-            const updatedSelectedOptions = this.data.selectedOptions;
-            console.log('视图层接收到的 updatedSelectedOptions:', updatedSelectedOptions);
+        console.log('选择选项前的状态：', {
+            currentQuestion,
+            index,
+            selectedOptions: selectedOptions[currentQuestion - 1],
+            optionStates: optionStates[currentQuestion - 1]
         });
 
-        const selectedChars = newSelectedOptions[currentQuestion - 1] || [];
-        console.log(`第 ${currentQuestion} 题选中的选项首字：`, selectedChars);
+        // 获取当前题目的选项状态
+        let currentOptionStates = [...optionStates[currentQuestion - 1]];
+        // 切换当前选项的状态
+        currentOptionStates[index] = !currentOptionStates[index];
 
-        // 更新答题卡状态为已作答
-        const answerSheetStates = [...this.data.answerSheetStates];
-        answerSheetStates[currentQuestion - 1] = true;
+        // 更新选中选项
+        let currentSelected = [];
+        currentOptionStates.forEach((isSelected, idx) => {
+            if (isSelected) {
+                currentSelected.push(allQuestions[currentQuestion - 1].options[idx][0]);
+            }
+        });
+
+        // 对选项进行排序
+        currentSelected.sort();
+
+        // 更新数据
+        const newSelectedOptions = [...selectedOptions];
+        newSelectedOptions[currentQuestion - 1] = currentSelected;
+
+        const newOptionStates = [...optionStates];
+        newOptionStates[currentQuestion - 1] = currentOptionStates;
+
         this.setData({
-            answerSheetStates: answerSheetStates
+            selectedOptions: newSelectedOptions,
+            optionStates: newOptionStates,
+            [`answerSheetStates[${currentQuestion - 1}]`]: true
+        }, () => {
+            console.log('选择选项后的状态：', {
+                index,
+                currentQuestion,
+                selectedOptions: this.data.selectedOptions[currentQuestion - 1],
+                optionStates: this.data.optionStates[currentQuestion - 1]
+            });
         });
     },
     onInputAnswer: function (e) {
@@ -199,9 +214,16 @@ Page({
         }
     },
     submitAllAnswers: function () {
-        const { allQuestions, allAnswers, selectedOptions, questionStates, answerSheetStates } = this.data;
+        const { allQuestions, allAnswers, selectedOptions, questionStates, answerSheetStates, optionStates } = this.data;
         const newQuestionStates = [...questionStates];
         const allUserAnswers = [];
+
+        console.log('提交答案前的状态：', {
+            allQuestions,
+            selectedOptions,
+            optionStates,
+            answerSheetStates
+        });
 
         // 检查是否所有题目都已作答
         const allAnswered = answerSheetStates.every(state => state === true);
@@ -214,6 +236,12 @@ Page({
         }
 
         allQuestions.forEach((question, index) => {
+            console.log(`处理第${index + 1}题：`, {
+                question,
+                selectedOptions: selectedOptions[index],
+                optionStates: optionStates[index]
+            });
+
             const userAnswer = allAnswers[index];
             const correctAnswer = question.answer;
             let isCorrect;
@@ -221,7 +249,7 @@ Page({
 
             if (question.type === '单选题' || question.type === '判断题') {
                 const selectedChar = selectedOptions[index];
-                if (selectedChar!== undefined) {
+                if (selectedChar !== undefined) {
                     isCorrect = selectedChar === correctAnswer[0];
                 } else {
                     isCorrect = false;
@@ -231,15 +259,32 @@ Page({
                     'answer': selectedChar || ''
                 });
             } else if (question.type === '多选题') {
-                const selectedChars = selectedOptions[index] || [];
-                const sortedSelectedChars = selectedChars.slice().sort();
-                const sortedAnswerString = sortedSelectedChars.join('');
+                // 从选项状态中获取选中的选项
+                const selectedIndexes = optionStates[index] || [];
+                const selectedChars = [];
+                
+                selectedIndexes.forEach((isSelected, idx) => {
+                    if (isSelected && question.options && question.options[idx]) {
+                        selectedChars.push(question.options[idx][0]);
+                    }
+                });
+
+                const selectedAnswer = selectedChars.sort().join('');
+                const correctAnswerString = correctAnswer.split('').sort().join('');
+                
+                isCorrect = selectedAnswer === correctAnswerString;
+                
                 allUserAnswers.push({
                     'questionId': questionId,
-                    'answer': sortedAnswerString
+                    'answer': selectedAnswer
                 });
-                const correctFirstChars = correctAnswer.split('').map(char => char.trim());
-                isCorrect = sortedAnswerString.split('').every(char => correctFirstChars.includes(char)) && correctFirstChars.length === sortedAnswerString.length;
+
+                console.log(`多选题${index + 1}的答案：`, {
+                    selectedChars,
+                    selectedAnswer,
+                    correctAnswerString,
+                    isCorrect
+                });
             } else if (question.type === '填空题') {
                 isCorrect = userAnswer === correctAnswer;
                 allUserAnswers.push({
@@ -250,20 +295,20 @@ Page({
             newQuestionStates[index] = isCorrect;
         });
 
+        console.log('提交的答案：', allUserAnswers);
+
         this.setData({
             isAllSubmitted: true,
             questionStates: newQuestionStates,
             isSubmitted: true
         });
 
-        console.log('提交结果：', newQuestionStates);
         // 调用后端接口
         apiJudgeTest(allUserAnswers)
-          .then(response => {
+            .then(response => {
                 console.log('后端返回结果：', response);
-                // 可以在这里处理后端返回的结果，例如更新页面显示等
             })
-          .catch(error => {
+            .catch(error => {
                 console.error('提交答案到后端时出错：', error);
             });
     },
@@ -288,7 +333,9 @@ Page({
     },
     // 自定义函数，用于判断数组是否包含某个元素
     isArrayAndIncludes: function (arr, item) {
-        return Array.isArray(arr) && arr.includes(item);
+        if (!arr) return false;
+        if (!Array.isArray(arr)) return false;
+        return arr.includes(item);
     },
     // 新增：点击答题卡的事件处理函数
     showAnswerSheet: function () {
