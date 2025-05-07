@@ -1,6 +1,4 @@
-import {
-    request
-} from "./request";
+import {request} from "./request";
 import {getUserId} from './getUserId'
 import { baseURL } from "./request";
 // 删除法律 

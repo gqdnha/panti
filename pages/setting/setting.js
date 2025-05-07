@@ -1,4 +1,4 @@
-import {changeUserName} from '../../api/changeUserName'
+import {changeUserName} from '../../api/setting'
 
 Page({
     data: {
