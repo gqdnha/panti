@@ -1,2 +1,23 @@
-<!--pages/setting/setting.wxml-->
-<text>pages/setting/setting.wxml</text>
+<!--pages/login/index.wxml-->
+<view class="container">
+    <view class="login-box">
+        <view class="input-group">
+            <text>用户名：</text> 
+            <input placeholder="请输入用户名" bindinput="inputUserName" value="{{userName}}" maxlength="11" />
+        </view>
+        <button class="login-btn" bindtap="handleUserName">确认修改</button>
+    </view>
+
+    <view class="login-box">
+        <view class="input-group">
+            <input type="number" placeholder="请输入手机号" bindinput="inputPhone" value="{{phone}}" maxlength="11" />
+        </view>
+        <view class="input-group verification">
+            <input type="number" placeholder="请输入验证码" bindinput="inputCode" value="{{code}}" maxlength="6" />
+            <button class="send-code-btn" bindtap="sendCode" disabled="{{counting}}">
+                {{counting ? countDown + 's' : '获取验证码'}}
+            </button>
+        </view>
+        <button class="login-btn" bindtap="handleLogin">确认修改</button>
+    </view>
+</view>
