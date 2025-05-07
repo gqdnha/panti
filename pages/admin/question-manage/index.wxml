@@ -144,10 +144,10 @@
                 <label>答案</label>
                 <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" />
             </view>
-            <view class="form-item">
+            <!-- <view class="form-item">
                 <label>难易</label>
                 <input type="text" data-field="eh" bindinput="onEditQuestionInput" value="{{editQuestion.eh}}" />
-            </view>
+            </view> -->
             <view class="form-item">
                 <label>解析</label>
                 <textarea data-field="analysis" bindinput="onEditQuestionInput" value="{{editQuestion.analysis}}"></textarea>
