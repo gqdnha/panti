@@ -5,7 +5,6 @@ import {addLearnTime} from '../../api/addLearnTime'
 import {
     apiJudgeTest
 } from "../../api/judgeTest"
-// import {dailyQuestionCount} from '../../api/dailyQuestionCount'
 Page({
     data: {
         // 后端数据
