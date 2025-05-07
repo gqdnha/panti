@@ -26,14 +26,4 @@ export const getWrongQuestion = (data) => {
     })
 }
 
-// 专属与错题本的 判断
-export const apiJudgeWrongQuestion = (data) => {
-    const userId = getUserId();
-    return request({
-        url: `/wrongQuestion/judgeWrongQuestion?userId=${userId}`,
-        method: 'POST',
-        data
-    });
-};
-
 

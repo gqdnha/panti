@@ -1,8 +1,8 @@
 import {
     getWrongQuestion,
-    apiJudgeWrongQuestion
 } from "../../api/getWrongQuestion";
 import {addLearnTime} from '../../api/addLearnTime'
+import {apiJudgeTest} from '../../api/judgeTest'
 Page({
     data: {
         type: '',
@@ -167,12 +167,14 @@ Page({
         this.setData({
             isSubmitted: newIsSubmitted
         });
+        const data = [{
+            questionId: question.questionId,
+            answer: userAnswerToSubmit,
+            type:this.data.type
+        }]
+        console.log(data);
 
-        apiJudgeWrongQuestion([{
-            'questionId': question.questionId,
-            'answer': userAnswerToSubmit
-        }])
-           .then(response => {
+        apiJudgeTest(data).then(response => {
                 console.log('后端返回结果：', response);
                 const result = response[0];
                 const isCorrect = result.rightOrWrong === '对';
