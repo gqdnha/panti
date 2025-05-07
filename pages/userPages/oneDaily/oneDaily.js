@@ -35,6 +35,7 @@ Page({
         answerSheetStates: [],
         showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
         questionStatuses: [], // 存储题目作答情况数据
+        optionStates: [], // 存储每个题目的选项状态
     },
     onLoad(options) {
         const id = options.id
@@ -62,17 +63,23 @@ Page({
                     }
                 }
             })
+            // 初始化选中选项数组和选项状态数组
+            const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
+            const initialOptionStates = res.map(question => 
+                new Array(question.options.length).fill(false)
+            );
+            
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
                 questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
-                selectedOptions: new Array(res.length).fill(null), // 初始化选中选项数组
+                selectedOptions: initialSelectedOptions,
+                optionStates: initialOptionStates,
                 answerSheetStates: new Array(res.length).fill(false), // 初始化答题卡状态数组，默认都未作答
             })
             console.log(this.data.allQuestions);
             console.log(this.data.totalQuestions);
             console.log(this.data.allQuestions[1].options);
-
         })
     },
     nextQuestion: function () {
@@ -113,48 +120,47 @@ Page({
     // 多选题
     selectMultipleOption: function (e) {
         const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions, allQuestions } = this.data;
+        const { currentQuestion, selectedOptions, allQuestions, optionStates } = this.data;
 
-        // 确保 currentQuestion 在有效范围内
-        if (currentQuestion < 1 || currentQuestion > this.data.totalQuestions) {
+        // 检查数据是否存在
+        if (!allQuestions || !allQuestions[currentQuestion - 1] || !allQuestions[currentQuestion - 1].options) {
+            console.error('题目数据不完整');
             return;
         }
 
-        const newSelectedOptions = [...selectedOptions];
-        const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
-        if (!Array.isArray(newSelectedOptions[currentQuestion - 1])) {
-            newSelectedOptions[currentQuestion - 1] = [optionFirstChar];
-        } else {
-            const currentSelected = newSelectedOptions[currentQuestion - 1];
-            const optionIndex = currentSelected.indexOf(optionFirstChar);
-            if (optionIndex > -1) {
-                currentSelected.splice(optionIndex, 1);
-            } else {
-                currentSelected.push(optionFirstChar);
+        // 获取当前题目的选项状态
+        let currentOptionStates = [...optionStates[currentQuestion - 1]];
+        // 切换当前选项的状态
+        currentOptionStates[index] = !currentOptionStates[index];
+
+        // 更新选中选项
+        let currentSelected = [];
+        currentOptionStates.forEach((isSelected, idx) => {
+            if (isSelected && allQuestions[currentQuestion - 1].options[idx]) {
+                currentSelected.push(allQuestions[currentQuestion - 1].options[idx][0]);
             }
-        }
-
-        // 打印更新前的 selectedOptions
-        console.log('更新前的 selectedOptions:', this.data.selectedOptions);
-
-        this.setData({
-            selectedOptions: newSelectedOptions
-        }, () => {
-            // 打印更新后的 selectedOptions
-            console.log('更新后的 selectedOptions:', this.data.selectedOptions);
-            // 检查视图层是否接收到更新后的数据
-            const updatedSelectedOptions = this.data.selectedOptions;
-            console.log('视图层接收到的 updatedSelectedOptions:', updatedSelectedOptions);
         });
 
-        const selectedChars = newSelectedOptions[currentQuestion - 1] || [];
-        console.log(`第 ${currentQuestion} 题选中的选项首字：`, selectedChars);
+        // 对选项进行排序
+        currentSelected.sort();
 
-        // 更新答题卡状态为已作答
-        const answerSheetStates = [...this.data.answerSheetStates];
-        answerSheetStates[currentQuestion - 1] = true;
+        // 更新数据
+        const newSelectedOptions = [...selectedOptions];
+        newSelectedOptions[currentQuestion - 1] = currentSelected;
+
+        const newOptionStates = [...optionStates];
+        newOptionStates[currentQuestion - 1] = currentOptionStates;
+
         this.setData({
-            answerSheetStates: answerSheetStates
+            selectedOptions: newSelectedOptions,
+            optionStates: newOptionStates,
+            [`answerSheetStates[${currentQuestion - 1}]`]: true
+        }, () => {
+            console.log('更新后的状态：', {
+                currentQuestion,
+                selectedOptions: this.data.selectedOptions[currentQuestion - 1],
+                optionStates: this.data.optionStates[currentQuestion - 1]
+            });
         });
     },
     onInputAnswer: function (e) {
