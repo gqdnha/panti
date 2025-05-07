@@ -4,6 +4,9 @@ import {
 import {
     apiJudgeTest
 } from "../../../api/judgeTest"
+import {
+    dailyQuestionCount
+} from '../../../api/dailyQuestionCount'
 
 Page({
     data: {
@@ -44,7 +47,7 @@ Page({
     getData: function () {
         apiGetDailyTest().then(res => {
             console.log('获取到的原始数据：', res);
-            
+
             res.forEach((question, index) => {
                 if (question.options && typeof question.options === 'string') {
                     try {
@@ -56,13 +59,13 @@ Page({
                     }
                 }
             });
-            
+
             // 初始化选中选项数组和选项状态数组
             const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
-            const initialOptionStates = res.map(question => 
+            const initialOptionStates = res.map(question =>
                 new Array(question.options.length).fill(false)
             );
-            
+
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
@@ -81,7 +84,11 @@ Page({
         });
     },
     nextQuestion: function () {
-        const { currentQuestion, totalQuestions, selectedOptions } = this.data;
+        const {
+            currentQuestion,
+            totalQuestions,
+            selectedOptions
+        } = this.data;
         if (currentQuestion < totalQuestions) {
             this.setData({
                 currentQuestion: currentQuestion + 1
@@ -89,7 +96,10 @@ Page({
         }
     },
     prevQuestion: function () {
-        const { currentQuestion, selectedOptions } = this.data;
+        const {
+            currentQuestion,
+            selectedOptions
+        } = this.data;
         if (currentQuestion > 1) {
             this.setData({
                 currentQuestion: currentQuestion - 1
@@ -97,8 +107,14 @@ Page({
         }
     },
     selectOption: function (e) {
-        const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions, allQuestions } = this.data;
+        const {
+            index
+        } = e.currentTarget.dataset;
+        const {
+            currentQuestion,
+            selectedOptions,
+            allQuestions
+        } = this.data;
         const newSelectedOptions = [...selectedOptions];
         const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
         newSelectedOptions[currentQuestion - 1] = optionFirstChar;
@@ -117,8 +133,15 @@ Page({
     },
     // 多选题
     selectMultipleOption: function (e) {
-        const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions, allQuestions, optionStates } = this.data;
+        const {
+            index
+        } = e.currentTarget.dataset;
+        const {
+            currentQuestion,
+            selectedOptions,
+            allQuestions,
+            optionStates
+        } = this.data;
 
         console.log('选择选项前的状态：', {
             currentQuestion,
@@ -164,8 +187,13 @@ Page({
         });
     },
     onInputAnswer: function (e) {
-        const { value } = e.detail;
-        const { currentQuestion, allAnswers } = this.data;
+        const {
+            value
+        } = e.detail;
+        const {
+            currentQuestion,
+            allAnswers
+        } = this.data;
         const newAllAnswers = [...allAnswers];
         newAllAnswers[currentQuestion - 1] = value;
         this.setData({
@@ -214,7 +242,14 @@ Page({
         }
     },
     submitAllAnswers: function () {
-        const { allQuestions, allAnswers, selectedOptions, questionStates, answerSheetStates, optionStates } = this.data;
+        const {
+            allQuestions,
+            allAnswers,
+            selectedOptions,
+            questionStates,
+            answerSheetStates,
+            optionStates
+        } = this.data;
         const newQuestionStates = [...questionStates];
         const allUserAnswers = [];
 
@@ -262,7 +297,7 @@ Page({
                 // 从选项状态中获取选中的选项
                 const selectedIndexes = optionStates[index] || [];
                 const selectedChars = [];
-                
+
                 selectedIndexes.forEach((isSelected, idx) => {
                     if (isSelected && question.options && question.options[idx]) {
                         selectedChars.push(question.options[idx][0]);
@@ -271,9 +306,9 @@ Page({
 
                 const selectedAnswer = selectedChars.sort().join('');
                 const correctAnswerString = correctAnswer.split('').sort().join('');
-                
+
                 isCorrect = selectedAnswer === correctAnswerString;
-                
+
                 allUserAnswers.push({
                     'questionId': questionId,
                     'answer': selectedAnswer
@@ -304,13 +339,17 @@ Page({
         });
 
         // 调用后端接口
-        apiJudgeTest(allUserAnswers)
-            .then(response => {
+        apiJudgeTest(allUserAnswers).then(response => {
                 console.log('后端返回结果：', response);
             })
             .catch(error => {
                 console.error('提交答案到后端时出错：', error);
             });
+        const totalCount = this.data.totalQuestions
+        console.log(totalCount);
+        dailyQuestionCount(totalCount).then(res => {
+            console.log(res,'请求成功');
+        })
     },
     onTouchStart: function (e) {
         // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
@@ -319,7 +358,10 @@ Page({
         // 在这里添加触摸结束事件的处理逻辑，如果暂时没有逻辑，可以先空着
     },
     showAnalysis: function () {
-        const { currentQuestion, allQuestions } = this.data;
+        const {
+            currentQuestion,
+            allQuestions
+        } = this.data;
         const currentQuestionData = allQuestions[currentQuestion - 1];
         this.setData({
             showAnalysis: true,
@@ -339,11 +381,13 @@ Page({
     },
     // 新增：点击答题卡的事件处理函数
     showAnswerSheet: function () {
-        const { answerSheetStates } = this.data;
+        const {
+            answerSheetStates
+        } = this.data;
         const questionStatuses = answerSheetStates.map((state, index) => ({
             index: index + 1,
             isAnswered: state,
-            highlightClass: state? 'answered-highlight' : 'unanswered-dark'
+            highlightClass: state ? 'answered-highlight' : 'unanswered-dark'
         }));
         this.setData({
             showAnswerSheetModal: true,
@@ -358,7 +402,9 @@ Page({
     },
     // 新增：点击答题卡上的题目跳转到对应题目的函数
     jumpToQuestion: function (e) {
-        const { index } = e.currentTarget.dataset;
+        const {
+            index
+        } = e.currentTarget.dataset;
         this.setData({
             currentQuestion: index
         });
