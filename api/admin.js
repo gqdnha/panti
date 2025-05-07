@@ -87,9 +87,10 @@ export const getQuestionDetail = (questionId) => {
 
 // 编辑题目
 export const updateQuestion = (questionId,data) => {
+    const userId = getUserId()
     console.log(questionId);
     return request({
-        url: `/mange/updateQuestion?questionId=${questionId}`,
+        url: `/mange/updateQuestion?questionId=${questionId}&userId=${userId}`,
         method: 'POST',
         data
     });
@@ -98,9 +99,10 @@ export const updateQuestion = (questionId,data) => {
 
 // 禁用题目
 export const deleteQuestionApi = (questionId) => {
+    const userId =getUserId()
     console.log(questionId);
     return request({
-        url: `/mange/deleteQuestion?questionId=${questionId}`,
+        url: `/mange/deleteQuestion?questionId=${questionId}&userId=${userId}`,
         method: 'POST',
     });
 };
@@ -127,8 +129,9 @@ export const getAllQuestion = (data) => {
 
 // 新建题目
 export const addNewQuestion = (data) => {
+    const userId =getUserId()
     return request({
-        url: `/mange/newQuestion`,
+        url: `/mange/newQuestion?userId=${userId}`,
         method: 'POST',
         data
     });

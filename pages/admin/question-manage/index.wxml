@@ -158,4 +158,4 @@
             <button bindtap="onSubmitEditQuestion">提交</button>
         </view>
     </view>
-</view>    
+</view>
