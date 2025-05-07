@@ -232,11 +232,16 @@ Page({
             const userAnswer = allAnswers[index];
             const correctAnswer = question.answer;
             let isCorrect;
-            const questionId = question.questionId;
+            const questionId = question.questionId; // 确保从question对象中获取questionId
+
+            if (!questionId) {
+                console.error(`第${index + 1}题缺少questionId`);
+                return;
+            }
 
             if (question.type === '单选题' || question.type === '判断题') {
                 const selectedChar = selectedOptions[index];
-                if (selectedChar!== undefined) {
+                if (selectedChar !== undefined) {
                     isCorrect = selectedChar === correctAnswer[0];
                 } else {
                     isCorrect = false;
@@ -259,7 +264,7 @@ Page({
                 isCorrect = userAnswer === correctAnswer;
                 allUserAnswers.push({
                     'questionId': questionId,
-                    'answer': userAnswer
+                    'answer': userAnswer || ''
                 });
             }
             newQuestionStates[index] = isCorrect;
@@ -271,14 +276,14 @@ Page({
             isSubmitted: true
         });
 
-        console.log('提交结果：', newQuestionStates);
+        console.log('提交的答案数据：', allUserAnswers);
         // 调用后端接口
         apiJudgeTest(allUserAnswers)
-          .then(response => {
+            .then(response => {
                 console.log('后端返回结果：', response);
                 // 可以在这里处理后端返回的结果，例如更新页面显示等
             })
-          .catch(error => {
+            .catch(error => {
                 console.error('提交答案到后端时出错：', error);
             });
     },

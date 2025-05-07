@@ -149,7 +149,7 @@ Page({
             allAnswers: newAllAnswers
         });
     },
-    submitSingleAnswer: function () {
+    /* submitSingleAnswer: function () {
         const { allQuestions, allAnswers, selectedOptions, questionStates, currentQuestion } = this.data;
         const newQuestionStates = [...questionStates];
         const newIsSubmitted = [...this.data.isSubmitted];
@@ -195,23 +195,23 @@ Page({
            .catch(error => {
                 console.error('提交答案到后端时出错：', error);
             });
-    },
+    }, */
 
-    showAnalysis: function () {
+    /* showAnalysis: function () {
         const { currentQuestion, allQuestions } = this.data;
         const currentQuestionData = allQuestions[currentQuestion - 1];
         this.setData({
             showAnalysis: true,
             currentQuestionData: currentQuestionData
         });
-    },
-    closeAnalysisAndContinue: function () {
+    }, */
+    /* closeAnalysisAndContinue: function () {
         this.setData({
             showAnalysis: false
         });
-    },
+    }, */
     // 自定义函数，用于判断数组是否包含某个元素
-    isArrayAndIncludes: function (arr, item) {
+    /* isArrayAndIncludes: function (arr, item) {
         return Array.isArray(arr) && arr.includes(item);
-    }
+    } */
 })    

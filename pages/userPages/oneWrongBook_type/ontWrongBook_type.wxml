@@ -54,7 +54,7 @@
             <button bindtap="showAnalysis">查看详情</button>
         </view>
         <!-- 每道题的提交按钮 -->
-        <view class="btn submit" bindtap="submitSingleAnswer" wx:if="{{!isSubmitted[currentQuestion - 1]}}">提交答案</view>
+        <!-- <view class="btn submit" bindtap="submitSingleAnswer" wx:if="{{!isSubmitted[currentQuestion - 1]}}">提交答案</view> -->
     </view>
 
     <!-- 底部操作栏 -->

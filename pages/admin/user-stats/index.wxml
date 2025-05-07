@@ -1,7 +1,7 @@
 <view class="container">
     <!-- 搜索框 -->
     <view class="search-box">
-        <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}"/>
+        <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}" />
         <button bindtap="onSearch">搜索</button>
     </view>
     <!-- 题目列表 -->
@@ -66,16 +66,18 @@
                 <label>正确率</label>
                 <text>{{rightPercent}} %</text>
             </view>
+            <view class="function"> 
+                <!-- 错题本 -->
+                <view class="function-item" bindtap="goToOneWrongBook">
+                    <button>错题本</button>
+                </view>
+                <!-- 每日练习 情况 -->
+                <view class="function-item" bindtap="goToOneDaily">
+                    <button>每日练习</button>
+                </view>
+            </view>
 
-            <!-- 错题本 -->
-            <view class="detail-item" bindtap="goToOneWrongBook">
-                <label>错题本</label>
-                <!-- <text>{{rightPercent}} %</text> -->
-            </view>
-            <!-- 每日练习 情况 -->
-            <view class="detail-item" bindtap="goToOneDaily">
-                <label>每日练习</label>
-            </view>
+
         </view>
     </view>
 </view>
