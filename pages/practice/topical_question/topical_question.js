@@ -4,7 +4,7 @@ import {
 import {
     apiJudgeTest
 } from '../../../api/judgeTest'
-
+import {addLearnTime} from '../../../api/addLearnTime'
 Page({
     data: {
         // 后端数据
@@ -39,13 +39,15 @@ Page({
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
         optionStates: [], // 存储每个题目的选项状态
+        startTime: null // 新增：记录开始时间
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);
         const type = decodeURIComponent(options.questionType);
         this.setData({
             category,
-            type
+            type,
+            startTime: new Date() // 记录开始时间
         });
         console.log('接收到的类别:', this.data.category);
         console.log('接收到的类别:', type);
@@ -313,4 +315,13 @@ Page({
             showAnalysis: false
         });
     },
-})    
+    onUnload: function () {
+        const { startTime } = this.data;
+        const endTime = new Date();
+        const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60)); // 计算做题时间（单位：分钟）
+        console.log(`做题总时间（分钟）：${durationInMinutes}`);
+        addLearnTime(durationInMinutes).then(res => {
+            console.log(res);
+        })
+    }
+})

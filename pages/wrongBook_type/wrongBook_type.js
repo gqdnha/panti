@@ -2,12 +2,12 @@ import {
     getWrongQuestion,
     apiJudgeWrongQuestion
 } from "../../api/getWrongQuestion";
-
+import {addLearnTime} from '../../api/addLearnTime'
 Page({
     data: {
-        type:'',
+        type: '',
         //  查看详情
-        detailData:{},
+        detailData: {},
 
         // 页面数据
         currentQuestion: 1, //题目序号
@@ -21,12 +21,14 @@ Page({
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
         optionStates: [], // 存储每个题目的选项状态
+        startTime: null // 新增：记录开始时间
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
         this.setData({
-            type
-        })
+            type,
+            startTime: new Date() // 记录开始时间
+        });
         console.log(type);
         this.getData();
         // 假设这里接收学习时长，可根据实际情况修改
@@ -37,37 +39,37 @@ Page({
     // 请求接口
     getData() {
         console.log(this.data.type);
-        const type =this.data.type 
+        const type = this.data.type;
         getWrongQuestion(type).then(res => {
             console.log(res);
             res.forEach(question => {
-                if (question.options && typeof question.options === 'string') {
+                if (question.options && typeof question.options ==='string') {
                     try {
-                        question.options = JSON.parse(question.options)
+                        question.options = JSON.parse(question.options);
                     } catch (error) {
                         console.log('选项解析错误：', error);
-                        question.options = []
+                        question.options = [];
                     }
                 }
-            })
+            });
             // 初始化选中选项数组和选项状态数组
             const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
-            const initialOptionStates = res.map(question => 
+            const initialOptionStates = res.map(question =>
                 new Array(question.options.length).fill(false)
             );
-            
+
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
                 questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
                 selectedOptions: initialSelectedOptions,
                 optionStates: initialOptionStates,
-            })
+            });
             console.log(this.data.allQuestions);
             console.log(this.data.totalQuestions);
             console.log(this.data.allQuestions[1].options);
 
-        })
+        });
     },
     nextQuestion: function () {
         const { currentQuestion, totalQuestions, selectedOptions } = this.data;
@@ -105,7 +107,7 @@ Page({
         // 获取当前题目的选项状态
         let currentOptionStates = [...optionStates[currentQuestion - 1]];
         // 切换当前选项的状态
-        currentOptionStates[index] = !currentOptionStates[index];
+        currentOptionStates[index] =!currentOptionStates[index];
 
         // 更新选中选项
         let currentSelected = [];
@@ -147,7 +149,7 @@ Page({
         const question = allQuestions[currentQuestion - 1];
         const userAnswer = allAnswers[currentQuestion - 1];
         let userAnswerToSubmit;
-    
+
         if (question.type === '单选题' || question.type === '判断题') {
             const selectedChar = selectedOptions[currentQuestion - 1];
             userAnswerToSubmit = selectedChar || '';
@@ -159,13 +161,13 @@ Page({
         } else if (question.type === '填空题') {
             userAnswerToSubmit = userAnswer;
         }
-    
+
         newIsSubmitted[currentQuestion - 1] = true;
-    
+
         this.setData({
             isSubmitted: newIsSubmitted
         });
-    
+
         apiJudgeWrongQuestion([{
             'questionId': question.questionId,
             'answer': userAnswerToSubmit
@@ -204,5 +206,14 @@ Page({
     // 自定义函数，用于判断数组是否包含某个元素
     isArrayAndIncludes: function (arr, item) {
         return Array.isArray(arr) && arr.includes(item);
+    },
+    onUnload: function () {
+        const { startTime } = this.data;
+        const endTime = new Date();
+        const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
+        console.log(`做题总时间（分钟）：${durationInMinutes}`);
+        addLearnTime(durationInMinutes).then(res => {
+            console.log(res);
+        })
     }
-})    
+});

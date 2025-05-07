@@ -1,31 +1,31 @@
 import {
     get20Mistake
 } from "../../api/get20Mistake";
+import {addLearnTime} from '../../api/addLearnTime'
 /* import {
     apiJudgeTest
 } from "../../../api/judgeTest" */
-
 Page({
     data: {
         // 后端数据
-        /*  questionId:'', //题目id
-         content:'', //题目
-         options:'', //选项
-         answer:'', //答案
-         isActive : '', //
-         category : '', //分类
-         analysis : '', //解析
-         eh : '', //难易状况 */
+        // 题目id
+        // content: '', // 题目
+        // options: '', // 选项
+        // answer: '', // 答案
+        // isActive: '',
+        // category: '', // 分类
+        // analysis: '', // 解析
+        // eh: '', // 难易状况
 
         // 页面数据
-        currentQuestion: 1, //题目序号
-        totalQuestions: 0, //总数
-        remainingTime: '20:00', //倒计时
+        currentQuestion: 1, // 题目序号
+        totalQuestions: 0, // 总数
+        remainingTime: '20:00', // 倒计时
         allAnswers: [], // 所有题目答案
         isSubmitted: false,
         isAllSubmitted: false,
-        allQuestions: [], //所有题目
-        selectedOptions: [], //记录每个题目的选中选项
+        allQuestions: [], // 所有题目
+        selectedOptions: [], // 记录每个题目的选中选项
         questionStates: [], // 记录每个题目的答题状态（正确/错误）
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
@@ -35,17 +35,22 @@ Page({
         showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
         questionStatuses: [], // 存储题目作答情况数据
         optionStates: [], // 存储每个题目的选项状态
+
+        startTime: null, // 新增：记录开始时间
     },
     onLoad: function () {
         this.startCountdown()
         this.getData()
+        this.setData({
+            startTime: new Date() // 记录开始时间
+        });
     },
     // 请求接口
     getData: function () {
         get20Mistake().then(res => {
             console.log(res);
             res.forEach(question => {
-                if (question.options && typeof question.options === 'string') {
+                if (question.options && typeof question.options ==='string') {
                     try {
                         question.options = JSON.parse(question.options)
                     } catch (error) {
@@ -56,10 +61,10 @@ Page({
             })
             // 初始化选中选项数组和选项状态数组
             const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
-            const initialOptionStates = res.map(question => 
+            const initialOptionStates = res.map(question =>
                 new Array(question.options.length).fill(false)
             );
-            
+
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
@@ -117,7 +122,7 @@ Page({
         // 获取当前题目的选项状态
         let currentOptionStates = [...optionStates[currentQuestion - 1]];
         // 切换当前选项的状态
-        currentOptionStates[index] = !currentOptionStates[index];
+        currentOptionStates[index] =!currentOptionStates[index];
 
         // 更新选中选项
         let currentSelected = [];
@@ -254,11 +259,11 @@ Page({
         console.log('提交结果：', newQuestionStates);
         // 调用后端接口
         apiJudgeTest(allUserAnswers)
-          .then(response => {
+           .then(response => {
                 console.log('后端返回结果：', response);
                 // 可以在这里处理后端返回的结果，例如更新页面显示等
             })
-          .catch(error => {
+           .catch(error => {
                 console.error('提交答案到后端时出错：', error);
             });
     },
@@ -311,5 +316,14 @@ Page({
             currentQuestion: index
         });
         this.closeAnswerSheetModal();
+    },
+    onUnload() {
+        const { startTime } = this.data;
+        const endTime = new Date();
+        const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60)); // 计算做题时间（单位：分钟）
+        console.log(`做题总时间（分钟）：${durationInMinutes}`);
+        addLearnTime(durationInMinutes).then(res => {
+            console.log(res);
+        })
     }
-})
+});
