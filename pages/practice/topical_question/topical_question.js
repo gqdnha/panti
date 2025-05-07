@@ -67,18 +67,19 @@ Page({
         } = this.data;
         const data = {
             category: this.data.category,
-            // content: "",
             pageNum: pageNum,
             pageSize: pageSize,
-            // 需要加type,等后端
             type: this.data.type
         };
-        console.log(data);
+        console.log('请求参数：', data);
 
         getAllQuestion(data).then(res => {
             console.log('获取到的题目数据:', res);
             // 对获取到的questionList中的每个题目进行处理
             const newQuestionList = res.pageInfo.pageData.map(question => {
+                // 将question_id映射为questionId
+                question.questionId = question.question_id;
+                
                 if (question.options) {
                     try {
                         question.options = JSON.parse(question.options);
@@ -90,19 +91,27 @@ Page({
                 console.log('单个题目数据:', question);
                 return question;
             });
+
             const currentQuestionList = this.data.questionList;
             const combinedQuestionList = currentQuestionList.concat(newQuestionList);
+            
+            // 初始化选项状态数组
+            const initialOptionStates = newQuestionList.map(question => 
+                new Array(question.options ? question.options.length : 0).fill(false)
+            );
+
             this.setData({
                 questionList: combinedQuestionList,
                 totalQuestions: res.pageInfo.totalSize,
-                questionStates: new Array(combinedQuestionList.length).fill(null), // 初始化题目状态数组
-                selectedOptions: new Array(combinedQuestionList.length).fill(null), // 初始化选中选项数组
-                isSubmitted: new Array(combinedQuestionList.length).fill(false), // 初始化题目提交状态数组
+                questionStates: new Array(combinedQuestionList.length).fill(null),
+                selectedOptions: new Array(combinedQuestionList.length).fill(null),
+                isSubmitted: new Array(combinedQuestionList.length).fill(false),
                 pageNum: this.data.pageNum + 1,
-                optionStates: new Array(res.pageInfo.pageData.length).fill(null).map(() => new Array(res.pageInfo.pageData[0].options.length).fill(false)), // 初始化选项状态数组
+                optionStates: [...this.data.optionStates, ...initialOptionStates]
             });
+            
             console.log('设置到data中的题目数据:', this.data.questionList);
-            console.log(this.data.totalQuestions);
+            console.log('当前题目总数:', this.data.totalQuestions);
         }).catch(err => {
             console.error('加载题目列表失败:', err);
             wx.showToast({
@@ -239,6 +248,12 @@ Page({
             return;
         }
 
+        // 检查questionId是否存在
+        if (!question.questionId) {
+            console.error('当前题目缺少questionId:', question);
+            return;
+        }
+
         const userAnswer = allAnswers[currentQuestion - 1];
         const correctAnswer = question.answer;
         let isCorrect;
@@ -262,8 +277,9 @@ Page({
             }
         } else if (question.type === '填空题') {
             isCorrect = userAnswer === correctAnswer;
-            userAnswerToSubmit = userAnswer;
+            userAnswerToSubmit = userAnswer || '';
         }
+
         newQuestionStates[currentQuestion - 1] = isCorrect;
         newIsSubmitted[currentQuestion - 1] = true;
 
@@ -279,11 +295,12 @@ Page({
         // 打印 questionId 检查是否正确获取
         console.log('当前题目的 questionId:', questionId);
 
-        const data = {
+        const data = [{
             questionId: questionId,
-            answer: userAnswerToSubmit
-        };
-        console.log(data);
+            answer: userAnswerToSubmit,
+            type:this.data.type
+        }];
+        console.log('提交到后端的数据：', data);
         // 调用后端接口
         // 判断正误
         apiJudgeTest(data).then(res => {

@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/practice/topical_question/topical_question",
+          "pathName": "pages/practice/topical_question/topical_question",
+          "query": "category=%25E8%25A1%258C%25E6%2594%25BF%25E6%2589%25A7%25E6%25B3%2595%25E8%25A7%2584%25E5%25AE%259A&questionType=%25E5%258D%2595%25E9%2580%2589%25E9%25A2%2598",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/test/test",
           "pathName": "pages/test/test",
           "query": "",
