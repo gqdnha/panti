@@ -10,7 +10,7 @@ export const deleteLawApi = (regulationId) => {
     console.log(regulationId);
     console.log(userId);
     return request({
-        url: `/regulation/deleteFavoriteRegulation?regulationId=${regulationId}&userId=${userId}`,
+        url: `/mange/deleteRegulation?regulationId=${regulationId}&userId=${userId}`,
         method: 'POST',
     });
 };
