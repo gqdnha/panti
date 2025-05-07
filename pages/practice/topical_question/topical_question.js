@@ -4,7 +4,9 @@ import {
 import {
     apiJudgeTest
 } from '../../../api/judgeTest'
-import {addLearnTime} from '../../../api/addLearnTime'
+import {
+    addLearnTime
+} from '../../../api/addLearnTime'
 Page({
     data: {
         // 后端数据
@@ -79,7 +81,7 @@ Page({
             const newQuestionList = res.pageInfo.pageData.map(question => {
                 // 将question_id映射为questionId
                 question.questionId = question.question_id;
-                
+
                 if (question.options) {
                     try {
                         question.options = JSON.parse(question.options);
@@ -94,9 +96,9 @@ Page({
 
             const currentQuestionList = this.data.questionList;
             const combinedQuestionList = currentQuestionList.concat(newQuestionList);
-            
+
             // 初始化选项状态数组
-            const initialOptionStates = newQuestionList.map(question => 
+            const initialOptionStates = newQuestionList.map(question =>
                 new Array(question.options ? question.options.length : 0).fill(false)
             );
 
@@ -109,7 +111,7 @@ Page({
                 pageNum: this.data.pageNum + 1,
                 optionStates: [...this.data.optionStates, ...initialOptionStates]
             });
-            
+
             console.log('设置到data中的题目数据:', this.data.questionList);
             console.log('当前题目总数:', this.data.totalQuestions);
         }).catch(err => {
@@ -172,8 +174,15 @@ Page({
     },
     // 多选题
     selectMultipleOption: function (e) {
-        const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions, questionList, optionStates } = this.data;
+        const {
+            index
+        } = e.currentTarget.dataset;
+        const {
+            currentQuestion,
+            selectedOptions,
+            questionList,
+            optionStates
+        } = this.data;
 
         // 检查数据是否存在
         if (!questionList || !questionList[currentQuestion - 1] || !questionList[currentQuestion - 1].options) {
@@ -255,8 +264,6 @@ Page({
         }
 
         const userAnswer = allAnswers[currentQuestion - 1];
-        const correctAnswer = question.answer;
-        let isCorrect;
         const questionId = question.questionId;
         let userAnswerToSubmit;
 
@@ -268,54 +275,35 @@ Page({
             const sortedSelectedChars = selectedChars.slice().sort();
             const sortedAnswerString = sortedSelectedChars.join('');
             userAnswerToSubmit = sortedAnswerString;
-            // 检查 correctAnswer 是否为 null 或 undefined
-            if (correctAnswer) {
-                const correctFirstChars = correctAnswer.split('').map(char => char.trim());
-                isCorrect = sortedAnswerString.split('').every(char => correctFirstChars.includes(char)) && correctFirstChars.length === sortedAnswerString.length;
-            } else {
-                isCorrect = false;
-            }
         } else if (question.type === '填空题') {
-            isCorrect = userAnswer === correctAnswer;
             userAnswerToSubmit = userAnswer || '';
         }
-
-        newQuestionStates[currentQuestion - 1] = isCorrect;
-        newIsSubmitted[currentQuestion - 1] = true;
-
-        this.setData({
-            questionStates: newQuestionStates,
-            isSubmitted: newIsSubmitted
-        });
-
-        console.log('提交结果：', newQuestionStates);
-        // 打印当前选中的答案
-        console.log(`第 ${currentQuestion} 题提交的答案是：`, userAnswerToSubmit);
-
-        // 打印 questionId 检查是否正确获取
-        console.log('当前题目的 questionId:', questionId);
 
         const data = [{
             questionId: questionId,
             answer: userAnswerToSubmit,
-            type:this.data.type
+            type: this.data.type
         }];
         console.log('提交到后端的数据：', data);
+
         // 调用后端接口
         // 判断正误
         apiJudgeTest(data).then(res => {
-                console.log('后端返回结果：', res);
-                // 可以在这里处理后端返回的结果，例如更新页面显示等
-                this.setData({
-                    detailData: res[0]
-                });
-                console.log(this.data.detailData);
-            })
-            .catch(error => {
-                console.error('提交答案到后端时出错：', error);
-            });
-    },
+            console.log('后端返回结果：', res);
+            // 使用后端返回的rightOrWrong字段更新题目状态
+            newQuestionStates[currentQuestion - 1] = res[0].rightOrWrong === '对';
+            newIsSubmitted[currentQuestion - 1] = true;
 
+            this.setData({
+                questionStates: newQuestionStates,
+                isSubmitted: newIsSubmitted,
+                detailData: res[0]
+            });
+            console.log(this.data.detailData);
+        }).catch(error => {
+            console.error('提交答案到后端时出错：', error);
+        });
+    },
     showAnalysis: function () {
         const {
             currentQuestion,
@@ -333,7 +321,9 @@ Page({
         });
     },
     onUnload: function () {
-        const { startTime } = this.data;
+        const {
+            startTime
+        } = this.data;
         const endTime = new Date();
         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60)); // 计算做题时间（单位：分钟）
         console.log(`做题总时间（分钟）：${durationInMinutes}`);
