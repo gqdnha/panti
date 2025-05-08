@@ -10,9 +10,10 @@ Page({
         regulationType: '',
         pageNum: 1,
         pageSize: 10,
-        totalSizeL: 0,
+        totalSize: 0,
+        totalPages: 0,
         lawList: [],
-
+        isLoading: false
     },
 
     onLoad(options) {
@@ -21,46 +22,49 @@ Page({
         this.setData({
             regulationType: regulationType
         });
-        this.getLawsData()
+        this.getLawsData();
     },
     getLawsData() {
-        const regulationType = this.data.regulationType
+        if (this.data.isLoading) return;
+        this.setData({ isLoading: true });
+        const regulationType = this.data.regulationType;
         const {
             pageNum,
             pageSize
-        } = this.data
+        } = this.data;
         const fromData = {
             regulationType,
             pageNum,
             pageSize
-        }
+        };
         console.log(regulationType);
         getLawsData(fromData).then(res => {
             console.log(res);
+            const totalSize = res.pageInfo.totalSize;
+            const totalPages = Math.ceil(totalSize / pageSize);
             this.setData({
-                totalSize: res.pageInfo.totalSize,
-                lawList: res.pageInfo.pageData
-            })
-            // console.log(this.data.totalSize,'111');
-            // console.log(this.data.lawList,'222');
-        })
+                totalSize: totalSize,
+                totalPages: totalPages,
+                lawList: this.data.lawList.concat(res.pageInfo.pageData),
+                isLoading: false
+            });
+        }).catch(() => {
+            this.setData({ isLoading: false });
+        });
     },
     openFile(e) {
         const index = e.currentTarget.dataset.index;
         const fileInfo = this.data.lawList[index];
         console.log(fileInfo);
-        // 假设完整的文件访问地址是通过拼接服务器地址和 regulation_url 得到的，这里假设服务器地址为 'https://yourserver.com/files/'
-        // const fullFileUrl = {baseURL} + '/static/' + fileInfo.regulation_url; 
-        const baseurl = baseURL
+        const baseurl = baseURL;
         console.log(baseurl);
-        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url
+        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url;
         console.log(fullFileUrl);
         wx.downloadFile({
             url: fullFileUrl,
             success: (res) => {
                 if (res.statusCode === 200) {
                     let fileType = 'pdf';
-                    // 根据文件名后缀判断文件类型
                     if (fileInfo.regulation_url.toLowerCase().endsWith('.docx')) {
                         fileType = 'docx';
                     } else if (fileInfo.regulation_url.toLowerCase().endsWith('.doc')) {
@@ -90,4 +94,29 @@ Page({
             },
         });
     },
-});
+    onNextPage() {
+        const { pageNum, totalPages } = this.data;
+        if (pageNum < totalPages) {
+            this.setData({ pageNum: pageNum + 1 });
+            this.getLawsData();
+        } else {
+            wx.showToast({
+                title: '已经是最后一页了',
+                icon: 'none'
+            });
+        }
+    },
+
+    onPreviousPage() {
+        const { pageNum } = this.data;
+        if (pageNum > 1) {
+            this.setData({ pageNum: pageNum - 1 });
+            this.getLawsData();
+        } else {
+            wx.showToast({
+                title: '已经是第一页了',
+                icon: 'none'
+            });
+        }
+    }
+});    

@@ -15,9 +15,12 @@
                     <text class="regulation_name"> {{item.regulation_name}}.pdf </text>
                     <text class="regulation_type"> {{item.regulation_type}} </text>
                 </view>
-                
             </view>
         </view>
-        
+    </view>
+    <!-- 分页按钮 -->
+    <view class="pagination">
+        <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
+        <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
     </view>
 </view>    
