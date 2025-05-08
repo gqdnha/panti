@@ -12,13 +12,15 @@ export const sendCode = (data) => {
     })
 }
 
-
-
-
-
-
-
-
+// 微信登录
+export const wxLogin = (code) => {
+    console.log(code);
+    return request({
+        url: `/user/login`,
+        method: 'POST',
+        data: { code }
+    });
+};
 
 export const changeUserName = (data) => {
     const userId = getUserId()
