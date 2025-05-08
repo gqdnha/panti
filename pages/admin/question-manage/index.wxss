@@ -313,11 +313,14 @@ button::after {
 }
 
 .form-item input {
-    width: 100%;
+    width: 500rpx;
     padding: 12rpx;
     border: 1rpx solid #ccc;
     border-radius: 8rpx;
     font-size: 24rpx;
+}
+.form-item textarea {
+    border: 1rpx solid #ccc;
 }
 
 .modal-footer {
@@ -359,4 +362,7 @@ textarea{
     height: 120rpx;
     border: 1rpx rgb(116, 116, 116) solid;
     border-radius: 15rpx;
+}
+.option-item {
+    width: 500rpx;
 }
