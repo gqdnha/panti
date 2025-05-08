@@ -1,6 +1,22 @@
 import {request} from "./request";
 import {getUserId} from './getUserId'
 
+// 登录以及修改手机号
+
+export const judgeCode = (data) => {
+    console.log(data);
+    const phoneNumber = data.phone
+    const code = data.code
+    const userId =getUserId()
+    console.log(code);
+    console.log(phoneNumber);
+    console.log(userId);
+    return request({
+        url: `/user/judgeCode?userId=${userId}&code=${code}&phoneNumber=${phoneNumber}`,
+        method: 'POST',
+    });
+};
+
 // 获取验证码
 export const sendCode = (data) => {
     const phoneNumber =data
