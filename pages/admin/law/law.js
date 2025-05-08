@@ -7,7 +7,7 @@ import { getLawsData } from '../../../api/getLaws'
 Page({
     data: {
         // 法律分类选项
-        regulationTypes: ['法律', '类型2', '类型3'], 
+        regulationTypes: ['法律', '行政法规', '地方性法规','规章','标准与规范','制度与政策','其他'], 
         // 当前选择的法律分类索引
         regulationTypeIndex: 0,
         // 法律名

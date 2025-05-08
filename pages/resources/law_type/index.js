@@ -10,27 +10,27 @@ Page({
             },
             {
                 id: 2,
-                category: '大气'
+                category: '行政法规'
             },
             {
                 id: 3,
-                category: '科学'
+                category: '地方性法规'
             },
             {
                 id: 4,
-                category: '技术'
+                category: '规章'
             },
             {
                 id: 5,
-                category: '艺术'
+                category: '标准与规范'
             },
             {
                 id: 6,
-                category: '体育'
+                category: '制度与政策'
             },
             {
                 id: 7,
-                category: '娱乐'
+                category: '其他'
             },
         ],
     },

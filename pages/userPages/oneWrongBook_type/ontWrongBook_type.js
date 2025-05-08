@@ -1,8 +1,8 @@
 import {
-    getWrongQuestion,
-} from "../../api/getWrongQuestion";
-import {addLearnTime} from '../../api/addLearnTime'
-import {apiJudgeTest} from '../../api/judgeTest'
+    getOneWrongQuestion,
+} from "../../../api/getWrongQuestion";
+// import {addLearnTime} from '../../api/addLearnTime'
+// import {apiJudgeTest} from '../../api/judgeTest'
 Page({
     data: {
         userId:0,
@@ -182,7 +182,7 @@ Page({
         }]
         console.log(data);
 
-        apiJudgeTest(data).then(response => {
+        /* apiJudgeTest(data).then(response => {
                 console.log('后端返回结果：', response);
                 const result = response[0];
                 const isCorrect = result.rightOrWrong === '对';
@@ -197,7 +197,7 @@ Page({
             })
            .catch(error => {
                 console.error('提交答案到后端时出错：', error);
-            });
+            }); */
     },
 
     showAnalysis: function () {
@@ -222,9 +222,9 @@ Page({
         const endTime = new Date();
         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
         console.log(`做题总时间（分钟）：${durationInMinutes}`);
-        addLearnTime(durationInMinutes).then(res => {
+        /* addLearnTime(durationInMinutes).then(res => {
             console.log(res);
-        })
+        }) */
     },
     submitAnswer() {
         if (this.data.isSubmitted) return;

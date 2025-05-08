@@ -55,7 +55,7 @@ page {
     margin-right: 15rpx;
     width: 45%;
     height: 220rpx;
-    background-color: #fff;
+    background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
     border-radius: 16rpx;
     margin-bottom: 32rpx;
     display: flex;
@@ -72,10 +72,12 @@ page {
 }
 
 .category-name {
-    font-size: 36rpx;
+    font-size: 35rpx;
     margin-bottom: 16rpx;
-    color: #333;
+    color: rgb(255, 255, 255);
     font-weight: 600;
+    text-align: center;
+
 }
 
 .category-status {
