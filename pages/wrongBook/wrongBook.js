@@ -14,8 +14,13 @@ Page({
             },
             {
                 id: 3,
+                type: '判断题'
+            },
+            {
+                id: 4,
                 type: '填空题'
             },
+            
         ],
     },
     goToPracticePage(e) {

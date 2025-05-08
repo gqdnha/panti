@@ -2,7 +2,7 @@
 Page({
     data: {
         category: '',
-        questionTypes: ['单选题', '多选题', '填空题']
+        questionTypes: ['单选题', '多选题','判断题', '填空题']
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);

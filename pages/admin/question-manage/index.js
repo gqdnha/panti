@@ -26,7 +26,7 @@ Page({
         },
         questionTypes: ['单选题', '多选题', '填空题', '判断题'],
         newQuestionTypeIndex: 0,
-        categories: ['分类1', '分类2', '分类3'], // 可根据实际情况修改
+        categories: ['环境保护法及配套办法', '环评与排污许可执法', '大气污染防治执法','水污染防治执法','固废污染防治执法','土壤污染防治执法','噪声污染执法','执法监测','行政执法规定','行刑衔接与损害赔偿','其他'], // 可根据实际情况修改
         isEditModalVisible: false,
         editQuestion: {
             id: '',
