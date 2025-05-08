@@ -31,10 +31,12 @@
 
             <!-- 多选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
-                <view class="option-item" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectMultipleOption" data-index="{{index}}">
-                    <view class="{{isArrayAndIncludes(selectedOptions[currentQuestion - 1], item[0])? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}">
-                        <text class="option-content">{{item}}</text>
-                    </view>
+                <view wx:for="{{allQuestions[currentQuestion - 1].options}}" 
+                      wx:key="index"
+                      class="option-item {{optionStates[currentQuestion - 1][index] ? (questionStates[currentQuestion - 1] ? 'selected correct' : (isSubmitted[currentQuestion - 1] ? 'selected wrong' : 'selected')) : ''}}"
+                      bindtap="selectMultipleOption"
+                      data-index="{{index}}">
+                    <text class="option-content">{{item}}</text>
                 </view>
             </block>
 
@@ -64,7 +66,7 @@
     </view>
 
     <!-- 答案解析弹窗 -->
-    <view class="analysis-modal" wx:if="{{showAnalysis}}">
+    <!-- <view class="analysis-modal" wx:if="{{showAnalysis}}">
         <view class="modal-content">
             <view class="result-header">
                 <text class="{{questionStates[currentQuestion - 1]? 'correct' : 'wrong'}}">
@@ -82,5 +84,5 @@
                 <view class="btn" bindtap="closeAnalysisAndContinue">继续答题</view>
             </view>
         </view>
-    </view>
+    </view> -->
 </view>
