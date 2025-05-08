@@ -32,9 +32,9 @@
             <!-- 多选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '多选题'}}">
                 <view wx:for="{{allQuestions[currentQuestion - 1].options}}" 
-                      wx:key="index" 
-                      class="option-item {{optionStates[currentQuestion - 1][index] ? (questionStates[currentQuestion - 1] ? 'selected correct' : (isSubmitted ? 'selected wrong' : 'selected')) : ''}}"
-                      bindtap="selectMultipleOption" 
+                      wx:key="index"
+                      class="option-item {{optionStates[currentQuestion - 1][index] ? (questionStates[currentQuestion - 1] ? 'selected correct' : (isSubmitted[currentQuestion - 1] ? 'selected wrong' : 'selected')) : ''}}"
+                      bindtap="selectMultipleOption"
                       data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                 </view>

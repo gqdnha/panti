@@ -77,46 +77,38 @@
 }
 
 .option-item {
-    display: flex;
-    align-items: flex-start;
     padding: 20rpx;
     margin-bottom: 20rpx;
-    background-color: #f8f9fa;
     border-radius: 8rpx;
+    background-color: #fff;
+    border: 2rpx solid #e0e0e0;
     transition: all 0.3s ease;
-    position: relative;
 }
 
 .option-item.selected {
-    background-color: #e6f0ff;
-    border: 2rpx solid #0066cc;
+    background-color: #f0f9ff;
+    border-color: #1890ff;
 }
 
-.option-item.correct.selected {
+.option-item.correct {
+    background-color: #f6ffed;
     border-color: #52c41a;
-    background-color: rgba(82, 196, 26, 0.1);
-    box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
-    transition: all 0.3s ease;
 }
 
-.option-item.wrong.selected {
-    border-color: #f5222d;
-    background-color: rgba(245, 34, 45, 0.1);
-    box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
-    transition: all 0.3s ease;
+.option-item.wrong {
+    background-color: #fff2f0;
+    border-color: #ff4d4f;
 }
 
 .option-label {
-    font-size: 30rpx;
-    color: #0066cc;
-    margin-right: 20rpx;
-    font-weight: bold;
+    font-size: 28rpx;
+    color: #666;
+    margin-bottom: 8rpx;
 }
 
 .option-content {
-    font-size: 30rpx;
+    font-size: 32rpx;
     color: #333;
-    flex: 1;
 }
 
 /* 判断题样式 */

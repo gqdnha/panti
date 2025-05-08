@@ -21,7 +21,8 @@ Page({
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
         optionStates: [], // 存储每个题目的选项状态
-        startTime: null // 新增：记录开始时间
+        startTime: null, // 新增：记录开始时间
+        answerSheetStates: [] // 新增：记录每个题目的答案状态
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
@@ -64,6 +65,7 @@ Page({
                 questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
                 selectedOptions: initialSelectedOptions,
                 optionStates: initialOptionStates,
+                answerSheetStates: new Array(res.length).fill(false)
             });
             console.log(this.data.allQuestions);
             console.log(this.data.totalQuestions);
@@ -107,7 +109,7 @@ Page({
         // 获取当前题目的选项状态
         let currentOptionStates = [...optionStates[currentQuestion - 1]];
         // 切换当前选项的状态
-        currentOptionStates[index] =!currentOptionStates[index];
+        currentOptionStates[index] = !currentOptionStates[index];
 
         // 更新选中选项
         let currentSelected = [];
@@ -217,5 +219,22 @@ Page({
         addLearnTime(durationInMinutes).then(res => {
             console.log(res);
         })
+    },
+    submitAnswer() {
+        if (this.data.isSubmitted) return;
+        
+        const currentQuestion = this.data.currentQuestion - 1;
+        const question = this.data.allQuestions[currentQuestion];
+        const options = question.options;
+        
+        // 判断答案是否正确
+        options.forEach(option => {
+            option.isCorrect = option.selected === option.isAnswer;
+        });
+        
+        this.setData({
+            isSubmitted: true,
+            [`allQuestions[${currentQuestion}].options`]: options
+        });
     }
 });
