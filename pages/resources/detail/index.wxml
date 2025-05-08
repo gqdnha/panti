@@ -15,7 +15,9 @@
                     <text class="regulation_name"> {{item.regulation_name}}.pdf </text>
                     <text class="regulation_type"> {{item.regulation_type}} </text>
                 </view>
+                
             </view>
         </view>
+        
     </view>
 </view>    
