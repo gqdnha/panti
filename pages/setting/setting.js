@@ -1,4 +1,6 @@
 import {changeUserName} from '../../api/setting'
+import {sendCode,wxLogin } from '../../api/login'
+
 
 Page({
     data: {
@@ -52,35 +54,11 @@ Page({
             }
         }, 1000);
         // 模拟发送验证码请求，实际使用时需要替换为真实接口
-        wx.request({
-            url: 'https://your-api-url/sendCode',
-            method: 'POST',
-            data: {
-                phone
-            },
-            success(res) {
-                if (res.statusCode === 200) {
-                    wx.showToast({
-                        title: '验证码发送成功',
-                        icon: 'success'
-                    });
-                } else {
-                    wx.showToast({
-                        title: '验证码发送失败',
-                        icon: 'error'
-                    });
-                }
-            },
-            fail(err) {
-                console.error('发送验证码请求失败:', err);
-                wx.showToast({
-                    title: '网络错误，请稍后重试',
-                    icon: 'error'
-                });
-            }
-        });
+        sendCode(phone).then(res => {
+            console.log(res);
+        })
     },
-    handleLogin() {
+    handleChangePhone() {
         const { phone, code } = this.data;
         if (!phone) {
             wx.showToast({
@@ -96,65 +74,16 @@ Page({
             });
             return;
         }
+        const data = { phone, code }
         if (code) {
+            console.log(data);
             // 如果输入了验证码，进行手机号修改验证
-            wx.request({
-                url: 'https://your-api-url/modifyPhone',
-                method: 'POST',
-                data: {
-                    phone,
-                    code
-                },
-                success(res) {
-                    if (res.statusCode === 200) {
-                        wx.showToast({
-                            title: '手机号修改成功',
-                            icon: 'success'
-                        });
-                    } else {
-                        wx.showToast({
-                            title: '手机号修改失败',
-                            icon: 'error'
-                        });
-                    }
-                },
-                fail(err) {
-                    console.error('修改手机号请求失败:', err);
-                    wx.showToast({
-                        title: '网络错误，请稍后重试',
-                        icon: 'error'
-                    });
-                }
-            });
+            wxLogin(data).then(res => {
+                console.log(res);
+            })
+            
         } else {
-            // 如果没有输入验证码，进行用户名修改验证
-            wx.request({
-                url: 'https://your-api-url/modifyUsername',
-                method: 'POST',
-                data: {
-                    phone // 这里假设用手机号作为用户名
-                },
-                success(res) {
-                    if (res.statusCode === 200) {
-                        wx.showToast({
-                            title: '用户名修改成功',
-                            icon: 'success'
-                        });
-                    } else {
-                        wx.showToast({
-                            title: '用户名修改失败',
-                            icon: 'error'
-                        });
-                    }
-                },
-                fail(err) {
-                    console.error('修改用户名请求失败:', err);
-                    wx.showToast({
-                        title: '网络错误，请稍后重试',
-                        icon: 'error'
-                    });
-                }
-            });
+            
         }
     },
     // 修改用户名

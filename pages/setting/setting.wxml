@@ -18,6 +18,6 @@
                 {{counting ? countDown + 's' : '获取验证码'}}
             </button>
         </view>
-        <button class="login-btn" bindtap="handleLogin">确认修改</button>
+        <button class="login-btn" bindtap="handleChangePhone">确认修改</button>
     </view>
 </view>
