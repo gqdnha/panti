@@ -1,8 +1,9 @@
 import {getUserInfo} from '../../api/getUserInfo'
-
+import {getDailyFinesh} from '../../api/getDeilyFinash'
 
 Page({
     data: {
+        ifFinash:0,
         motto: 'Hello World',
         userInfo: null,
         hasUserInfo: false,
@@ -21,6 +22,15 @@ Page({
     bindViewTap() {
         wx.navigateTo({
             url: '../logs/logs'
+        })
+    },
+    // 获取用户完成情况
+    userFinash() {
+        getDailyFinesh().then(res => {
+            console.log(res);
+            this.setData({
+                ifFinash:res
+            })
         })
     },
     onChooseAvatar(e) {
@@ -61,6 +71,7 @@ Page({
     onLoad() {
         this.setCurrentDate();
         this.loadUserInfo();
+        this.userFinash()
         // this.loadStatistics();
         // this.getRecentExams();
         // this.getRecommended();
