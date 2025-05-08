@@ -14,7 +14,7 @@ page {
     width: 100vw;
 }
 .type-title {
-    font-size: 60rpx;
+    font-size: 40rpx;
 }
 
 .nav {

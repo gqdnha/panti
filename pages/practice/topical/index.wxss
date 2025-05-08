@@ -74,8 +74,10 @@ page {
 }
 
 .category-name {
-    font-size: 40rpx;
-    margin-bottom: 16rpx;
+    font-size: 35rpx;
+    /* margin-bottom: 16rpx; */
+    /* padding: 10rpx; */
+    text-align: center;
     /* color: #333; */
     color: #fff;
     font-weight: 600;
