@@ -54,11 +54,13 @@ page {
 }
 
 .category {
+    margin-top: 10rpx;
     margin-left: 15rpx;
     margin-right: 15rpx;
     width: 45%;
-    height: 220rpx;
-    background-color: #fff;
+    height: 250rpx;
+    /* background-color: #fff; */
+    background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
     border-radius: 16rpx;
     margin-bottom: 32rpx;
     display: flex;
@@ -75,10 +77,11 @@ page {
 }
 
 .category-name {
-    font-size: 36rpx;
+    font-size: 50rpx;
     margin-bottom: 16rpx;
-    color: #333;
-    font-weight: 600;
+    /* color: #333; */
+    color: #fff;
+    font-weight: 550;
 }
 
 .category-status {
