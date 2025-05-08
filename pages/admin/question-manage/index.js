@@ -1,4 +1,4 @@
-import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent } from '../../../api/admin';
+import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent,uploadImageApi , deletePicApi } from '../../../api/admin';
 
 Page({
     data: {
@@ -27,7 +27,6 @@ Page({
         questionTypes: ['单选题', '多选题', '填空题', '判断题'],
         newQuestionTypeIndex: 0,
         categories: ['分类1', '分类2', '分类3'], // 可根据实际情况修改
-        newCategoryIndex: 0,
         isEditModalVisible: false,
         editQuestion: {
             id: '',
@@ -70,7 +69,7 @@ Page({
 
     deleteQuestion(e) {
         const questionId = e.currentTarget.dataset.id;
-        wx.showModal({
+        wx.showToast({
             title: '确认删除',
             content: '确定要删除这道题目吗？',
             success: (res) => {
@@ -406,5 +405,43 @@ Page({
                 icon: 'none'
             });
         });
+    },
+    // 添加图片
+    addImg() {
+        // 假设正在编辑的题目 ID 作为 questionId，这里你可以根据实际情况修改获取方式
+        const questionId = this.data.editQuestion.id || this.data.newQuestion.id; 
+        wx.chooseImage({
+            count: 1, // 一次选择一张图片
+            success: (res) => {
+                const filePath = res.tempFilePaths[0];
+                uploadImageApi(questionId, filePath).then(res => {
+                    console.log('图片上传成功', res);
+                    wx.showToast({
+                        title: '图片上传成功',
+                        icon:'success'
+                    });
+                }).catch(error => {
+                    console.error('图片上传失败', error);
+                    wx.showToast({
+                        title: '图片上传失败',
+                        icon: 'none'
+                    });
+                });
+            },
+            fail: (error) => {
+                console.error('选择图片失败', error);
+                wx.showToast({
+                    title: '选择图片失败',
+                    icon: 'none'
+                });
+            }
+        });
+    },
+    deletImg() {
+        const pid = this.data.editQuestion.id || this.data.newQuestion.id; 
+
+        deletePicApi(pid).then(res => {
+            console.log(res);
+        } )
     }
 });    

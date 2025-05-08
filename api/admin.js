@@ -12,7 +12,17 @@ export const deleteLawApi = (regulationId) => {
         method: 'POST',
     });
 };
-
+// 删除图片 
+export const deletePicApi = (data) => {
+    // const userId = getUserId()
+    const pid = data
+    console.log(pid);
+    // console.log(userId);
+    return request({
+        url: `/image/deletePicture?pid=${pid}`,
+        method: 'POST',
+    });
+};
 
 // 添加法律条文
 export const addLawsApi = (regulationType, data) => {
@@ -44,6 +54,51 @@ export const addLawsApi = (regulationType, data) => {
                     } else {
                         console.error('上传失败，服务器响应：', response);
                         reject(response.message || '添加失败');
+                    }
+                } catch (error) {
+                    console.error('解析响应失败：', error, '原始响应：', res.data);
+                    reject('解析响应失败');
+                }
+            },
+            fail: (error) => {
+                console.error('上传请求失败：', error);
+                if (error.errMsg.includes('domain list')) {
+                    reject('请在小程序管理后台配置服务器域名');
+                } else {
+                    reject(error.errMsg || '上传失败');
+                }
+            }
+        });
+    });
+};
+
+// 上传图片的接口
+export const uploadImageApi = (questionId, filePath) => {
+    console.log('开始上传图片，参数：', {
+        questionId,
+        filePath
+    });
+
+    return new Promise((resolve, reject) => {
+        wx.uploadFile({
+            url: `${baseURL}/image/addPicture`,
+            filePath: filePath,
+            name: 'files',  // 文件参数名必须是files
+            formData: {
+                questionId: questionId
+            },
+            header: {
+                'content-type': 'multipart/form-data'
+            },
+            success: (res) => {
+                console.log('上传响应：', res);
+                try {
+                    const response = JSON.parse(res.data);
+                    if (response.code === 200) {
+                        resolve(response.data);
+                    } else {
+                        console.error('上传失败，服务器响应：', response);
+                        reject(response.message || '上传图片失败');
                     }
                 } catch (error) {
                     console.error('解析响应失败：', error, '原始响应：', res.data);

@@ -357,4 +357,6 @@ button::after {
 textarea{
     font-size: 28rpx;
     height: 120rpx;
+    border: 1rpx rgb(116, 116, 116) solid;
+    border-radius: 15rpx;
 }
