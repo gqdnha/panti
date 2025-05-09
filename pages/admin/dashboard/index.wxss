@@ -1,6 +1,7 @@
 .container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #f8b4bc 100%);
+    /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #b4f8ed 100%); */
+    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
     padding: 0rpx;
     position: relative;
     display: flex;
@@ -98,12 +99,7 @@
     color: #334155;
     text-align: center;
     line-height: 1.4;
-    max-width: 100%;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
+    
 }
 
 /* 动画效果 */

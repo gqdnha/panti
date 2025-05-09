@@ -1,65 +1,187 @@
 .container {
     min-height: 100vh;
-    background-color: #f7f8fa;
-    padding-bottom: 40rpx;
+    /* background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 50%, #f8b4bc 100%); */
+    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
+
+    padding: 24rpx;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
+    align-items: center;
 }
 
 /* 用户信息卡片 */
 .user-card {
-    background: linear-gradient(135deg, #73abec, #60daf0);
-    padding: 40rpx 30rpx;
-    color: #fff;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    box-sizing: border-box;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16rpx;
+    padding: 40rpx 32rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
+    min-height: 200rpx;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.avatar-wrapper {
+    position: relative;
+    width: 160rpx;
+    height: 160rpx;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4rpx solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+    flex-shrink: 0;
+}
+
+.avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.edit-avatar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 24rpx;
+    padding: 8rpx;
+    text-align: center;
+    backdrop-filter: blur(4px);
 }
 
 .user-info {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    gap: 16rpx;
+    align-items: flex-end;
 }
 
-.avatar {
-    width: 120rpx;
-    height: 120rpx;
-    border-radius: 50%;
-    border: 4rpx solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
-}
-
-.user-detail {
-    margin-left: 30rpx;
-}
-
-.nickname {
-    font-size: 36rpx;
+.user-name {
+    font-size: 40rpx;
+    color: #0f172a;
     font-weight: 600;
-    margin-bottom: 12rpx;
-    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
-.phone {
+.user-phone {
+    font-size: 32rpx;
+    color: #64748b;
+    font-weight: 500;
+}
+
+/* 信息表单 */
+.info-form {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16rpx;
+    padding: 32rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-item {
+    margin-bottom: 24rpx;
+}
+
+.form-label {
     font-size: 28rpx;
+    color: #1e293b;
+    margin-bottom: 12rpx;
+    font-weight: 500;
+}
+
+.form-input {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12rpx;
+    padding: 20rpx;
+    font-size: 28rpx;
+    color: #0f172a;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form-input::placeholder {
+    color: rgba(30, 41, 59, 0.5);
+}
+
+/* 按钮样式 */
+.btn-group {
+    display: flex;
+    gap: 24rpx;
+    margin-top: 32rpx;
+}
+
+.btn {
+    flex: 1;
+    padding: 24rpx;
+    border-radius: 12rpx;
+    font-size: 32rpx;
+    font-weight: 500;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background: rgba(96, 165, 250, 0.2);
+    color: #0f172a;
+    border: 1px solid rgba(96, 165, 250, 0.3);
+}
+
+.btn-default {
+    background: rgba(255, 255, 255, 0.2);
+    color: #0f172a;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.btn:active {
+    transform: scale(0.98);
     opacity: 0.9;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20rpx);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-card, .info-form {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.info-form {
+    animation-delay: 0.1s;
 }
 
 /* 统计数据 */
 .stats-section {
     margin: 25rpx;
-    background-color: #fff;
+    background: rgba(255, 255, 255, 0.15);
     padding: 40rpx;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16rpx;
-    box-shadow: 0 4rpx 25rpx rgba(71, 189, 236, 0.05);
-    border-radius: 25rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+    border-radius: 16rpx;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .stats-item {
@@ -69,24 +191,23 @@
 .stats-value {
     font-size: 40rpx;
     font-weight: 600;
-    color: #4a90e2;
+    color: #0f172a;
     margin-bottom: 8rpx;
+    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
 .stats-label {
     font-size: 24rpx;
-    color: #666;
+    color: #64748b;
 }
 
 /* 功能列表 */
 .function-list {
     margin: 50rpx;
-    border-radius: 12rpx;
-    overflow: hidden;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
     display: flex;
     flex-wrap: wrap;
     gap: 40rpx;
+    justify-content: center;
 }
 
 .function-item {
@@ -96,22 +217,59 @@
     align-items: center;
     width: 250rpx;
     height: 250rpx;
-    /* background-color: #88bbee; */
-    /* background: linear-gradient(to bottom, #59ddf5,#a6d2ff , #2c99e2); */
-    background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
-    border-radius: 30rpx;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16rpx;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(8px);
+}
 
+.function-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.1);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
-.function-name {
-    font-size: 35rpx;
-    font-weight: 600;
-    color: #fff;
-    text-align: center;
+
+.function-item:active {
+    transform: scale(0.98);
 }
+
+.function-item:active::before {
+    opacity: 1;
+}
+
 .function-icon {
     width: 80rpx;
     height: 80rpx;
-    margin-bottom: 10rpx;
+    margin-bottom: 20rpx;
+    filter: brightness(0) invert(0.3);
+    opacity: 1;
+    transition: transform 0.3s ease;
+}
+
+.function-item:active .function-icon {
+    transform: scale(0.95);
+}
+
+.function-name {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #0f172a;
+    text-align: center;
+    margin-top: 16rpx;
+    transition: transform 0.3s ease;
+}
+
+.function-item:active .function-name {
+    transform: scale(0.95);
 }
 
 .setting-icon {
