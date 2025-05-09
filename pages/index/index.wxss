@@ -187,7 +187,13 @@ page {
 
 /* 未完成状态的样式 */
 .notice-container.not-finished {
-    background: linear-gradient(to right, #f0f9ff, #fff);
+    background: linear-gradient(to right, #fff5f5, #fff);
+    border-bottom: 1rpx solid #ffecec;
+}
+
+/* 已完成状态的样式 */
+.notice-container:not(.not-finished) {
+    background: linear-gradient(to right, #e6f7ff, #fff);
     border-bottom: 1rpx solid #e6f7ff;
 }
 
@@ -218,10 +224,10 @@ page {
 
 /* 已完成状态文字颜色 */
 .notice-text.finished {
-    color: #ff4d4f;
+    color: #1890ff;
 }
 
 /* 未完成状态文字颜色 */
 .notice-text.not-finished {
-    color: #1890ff;
+    color: #ff4d4f;
 }

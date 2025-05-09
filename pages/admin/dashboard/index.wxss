@@ -1,39 +1,43 @@
 .container {
-    height: 100vh;
-    background-color: #f7f8fa;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 50%, #bfdbfe 100%);
     padding: 30rpx 20rpx;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    gap: 30rpx;
 }
 
 /* 统计卡片 */
 .stats-cards {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 16rpx;
-    margin-bottom: 30rpx;
+    gap: 20rpx;
 }
 
 .stats-card {
-    /* background: linear-gradient(135deg, #4a90e2, #357abd); */
-    background: linear-gradient(135deg, #59ddf5, #a6d2ff, #2c99e2);
+    background: rgba(255, 255, 255, 0.15);
     padding: 30rpx 20rpx;
     border-radius: 16rpx;
     text-align: center;
-    box-shadow: 0 4rpx 20rpx rgba(74, 144, 226, 0.2);
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
 }
 
 .stats-title {
     font-size: 26rpx;
-    color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 12rpx;
+    color: rgba(255, 255, 255, 0.95);
+    margin-bottom: 16rpx;
+    font-weight: 500;
 }
 
 .stats-value {
-    font-size: 40rpx;
+    font-size: 44rpx;
     font-weight: 600;
-    color: #fff;
+    color: #ffffff;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.08);
 }
 
 /* 功能卡片 */
@@ -41,65 +45,86 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20rpx;
-    /* margin-top: 30rpx; */
 }
 
 .function-card {
-    /* background: #88bbee; */
-    background: linear-gradient(135deg, #f5f259, #a6f2ff, #2c99e2);
+    background: rgba(255, 255, 255, 0.15);
     border-radius: 16rpx;
-    padding: 30rpx;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+    padding: 40rpx 30rpx;
+    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 240rpx;
+    min-height: 260rpx;
     position: relative;
     overflow: hidden;
-}
-
-
-.function-card:active {
-    transform: scale(0.98);
-}
-
-.card-icon {
-    width: 80rpx;
-    height: 80rpx;
-    margin-bottom: 20rpx;
-}
-
-.card-title {
-    font-size: 35rpx;
-    color: #fff;
-    font-weight: 600;
-    margin-bottom: 12rpx;
-}
-
-.card-desc {
-    font-size: 26rpx;
-    color: #666;
-    text-align: center;
-    line-height: 1.5;
-}
-
-.card-arrow {
-    position: absolute;
-    right: 30rpx;
-    bottom: 30rpx;
-    width: 32rpx;
-    height: 32rpx;
-    opacity: 0.5;
-}
-
-/* 动画效果 */
-.function-card {
     transition: all 0.3s ease;
 }
 
 .function-card:active {
-    background: #f8f9fa;
+    transform: translateY(2rpx);
+    box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.card-icon {
+    width: 88rpx;
+    height: 88rpx;
+    margin-bottom: 24rpx;
+    filter: brightness(0) invert(1);
+    opacity: 0.95;
+}
+
+.card-title {
+    font-size: 32rpx;
+    color: #ffffff;
+    font-weight: 600;
+    margin-bottom: 12rpx;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.08);
+}
+
+.card-desc {
+    font-size: 24rpx;
+    color: rgba(255, 255, 255, 0.95);
+    text-align: center;
+    line-height: 1.5;
+}
+
+/* 动画效果 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.stats-card, .function-card {
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.stats-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.stats-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.function-card:nth-child(2) {
+    animation-delay: 0.1s;
+}
+
+.function-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.function-card:nth-child(4) {
+    animation-delay: 0.3s;
 }
 
 /* 用户列表样式 */
@@ -116,7 +141,7 @@
     font-weight: 600;
     color: #333;
     padding: 24rpx;
-    background: linear-gradient(135deg, #4a90e2, #357abd);
+    background: linear-gradient(135deg, #60a5fa 0%, #93c5fd 100%);
     color: #fff;
 }
 
@@ -125,9 +150,11 @@
     grid-template-columns: 2fr 1fr 1fr 2fr;
     padding: 20rpx 24rpx;
     font-size: 26rpx;
-    color: #666;
-    background: #f8f9fa;
+    color: #fff;
+    background: rgba(96, 165, 250, 0.2);
     font-weight: 500;
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .list-content {
@@ -140,13 +167,13 @@
     grid-template-columns: 2fr 1fr 1fr 2fr;
     padding: 24rpx;
     align-items: center;
-    border-bottom: 1rpx solid #f0f0f0;
-    background: #fff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.1);
     transition: all 0.3s ease;
 }
 
 .list-item:active {
-    background: #f8f9fa;
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .item-user {
@@ -159,20 +186,20 @@
     height: 64rpx;
     border-radius: 50%;
     margin-right: 16rpx;
-    border: 2rpx solid #fff;
+    border: 2rpx solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
 }
 
 .user-name {
     font-size: 28rpx;
-    color: #333;
+    color: #fff;
     font-weight: 500;
 }
 
 .item-count,
 .item-rate {
     font-size: 28rpx;
-    color: #666;
+    color: rgba(255, 255, 255, 0.9);
     text-align: center;
 }
 
@@ -187,9 +214,9 @@
     font-size: 26rpx;
     padding: 12rpx 24rpx;
     border-radius: 30rpx;
-    background: #f0f8ff;
-    color: #4a90e2;
-    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, 0.3);
     line-height: 1.5;
     text-align: center;
     transition: all 0.3s ease;
@@ -197,19 +224,23 @@
 
 .action-btn:active {
     transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .action-btn.export {
-    background: #f6ffed;
-    color: #52c41a;
+    background: rgba(82, 196, 26, 0.2);
+    color: #fff;
+    border: 1px solid rgba(82, 196, 26, 0.3);
 }
 
 /* 题目管理样式 */
 .question-manage {
-    background: #fff;
+    background: rgba(255, 255, 255, 0.1);
     border-radius: 16rpx;
     overflow: hidden;
     box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.05);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .manage-buttons {
@@ -226,9 +257,9 @@
     gap: 16rpx;
     padding: 32rpx;
     font-size: 30rpx;
-    color: #333;
-    background: #f8f9fa;
-    border: none;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 16rpx;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -236,12 +267,14 @@
 
 .manage-btn:active {
     transform: scale(0.98);
-    background: #f0f2f5;
+    background: rgba(255, 255, 255, 0.2);
 }
 
 .btn-icon {
     width: 48rpx;
     height: 48rpx;
+    filter: brightness(0) invert(1);
+    opacity: 0.9;
 }
 
 /* 去除按钮默认样式 */

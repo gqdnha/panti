@@ -167,11 +167,24 @@ Page({
         });
     },
     goToDailyPractice(e) {
-        const {
-            option
-        } = e.currentTarget.dataset;
+        const { ifFinash } = this.data;
+        if (ifFinash === 100) {
+            wx.showModal({
+                title: '提示',
+                content: '今日练习已完成，明天再来吧！',
+                showCancel: false,
+                confirmText: '我知道了',
+                confirmColor: '#1890ff',
+                success: (res) => {
+                    if (res.confirm) {
+                        console.log('用户点击确定');
+                    }
+                }
+            });
+            return;
+        }
         wx.navigateTo({
-            url: `/pages/practice/daily/index?option=${JSON.stringify(option)}`
+            url: '/pages/practice/daily/index'
         });
     },
     // 法律
