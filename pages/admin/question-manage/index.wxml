@@ -125,8 +125,10 @@
             </view>
             <view class="form-item">
                 <label>题目内容</label>
-                <button bind:tap="addImg">添加图片</button>
-                <button bind:tap="deletImg">删除图片</button>
+                <view class="image-actions">
+                    <button bind:tap="addImg">添加图片</button>
+                    <button bind:tap="deletImg">删除图片</button>
+                </view>
                 <textarea data-field="content" bindinput="onEditQuestionInput" value="{{editQuestion.content}}"></textarea>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题'}}">
