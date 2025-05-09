@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/admin/dashboard/index",
+          "pathName": "pages/admin/dashboard/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/setting/setting",
           "pathName": "pages/setting/setting",
           "query": "",

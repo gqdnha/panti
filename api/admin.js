@@ -23,6 +23,15 @@ export const deletePicApi = (data) => {
         method: 'POST',
     });
 };
+// 禁用题目
+export const deleteQuestionApi = (questionId) => {
+    const userId =getUserId()
+    console.log(questionId);
+    return request({
+        url: `/mange/deleteQuestion?questionId=${questionId}&userId=${userId}`,
+        method: 'POST',
+    });
+};
 
 // 添加法律条文
 export const addLawsApi = (regulationType, data) => {
@@ -69,6 +78,15 @@ export const addLawsApi = (regulationType, data) => {
                 }
             }
         });
+    });
+};
+// 新建题目
+export const addNewQuestion = (data) => {
+    const userId =getUserId()
+    return request({
+        url: `/mange/newQuestion?userId=${userId}`,
+        method: 'POST',
+        data
     });
 };
 
@@ -150,15 +168,7 @@ export const updateQuestion = (questionId,data) => {
 };
 
 
-// 禁用题目
-export const deleteQuestionApi = (questionId) => {
-    const userId =getUserId()
-    console.log(questionId);
-    return request({
-        url: `/mange/deleteQuestion?questionId=${questionId}&userId=${userId}`,
-        method: 'POST',
-    });
-};
+
 
 // 获取用户数据
 export const getAllUserInfo = (data) => {
@@ -170,6 +180,15 @@ export const getAllUserInfo = (data) => {
     });
 };
 
+// 获取今日用户及完成率
+export const getUserToday = () => {
+    return request({
+        url: `/dailyQuestion/getDailyQuestionStatus`,
+        method: 'GET'
+    });
+};
+
+
 // 获取题目列表
 export const getAllQuestion = (data) => {
     console.log(data);
@@ -180,12 +199,3 @@ export const getAllQuestion = (data) => {
     });
 };
 
-// 新建题目
-export const addNewQuestion = (data) => {
-    const userId =getUserId()
-    return request({
-        url: `/mange/newQuestion?userId=${userId}`,
-        method: 'POST',
-        data
-    });
-};

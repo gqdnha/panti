@@ -78,7 +78,7 @@ Page({
             this.setData({
                 studyStats: {
                     totalQuestions: res.count,
-                    correctRate: res.rightPercent*100,
+                    correctRate: res.rightPercent,
                     totalTime: 120
                 }
             });

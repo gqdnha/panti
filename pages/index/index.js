@@ -88,7 +88,7 @@ Page({
             this.setData({
                 // studyTime : res.
                 totalQuestions:res.count || 0,
-                correctRate:res.rightPercent *100 || 0,
+                correctRate:res.rightPercent || 0,
             });
         })  
     },

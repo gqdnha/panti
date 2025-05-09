@@ -75,7 +75,7 @@ Page({
         getUserInfo().then(res => {
             console.log(res);
             this.setData({
-                rightPercent:res.rightPercent*100
+                rightPercent:res.rightPercent
             })
             console.log(this.data.rightPercent);
         })
