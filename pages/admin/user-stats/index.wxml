@@ -39,45 +39,47 @@
     <view class="modal-mask" wx:if="{{showUserDetailModal}}" bindtap="closeUserDetailModal"></view>
     <view class="modal-container" wx:if="{{showUserDetailModal}}">
         <view class="modal-header">
-            <text>用户详情</text>
+            <text class="modal-title">用户详情</text>
             <view class="close-btn" bindtap="closeUserDetailModal">×</view>
         </view>
         <view class="modal-body">
-            <view class="detail-item">
-                <label>姓名：</label>
-                <text>{{currentUserDetail.name}}</text>
+            <view class="user-info-section">
+                <view class="detail-item">
+                    <label>姓名</label>
+                    <text class="info-text">{{currentUserDetail.name}}</text>
+                </view>
+                <view class="detail-item">
+                    <label>手机号</label>
+                    <text class="info-text">{{currentUserDetail.phone}}</text>
+                </view>
+                <view class="detail-item">
+                    <label>部门</label>
+                    <text class="info-text">{{currentUserDetail.department}}</text>
+                </view>
+                <view class="detail-item">
+                    <label>学习时间</label>
+                    <text class="info-text highlight">{{currentUserDetail.learn_time}} 分钟</text>
+                </view>
+                <view class="detail-item">
+                    <label>正确率</label>
+                    <text class="info-text highlight">{{rightPercent}}%</text>
+                </view>
             </view>
-            <view class="detail-item">
-                <label>手机号：</label>
-                <text>{{currentUserDetail.phone}}</text>
-            </view>
-
-            <view class="detail-item">
-                <label>部门：</label>
-                <text>{{currentUserDetail.department}}</text>
-            </view>
-
-            <view class="detail-item">
-                <label>学习时间（分钟）：</label>
-                <text>{{currentUserDetail.learn_time}}</text>
-            </view>
-
-            <view class="detail-item">
-                <label>正确率</label>
-                <text>{{rightPercent}} %</text>
-            </view>
-            <view class="function"> 
-                <!-- 错题本 -->
+            
+            <view class="action-buttons"> 
                 <view class="function-item" bindtap="goToOneWrongBook">
-                    <button>错题本</button>
+                    <button class="action-btn wrong-book">
+                        <!-- <text class="btn-icon">📚</text> -->
+                        <text class="btn-text">错题本</text>
+                    </button>
                 </view>
-                <!-- 每日练习 情况 -->
                 <view class="function-item" bindtap="goToOneDaily">
-                    <button>每日练习</button>
+                    <button class="action-btn daily-practice">
+                        <!-- <text class="btn-icon">📝</text> -->
+                        <text class="btn-text">每日练习</text>
+                    </button>
                 </view>
             </view>
-
-
         </view>
     </view>
 </view>
