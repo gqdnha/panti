@@ -285,76 +285,183 @@ button::after {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-    border-radius: 8rpx;
-    padding: 20rpx;
+    border-radius: 50rpx;
     z-index: 1001;
-    width: 80%;
-}
-
-.modal-title {
-    font-size: 28rpx;
-    font-weight: bold;
-    margin-bottom: 20rpx;
-    text-align: center;
-}
-
-.modal-content {
-    margin-bottom: 20rpx;
-}
-
-.form-item {
-    margin-bottom: 16rpx;
-}
-
-.form-item label {
-    display: block;
-    font-size: 24rpx;
-    margin-bottom: 8rpx;
-}
-
-.form-item input {
-    width: 100%;
-    padding: 12rpx;
-    border: 1rpx solid #ccc;
-    border-radius: 8rpx;
-    font-size: 24rpx;
-}
-
-.modal-footer {
+    width: 90%;
+    max-height: 90vh;
     display: flex;
-    justify-content: flex-end;
-}
-
-.modal-footer button {
-    padding: 16rpx 32rpx;
-    background-color: #4a90e2;
-    color: #ffffff;
-    border: none;
-    border-radius: 8rpx;
-    font-size: 24rpx;
-    margin-left: 16rpx;
-}
-
-.modal-footer button:first-child {
-    background-color: #ccc;
-}
-
-.picker-view {
-    border: 1rpx solid #ccc;
-    border-radius: 8rpx;
+    flex-direction: column;
     overflow: hidden;
 }
 
-.picker-view-column {
-    padding: 16rpx;
-    font-size: 24rpx;
-    background-color: #fff;
+.modal-header {
+    padding: 30rpx;
+    border-bottom: 2rpx solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-.picker-view-column-selected {
-    background-color: #e9ecef;
-}    
-textarea{
+.modal-title {
+    font-size: 32rpx;
+    font-weight: 600;
+    color: #333;
+}
+
+.modal-close {
+    font-size: 40rpx;
+    color: #999;
+    padding: 0 20rpx;
+}
+
+.modal-content {
+    padding: 30rpx;
+    overflow-y: auto;
+    flex: 1;
+    background: #fff;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-item {
+    margin-bottom: 30rpx;
+}
+
+.form-label {
+    display: block;
     font-size: 28rpx;
-    height: 120rpx;
+    margin-bottom: 16rpx;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 90%;
+    height: 80rpx;
+    padding: 0 24rpx;
+    border: 2rpx solid #e8e8e8;
+    border-radius: 12rpx;
+    font-size: 28rpx;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    display: block;
+}
+
+.form-input:focus {
+    border-color: #4a90e2;
+    background: #fff;
+}
+
+.form-textarea {
+    width: 90%;
+    height: 160rpx;
+    padding: 20rpx 24rpx;
+    border: 2rpx solid #e8e8e8;
+    border-radius: 12rpx;
+    font-size: 28rpx;
+    background: #f8f9fa;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+    display: block;
+}
+
+.form-textarea:focus {
+    border-color: #4a90e2;
+    background: #fff;
+}
+
+.picker-view {
+    width: 90%;
+    height: 80rpx;
+    padding: 0 24rpx;
+    border: 2rpx solid #e8e8e8;
+    border-radius: 12rpx;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    font-size: 28rpx;
+    color: #333;
+    transition: all 0.3s ease;
+    margin: 0 auto;
+}
+
+.modal-footer {
+    padding: 30rpx;
+    border-top: 2rpx solid #f0f0f0;
+    display: flex;
+    justify-content: center;
+    gap: 30rpx;
+    background: #fff;
+    border-bottom-left-radius: 50rpx;
+    border-bottom-right-radius: 50rpx;
+}
+
+.modal-footer button {
+    min-width: 180rpx;
+    height: 80rpx;
+    line-height: 80rpx;
+    text-align: center;
+    border-radius: 40rpx;
+    font-size: 28rpx;
+    font-weight: 600;
+    letter-spacing: 2rpx;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.modal-footer button:first-child {
+    background: #f5f7fa;
+    color: #666;
+    border: 2rpx solid #e8e8e8;
+}
+
+.modal-footer button:first-child:active {
+    background: #e8e8e8;
+    transform: translateY(2rpx);
+}
+
+.modal-footer button:last-child {
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    color: #fff;
+    box-shadow: 0 8rpx 16rpx rgba(74, 144, 226, 0.2);
+}
+
+.modal-footer button:last-child:active {
+    transform: translateY(2rpx);
+    box-shadow: 0 4rpx 8rpx rgba(74, 144, 226, 0.2);
+    opacity: 0.95;
+}
+
+.upload-btn {
+    width: 90%;
+    height: 80rpx;
+    line-height: 80rpx;
+    text-align: center;
+    background: #f5f7fa;
+    color: #666;
+    border: 2rpx solid #e8e8e8;
+    border-radius: 12rpx;
+    font-size: 28rpx;
+    margin: 0 auto;
+    display: block;
+    transition: all 0.3s ease;
+}
+
+.upload-btn:active {
+    background: #e8e8e8;
+    transform: translateY(2rpx);
+}
+
+.file-name {
+    font-size: 26rpx;
+    color: #666;
+    margin-top: 16rpx;
+    padding: 0 24rpx;
+    text-align: center;
+    word-break: break-all;
 }
