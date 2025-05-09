@@ -31,7 +31,8 @@ Page({
         optionStates: [],
         startTime: null,
         timer: null,
-        finishedQuestionIds: []
+        finishedQuestionIds: [],
+        isAllFinished: false
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);
@@ -49,7 +50,8 @@ Page({
             isSubmitted: [],
             questionStates: [],
             optionStates: [],
-            finishedQuestionIds: []
+            finishedQuestionIds: [],
+            isAllFinished: false
         });
 
         // 先获取已完成的题目ID
@@ -71,7 +73,8 @@ Page({
         const {
             pageNum,
             pageSize,
-            finishedQuestionIds
+            finishedQuestionIds,
+            isAllFinished
         } = this.data;
 
         const data = {
@@ -88,6 +91,8 @@ Page({
             console.log('获取到的题目数据:', res);
             let newQuestionList = res.pageInfo.pageData.map(question => {
                 question.questionId = question.question_id;
+                // 标记已完成的题目
+                question.isFinished = finishedQuestionIds.includes(question.questionId);
                 if (question.options) {
                     try {
                         question.options = JSON.parse(question.options);
@@ -98,67 +103,57 @@ Page({
                 return question;
             });
 
-            // 过滤掉已完成的题目
-            newQuestionList = newQuestionList.filter(question => 
-                !finishedQuestionIds.includes(question.questionId)
-            );
+            // 如果全部完成，显示所有题目
+            if (isAllFinished) {
+                this.setQuestionList(newQuestionList);
+                return;
+            }
 
-            console.log('过滤后的题目列表:', newQuestionList);
+            // 第一次做时，过滤掉已完成的题目
+            newQuestionList = newQuestionList.filter(question => !question.isFinished);
 
-            // 如果过滤后没有题目了，显示提示并重新开始
+            // 如果过滤后没有题目了，说明全部完成
             if (newQuestionList.length === 0) {
-                wx.showModal({
-                    title: '提示',
-                    content: '所有题目已完成，是否重新开始？',
-                    success: (res) => {
-                        if (res.confirm) {
-                            // 清空已完成题目ID，重新加载所有题目
-                            this.setData({
-                                finishedQuestionIds: [],
-                                pageNum: 1,
-                                questionList: [],
-                                selectedOptions: [],
-                                isSubmitted: [],
-                                questionStates: [],
-                                optionStates: []
-                            }, () => {
-                                // 重新获取所有题目
-                                this.loadQuestions();
-                            });
-                        }
-                    }
+                this.setData({
+                    isAllFinished: true
+                }, () => {
+                    // 重新加载所有题目
+                    this.loadQuestions();
                 });
                 return;
             }
 
-            // 重置当前题目列表，而不是追加
-            const initialOptionStates = newQuestionList.map(question =>
-                new Array(question.options ? question.options.length : 0).fill(false)
-            );
-
-            const newSelectedOptions = new Array(newQuestionList.length).fill(null);
-            const newIsSubmitted = new Array(newQuestionList.length).fill(false);
-            const newQuestionStates = new Array(newQuestionList.length).fill(null);
-
-            this.setData({
-                questionList: newQuestionList,
-                totalQuestions: newQuestionList.length,
-                currentQuestion: 1, // 重置当前题目为第一题
-                questionStates: newQuestionStates,
-                selectedOptions: newSelectedOptions,
-                isSubmitted: newIsSubmitted,
-                optionStates: initialOptionStates
-            }, () => {
-                console.log('更新后的题目列表:', this.data.questionList);
-                console.log('当前题目总数:', this.data.totalQuestions);
-                console.log('当前题目:', this.data.currentQuestion);
-            });
+            this.setQuestionList(newQuestionList);
         }).catch(err => {
             console.error('加载题目列表失败:', err);
             wx.showToast({
                 title: '加载题目列表失败',
                 icon: 'none'
             });
+        });
+    },
+    // 设置题目列表的辅助函数
+    setQuestionList(newQuestionList) {
+        const initialOptionStates = newQuestionList.map(question =>
+            new Array(question.options ? question.options.length : 0).fill(false)
+        );
+
+        const newSelectedOptions = new Array(newQuestionList.length).fill(null);
+        const newIsSubmitted = newQuestionList.map(question => question.isFinished);
+        const newQuestionStates = new Array(newQuestionList.length).fill(null);
+
+        this.setData({
+            questionList: newQuestionList,
+            totalQuestions: newQuestionList.length,
+            currentQuestion: 1,
+            questionStates: newQuestionStates,
+            selectedOptions: newSelectedOptions,
+            isSubmitted: newIsSubmitted,
+            optionStates: initialOptionStates
+        }, () => {
+            console.log('更新后的题目列表:', this.data.questionList);
+            console.log('当前题目总数:', this.data.totalQuestions);
+            console.log('当前题目:', this.data.currentQuestion);
         });
     },
     // 获取已完成id
@@ -172,11 +167,27 @@ Page({
             console.log('已完成的题目ID：', res);
             // 确保res是数组
             const finishedIds = Array.isArray(res) ? res : [];
-            this.setData({
-                finishedQuestionIds: finishedIds
-            }, () => {
-                // 获取到已完成题目ID后重新加载题目
-                this.loadQuestions();
+            
+            // 先获取所有题目数量
+            getAllQuestion({
+                category: this.data.category,
+                pageNum: 1,
+                pageSize: 100,
+                type: this.data.type
+            }).then(allRes => {
+                const totalQuestions = allRes.pageInfo.totalSize;
+                console.log('总题目数：', totalQuestions, '已完成题目数：', finishedIds.length);
+                
+                // 如果已完成题目数等于总题目数，说明全部完成
+                const isAllFinished = finishedIds.length === totalQuestions;
+                
+                this.setData({
+                    finishedQuestionIds: finishedIds,
+                    isAllFinished: isAllFinished
+                }, () => {
+                    // 获取到已完成题目ID后重新加载题目
+                    this.loadQuestions();
+                });
             });
         });
     },
@@ -302,7 +313,8 @@ Page({
             allAnswers,
             selectedOptions,
             questionStates,
-            currentQuestion
+            currentQuestion,
+            isAllFinished
         } = this.data;
         const newQuestionStates = [...questionStates];
         const newIsSubmitted = [...this.data.isSubmitted];
@@ -339,34 +351,35 @@ Page({
             console.log('后端返回结果：', res);
             newQuestionStates[currentQuestion - 1] = res[0].rightOrWrong === '对';
             newIsSubmitted[currentQuestion - 1] = true;
+            
+            // 更新题目的完成状态
+            const newQuestionList = [...questionList];
+            newQuestionList[currentQuestion - 1].isFinished = true;
+            
             this.setData({
                 questionStates: newQuestionStates,
                 isSubmitted: newIsSubmitted,
-                detailData: res[0]
+                detailData: res[0],
+                questionList: newQuestionList
             });
 
             // 检查是否所有题目都已完成
             const allCompleted = newIsSubmitted.every(submitted => submitted);
-            if (allCompleted) {
-                wx.showModal({
-                    title: '提示',
-                    content: '所有题目已完成，是否重新开始？',
-                    success: (res) => {
-                        if (res.confirm) {
-                            // 清空已完成题目ID，重新加载所有题目
-                            this.setData({
-                                finishedQuestionIds: [],
-                                pageNum: 1
-                            }, () => {
-                                // 重新获取所有题目
-                                this.loadQuestions();
-                            });
+            if (allCompleted && !isAllFinished) {
+                this.setData({
+                    isAllFinished: true
+                }, () => {
+                    wx.showModal({
+                        title: '提示',
+                        content: '所有题目已完成',
+                        showCancel: false,
+                        success: () => {
+                            // 重新加载所有题目
+                            this.loadQuestions();
                         }
-                    }
+                    });
                 });
             }
-
-            console.log(this.data.detailData);
         }).catch(error => {
             console.error('提交答案到后端时出错：', error);
         });
