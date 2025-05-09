@@ -84,7 +84,8 @@ Page({
         this.setData({
             isAddModalVisible: true,
             regulationName: '',
-            regulationTypeIndex: 0, 
+            regulationTypeIndex: 0,
+            regulationType: '法律',
             files: '',
             fileName: ''
         });
@@ -116,7 +117,7 @@ Page({
         wx.chooseMessageFile({
             count: 1,
             type: 'file',
-            extensions: ['doc', 'docx', 'pdf'],
+            extensions: ['pdf'],
             success: (res) => {
                 const file = res.tempFiles[0];
                 console.log('选择的文件信息：', file);
@@ -154,7 +155,7 @@ Page({
         });
     },
 
-    // 添加 提交
+    // 提交新法律
     onSubmitNewLaw() {
         const {
             regulationName,
@@ -170,25 +171,36 @@ Page({
             fileName
         });
         
-        if (!regulationName) {
+        // 表单验证
+        if (!regulationName || regulationName.trim() === '') {
             wx.showToast({
                 title: '请输入法律名称',
                 icon: 'none'
             });
             return;
         }
-        
-        if (!regulationType) {
+
+        if (this.data.regulationTypeIndex === -1) {
             wx.showToast({
-                title: '请输入法律类别',
+                title: '请选择法律分类',
                 icon: 'none'
             });
             return;
         }
-        
+
         if (!files) {
             wx.showToast({
-                title: '请选择要上传的文件',
+                title: '请上传PDF文件',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 检查文件格式
+        const fileExt = fileName.split('.').pop().toLowerCase();
+        if (fileExt !== 'pdf') {
+            wx.showToast({
+                title: '只能上传PDF格式文件',
                 icon: 'none'
             });
             return;

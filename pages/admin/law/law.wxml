@@ -17,7 +17,7 @@
             </thead>
             <tbody class="list-content">
                 <tr class="list-item" wx:for="{{lawList}}" wx:key="id">
-                    <td class="question-id">{{item.id}}</td>
+                    <td class="question-id">{{(pageNum - 1) * pageSize + index + 1}}</td>
                     <td class="question-title">{{item.regulation_name}}</td>
                     <td class="question-type">{{item.regulation_type}}</td>
                     <td class="item-actions">
@@ -62,7 +62,7 @@
                     </view>
                     <view class="form-item">
                         <text class="form-label">上传文件</text>
-                        <button class="upload-btn" bindtap="uploadFile">选择 Word 或 PDF 文件</button>
+                        <button class="upload-btn" bindtap="uploadFile">选择 PDF 文件</button>
                         <view wx:if="{{files}}" class="file-name">已选择文件: {{files}}</view>
                     </view>
                 </view>
