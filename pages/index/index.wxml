@@ -1,5 +1,26 @@
 <!--index.wxml-->
 <view class="container">
+    <!-- 公告组件 -->
+    <view class="notice-container {{ifFinash !== 100 ? 'not-finished' : ''}}">
+        <view class="notice-content">
+            <image class="notice-icon" src="../../assets/icons/公告.png" mode="aspectFit"></image>
+            <swiper class="notice-swiper" vertical="true" autoplay="true" circular="true" interval="3000">
+                <swiper-item wx:if="{{ifFinash === 100}}">
+                    <view class="notice-text finished">恭喜您已完成今日练习！继续保持，明天见！</view>
+                </swiper-item>
+                <swiper-item wx:if="{{ifFinash === 100}}">
+                    <view class="notice-text finished">坚持就是胜利，您已经完成{{totalQuestions}}道练习题！</view>
+                </swiper-item>
+                <swiper-item wx:if="{{ifFinash !== 100}}">
+                    <view class="notice-text not-finished">今日练习还未完成，快去完成吧！</view>
+                </swiper-item>
+                <swiper-item wx:if="{{ifFinash !== 100}}">
+                    <view class="notice-text not-finished">坚持每天练习，提高学习效率！</view>
+                </swiper-item>
+            </swiper>
+        </view>
+    </view>
+
     <!-- 顶部用户信息 -->
     <view class="user-detail">
         <view class="welcomeBox">
@@ -130,8 +151,6 @@
       </view>
     </view>
   </view> -->
-
-
 
     <!-- 用户反馈 -->
     <!-- <view class="feedback-section" bindtap="onFeedback">

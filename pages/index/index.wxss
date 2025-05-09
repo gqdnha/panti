@@ -19,7 +19,7 @@ page {
 .user-detail {
     width: 100vw;
     color: rgb(0, 0, 0);
-    padding: 40rpx 30rpx;
+    padding: 30rpx 30rpx;
     box-sizing: border-box;
     /* background: linear-gradient(135deg, #ff7373, #357abd); */
 }
@@ -173,4 +173,55 @@ page {
     font-weight: 600;
     color: #fff;
     text-align: center;
+}
+
+/* 公告组件样式 */
+.notice-container {
+    width: 100%;
+    background: linear-gradient(to right, #fff5f5, #fff);
+    padding: 16rpx 30rpx;
+    box-sizing: border-box;
+    margin-bottom: 0;
+    border-bottom: 1rpx solid #ffecec;
+}
+
+/* 未完成状态的样式 */
+.notice-container.not-finished {
+    background: linear-gradient(to right, #f0f9ff, #fff);
+    border-bottom: 1rpx solid #e6f7ff;
+}
+
+.notice-content {
+    display: flex;
+    align-items: center;
+    height: 50rpx;
+}
+
+.notice-icon {
+    width: 36rpx;
+    height: 36rpx;
+    margin-right: 16rpx;
+}
+
+.notice-swiper {
+    flex: 1;
+    height: 50rpx;
+}
+
+.notice-text {
+    font-size: 26rpx;
+    line-height: 50rpx;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 已完成状态文字颜色 */
+.notice-text.finished {
+    color: #ff4d4f;
+}
+
+/* 未完成状态文字颜色 */
+.notice-text.not-finished {
+    color: #1890ff;
 }
