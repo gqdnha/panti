@@ -29,7 +29,8 @@ Page({
         showAnalysis: false,
         currentQuestionData: {},
         optionStates: [],
-        startTime: null
+        startTime: null,
+        timer: null
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);
@@ -64,6 +65,15 @@ Page({
         } catch (error) {
             console.error('读取本地存储数据时出错：', error);
         }
+
+        // 启动定时器，每分钟更新一次学习时长
+        this.data.timer = setInterval(() => {
+            const now = new Date();
+            const durationInMinutes = Math.floor((now - this.data.startTime) / (1000 * 60));
+            this.setData({
+                studyTime: durationInMinutes
+            });
+        }, 60000); // 每分钟更新一次
 
         console.log('接收到的类别:', this.data.category);
         console.log('接收到的类别:', type);
@@ -325,11 +335,25 @@ Page({
             isSubmitted,
             questionStates,
             optionStates,
-            startTime
+            startTime,
+            timer,
+            studyTime
         } = this.data;
         const endTime = new Date();
         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
-        console.log(`做题总时间（分钟）：${durationInMinutes}`);
+        
+        // 打印详细的时间信息
+        console.log('学习时间统计：', {
+            '开始时间': startTime.toLocaleString(),
+            '结束时间': endTime.toLocaleString(),
+            '总学习时长(分钟)': durationInMinutes,
+            '页面显示时长(分钟)': studyTime
+        });
+
+        // 清除定时器
+        if (timer) {
+            clearInterval(timer);
+        }
 
         try {
             // 保存当前题目序号和其他状态数据
@@ -344,7 +368,7 @@ Page({
         }
 
         addLearnTime(durationInMinutes).then(res => {
-            console.log(res);
+            console.log('学习时间上传结果：', res);
         });
     }
 });
