@@ -7,6 +7,8 @@ page {
 .container {
     width: 100vw;
     padding: 24rpx;
+    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
+
 }
 
 /* 头部样式 */
@@ -47,24 +49,23 @@ page {
     width: 100vw;
     display: flex;
     flex-wrap: wrap;
-    /* justify-content: space-between; */
+    justify-content: space-between;
 }
 
 .category {
-    margin-top: 10rpx;
-    margin-left: 15rpx;
-    margin-right: 15rpx;
+    margin-top: 30rpx;
+    padding-left: 10rpx;
+    padding-right: 10rpx;
     width: 45%;
     height: 250rpx;
-    /* background-color: #fff; */
-    background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 16rpx;
-    margin-bottom: 32rpx;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    box-shadow: 0 4rpx 8rpx rgba(0, 0, 0, 0.05);
     transition: all 0.3s ease;
 }
 
@@ -79,7 +80,9 @@ page {
     /* padding: 10rpx; */
     text-align: center;
     /* color: #333; */
-    color: #fff;
+    /* color: #fff; */
+    color: #4a546b;
+
     font-weight: 600;
 }
 

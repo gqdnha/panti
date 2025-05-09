@@ -204,7 +204,7 @@
 }
 
 .list-content td {
-    border-bottom: 1rpx solid #eee;
+    /* border-bottom: 1rpx solid #eee; */
     padding: 16rpx;
 }
 

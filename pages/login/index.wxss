@@ -5,13 +5,14 @@
     display: flex;
     align-items: center;
     background: linear-gradient(to bottom, #e6f7ff, #ffffff);
+    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
 }
 
 .login-box {
     margin-top: 200rpx;
     width: 85%;
     padding: 40rpx;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.3);
     /* background-color: rgba(227, 255, 252, 0.5); */
     border-radius: 30rpx;
     box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
@@ -47,11 +48,11 @@
     width: 100%;
     height: 100rpx;
     padding: 0 30rpx;
-    border: 2rpx solid #e8e8e8;
+    border: 2rpx solid #bebebe;
     border-radius: 50rpx;
     box-sizing: border-box;
     font-size: 32rpx;
-    background-color: #f8f8f8;
+    /* background-color: #f8f8f8; */
     transition: all 0.3s ease;
 }
 
@@ -76,8 +77,8 @@
     height: 100rpx;
     line-height: 70rpx;
     font-size: 30rpx;
-    color: #1296db;
-    background-color: #e6f7ff;
+    color: #4bb3eb;
+    background-color: #e6f7ff9b;
     border: none;
     border-radius: 50rpx;
     transition: all 0.3s ease;
@@ -97,8 +98,9 @@
 .login-btn {
     width: 100%;
     /* line-height: 100rpx; */
-    background: linear-gradient(to right, #1296db, #40a9ff);
-    color: #fff;
+    /* background: linear-gradient(to right, #86bedb, #8acfc4); */
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: rgb(90, 90, 90);
     border-radius: 50rpx;
     font-size: 36rpx;
     font-weight: bold;
