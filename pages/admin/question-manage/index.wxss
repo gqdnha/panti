@@ -286,7 +286,7 @@ button::after {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: #fff;
-    border-radius: 8rpx;
+    border-radius: 50rpx;
     padding: 20rpx;
     z-index: 1001;
     width: 80%;
