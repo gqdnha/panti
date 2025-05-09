@@ -7,6 +7,9 @@ import {
 import {
     dailyQuestionCount
 } from '../../../api/dailyQuestionCount'
+import {
+    addLearnTime
+} from '../../../api/addLearnTime'
 
 Page({
     data: {
@@ -350,7 +353,7 @@ Page({
         const minutes = Math.floor(usedTime / (1000 * 60));
         console.log(`使用了 ${minutes} 分钟`);
         addLearnTime(minutes).then(res => {
-            console.log('传时间');
+            console.log('传时间',minutes);
         })
         // 调用后端接口
         apiJudgeTest(allUserAnswers).then(response => {
