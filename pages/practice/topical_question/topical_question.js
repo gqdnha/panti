@@ -30,41 +30,30 @@ Page({
         currentQuestionData: {},
         optionStates: [],
         startTime: null,
-        timer: null
+        timer: null,
+        finishedQuestionIds: []
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);
         const type = decodeURIComponent(options.questionType);
 
-        // 尝试从本地存储中读取保存的状态
-        try {
-            const savedCurrentQuestion = wx.getStorageSync('savedCurrentQuestion');
-            const savedSelectedOptions = wx.getStorageSync('savedSelectedOptions');
-            const savedIsSubmitted = wx.getStorageSync('savedIsSubmitted');
-            const savedQuestionStates = wx.getStorageSync('savedQuestionStates');
-            const savedOptionStates = wx.getStorageSync('savedOptionStates');
+        // 重置所有状态
+        this.setData({
+            category,
+            type,
+            startTime: new Date(),
+            currentQuestion: 1,
+            pageNum: 1,
+            questionList: [],
+            selectedOptions: [],
+            isSubmitted: [],
+            questionStates: [],
+            optionStates: [],
+            finishedQuestionIds: []
+        });
 
-            console.log('读取到的保存数据：', {
-                savedCurrentQuestion,
-                savedSelectedOptions,
-                savedIsSubmitted,
-                savedQuestionStates,
-                savedOptionStates
-            });
-
-            this.setData({
-                category,
-                type,
-                startTime: new Date(),
-                currentQuestion: savedCurrentQuestion || 1,
-                selectedOptions: savedSelectedOptions || [],
-                isSubmitted: savedIsSubmitted || [],
-                questionStates: savedQuestionStates || [],
-                optionStates: savedOptionStates || []
-            });
-        } catch (error) {
-            console.error('读取本地存储数据时出错：', error);
-        }
+        // 先获取已完成的题目ID
+        this.getFinashQuestionId();
 
         // 启动定时器，每分钟更新一次学习时长
         this.data.timer = setInterval(() => {
@@ -73,18 +62,18 @@ Page({
             this.setData({
                 studyTime: durationInMinutes
             });
-        }, 60000); // 每分钟更新一次
+        }, 60000);
 
         console.log('接收到的类别:', this.data.category);
         console.log('接收到的类别:', type);
-        this.loadQuestions();
-        this.getFinashQuestionId()
     },
     loadQuestions() {
         const {
             pageNum,
-            pageSize
+            pageSize,
+            finishedQuestionIds
         } = this.data;
+
         const data = {
             category: this.data.category,
             pageNum: pageNum,
@@ -93,10 +82,11 @@ Page({
         };
 
         console.log('请求参数：', data);
+        console.log('当前已完成题目ID：', finishedQuestionIds);
 
         getAllQuestion(data).then(res => {
             console.log('获取到的题目数据:', res);
-            const newQuestionList = res.pageInfo.pageData.map(question => {
+            let newQuestionList = res.pageInfo.pageData.map(question => {
                 question.questionId = question.question_id;
                 if (question.options) {
                     try {
@@ -105,41 +95,64 @@ Page({
                         console.error('解析options失败:', error);
                     }
                 }
-                // console.log('单个题目数据:', question);
                 return question;
             });
 
-            const currentQuestionList = this.data.questionList;
-            const combinedQuestionList = currentQuestionList.concat(newQuestionList);
-
-            const initialOptionStates = newQuestionList.map(question =>
-                new Array(question.options? question.options.length : 0).fill(false)
+            // 过滤掉已完成的题目
+            newQuestionList = newQuestionList.filter(question => 
+                !finishedQuestionIds.includes(question.questionId)
             );
 
-            // 避免覆盖已有的状态数据
-            const {
-                selectedOptions,
-                isSubmitted,
-                questionStates,
-                optionStates
-            } = this.data;
-            const newSelectedOptions = [...selectedOptions];
-            const newIsSubmitted = [...isSubmitted];
-            const newQuestionStates = [...questionStates];
-            const newOptionStates = [...optionStates, ...initialOptionStates];
+            console.log('过滤后的题目列表:', newQuestionList);
+
+            // 如果过滤后没有题目了，显示提示并重新开始
+            if (newQuestionList.length === 0) {
+                wx.showModal({
+                    title: '提示',
+                    content: '所有题目已完成，是否重新开始？',
+                    success: (res) => {
+                        if (res.confirm) {
+                            // 清空已完成题目ID，重新加载所有题目
+                            this.setData({
+                                finishedQuestionIds: [],
+                                pageNum: 1,
+                                questionList: [],
+                                selectedOptions: [],
+                                isSubmitted: [],
+                                questionStates: [],
+                                optionStates: []
+                            }, () => {
+                                // 重新获取所有题目
+                                this.loadQuestions();
+                            });
+                        }
+                    }
+                });
+                return;
+            }
+
+            // 重置当前题目列表，而不是追加
+            const initialOptionStates = newQuestionList.map(question =>
+                new Array(question.options ? question.options.length : 0).fill(false)
+            );
+
+            const newSelectedOptions = new Array(newQuestionList.length).fill(null);
+            const newIsSubmitted = new Array(newQuestionList.length).fill(false);
+            const newQuestionStates = new Array(newQuestionList.length).fill(null);
 
             this.setData({
-                questionList: combinedQuestionList,
-                totalQuestions: res.pageInfo.totalSize,
+                questionList: newQuestionList,
+                totalQuestions: newQuestionList.length,
+                currentQuestion: 1, // 重置当前题目为第一题
                 questionStates: newQuestionStates,
                 selectedOptions: newSelectedOptions,
                 isSubmitted: newIsSubmitted,
-                pageNum: this.data.pageNum + 1,
-                optionStates: newOptionStates
+                optionStates: initialOptionStates
+            }, () => {
+                console.log('更新后的题目列表:', this.data.questionList);
+                console.log('当前题目总数:', this.data.totalQuestions);
+                console.log('当前题目:', this.data.currentQuestion);
             });
-
-            console.log('设置到data中的题目数据:', this.data.questionList);
-            console.log('当前题目总数:', this.data.totalQuestions);
         }).catch(err => {
             console.error('加载题目列表失败:', err);
             wx.showToast({
@@ -154,33 +167,57 @@ Page({
             type: this.data.type,
             category: this.data.category
         }
-        console.log(data);
-        getFinashQuestionId(data).then(res => {
-            console.log(res);
-        })
+        console.log('获取已完成题目ID参数：', data);
+        return getFinashQuestionId(data).then(res => {
+            console.log('已完成的题目ID：', res);
+            // 确保res是数组
+            const finishedIds = Array.isArray(res) ? res : [];
+            this.setData({
+                finishedQuestionIds: finishedIds
+            }, () => {
+                // 获取到已完成题目ID后重新加载题目
+                this.loadQuestions();
+            });
+        });
     },
     nextQuestion: function () {
         const {
             currentQuestion,
-            totalQuestions,
-            questionList
+            totalQuestions
         } = this.data;
+        
+        console.log('当前题目:', currentQuestion, '总题目数:', totalQuestions);
+        
         if (currentQuestion < totalQuestions) {
             this.setData({
                 currentQuestion: currentQuestion + 1
+            }, () => {
+                console.log('切换到下一题:', this.data.currentQuestion);
             });
-            if (currentQuestion + 1 >= questionList.length - 2) {
-                this.loadQuestions();
-            }
+        } else {
+            wx.showToast({
+                title: '已经是最后一题',
+                icon: 'none'
+            });
         }
     },
     prevQuestion: function () {
         const {
             currentQuestion
         } = this.data;
+        
+        console.log('当前题目:', currentQuestion);
+        
         if (currentQuestion > 1) {
             this.setData({
                 currentQuestion: currentQuestion - 1
+            }, () => {
+                console.log('切换到上一题:', this.data.currentQuestion);
+            });
+        } else {
+            wx.showToast({
+                title: '已经是第一题',
+                icon: 'none'
             });
         }
     },
@@ -307,6 +344,28 @@ Page({
                 isSubmitted: newIsSubmitted,
                 detailData: res[0]
             });
+
+            // 检查是否所有题目都已完成
+            const allCompleted = newIsSubmitted.every(submitted => submitted);
+            if (allCompleted) {
+                wx.showModal({
+                    title: '提示',
+                    content: '所有题目已完成，是否重新开始？',
+                    success: (res) => {
+                        if (res.confirm) {
+                            // 清空已完成题目ID，重新加载所有题目
+                            this.setData({
+                                finishedQuestionIds: [],
+                                pageNum: 1
+                            }, () => {
+                                // 重新获取所有题目
+                                this.loadQuestions();
+                            });
+                        }
+                    }
+                });
+            }
+
             console.log(this.data.detailData);
         }).catch(error => {
             console.error('提交答案到后端时出错：', error);
