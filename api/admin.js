@@ -167,9 +167,6 @@ export const updateQuestion = (questionId,data) => {
     });
 };
 
-
-
-
 // 获取用户数据
 export const getAllUserInfo = (data) => {
     // console.log(data);
@@ -187,7 +184,6 @@ export const getUserToday = () => {
         method: 'GET'
     });
 };
-
 
 // 获取题目列表
 export const getAllQuestion = (data) => {

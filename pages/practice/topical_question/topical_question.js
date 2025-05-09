@@ -8,6 +8,7 @@ import {
     addLearnTime
 } from '../../../api/addLearnTime'
 
+import {getFinashQuestionId} from '../../../api/getFinashQuestionId'
 Page({
     data: {
         currentQuestion: 1,
@@ -67,6 +68,7 @@ Page({
         console.log('接收到的类别:', this.data.category);
         console.log('接收到的类别:', type);
         this.loadQuestions();
+        this.getFinashQuestionId()
     },
     loadQuestions() {
         const {
@@ -93,7 +95,7 @@ Page({
                         console.error('解析options失败:', error);
                     }
                 }
-                console.log('单个题目数据:', question);
+                // console.log('单个题目数据:', question);
                 return question;
             });
 
@@ -135,6 +137,17 @@ Page({
                 icon: 'none'
             });
         });
+    },
+    // 获取已完成id
+    getFinashQuestionId() {
+        const data = {
+            type: this.data.type,
+            category: this.data.category
+        }
+        console.log(data);
+        getFinashQuestionId(data).then(res => {
+            console.log(res);
+        })
     },
     nextQuestion: function () {
         const {
