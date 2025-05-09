@@ -2,9 +2,11 @@ page {
     padding: 0;
     margin: 0;
     height: 100vh;
+
 }
 
 .container {
+    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
     min-height: 100vh;
     /* background-color: #f5f6fa; */
     padding: 0;
@@ -58,19 +60,25 @@ page {
     height: 180rpx;
     /* background-color: #88bbee; */
     /* background: linear-gradient(to bottom, #a6d2ff , #6ea4e4); */
-    background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2);
+    /* background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2); */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 30rpx;
 
 }
 .studyName {
     font-size: 26rpx;
-    color: #fff;
+    /* color: #fff; */
+    color: #4a546b;
     text-align: center;
 }
 .studyValue {
     margin-top: 5rpx;
     font-size: 40rpx;
-    color: #fff;
+    /* color: #fff; */
+    color: #4a546b;
+
     text-align: center;
 }
 
@@ -96,7 +104,10 @@ page {
     position: relative;
     width: 250rpx;
     height: 450rpx;
-    background: linear-gradient(to bottom, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) );
+    /* background: linear-gradient(to bottom, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) ); */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 20rpx;
     display: flex;
     flex-direction: column;
@@ -118,7 +129,10 @@ page {
 .orderTest {
     width: 390rpx;
     height: 210rpx;
-    background: linear-gradient(to right, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) );
+    /* background: linear-gradient(to right, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) ); */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 20rpx;
     display: flex;
     flex-direction: column;
@@ -129,7 +143,10 @@ page {
     width: 390rpx;
     height: 210rpx;
     margin-top: 20rpx;
-    background: linear-gradient(to right, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) );
+    /* background: linear-gradient(to right, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) ); */
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 20rpx;
     display: flex;
     flex-direction: column;
@@ -166,20 +183,25 @@ page {
     width: 80rpx;
     height: 80rpx;
     margin-bottom: 10rpx;
+    color: #4a546b;
+
 }
 
 .module-name {
     font-size: 35rpx;
     font-weight: 600;
-    color: #fff;
+    /* color: #fff; */
+    color: #4a546b;
+
     text-align: center;
 }
 
 /* 公告组件样式 */
 .notice-container {
+    margin-top: 30rpx;
     width: 100%;
     background: linear-gradient(to right, #fff5f5, #fff);
-    padding: 16rpx 30rpx;
+    padding: 10rpx 30rpx;
     box-sizing: border-box;
     margin-bottom: 0;
     border-bottom: 1rpx solid #ffecec;
