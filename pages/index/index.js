@@ -17,7 +17,6 @@ Page({
         recommended: [],
         currentDate: '',
         practiceCount: 0,
-        continuousDays: 0, // 连续完成天数
     },
     bindViewTap() {
         wx.navigateTo({
@@ -90,7 +89,6 @@ Page({
                 // studyTime : res.
                 totalQuestions:res.count || 0,
                 correctRate:res.rightPercent *100 || 0,
-                continuousDays: res.data.continuousDays || 0
             });
         })  
     },
