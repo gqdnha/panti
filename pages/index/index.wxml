@@ -73,10 +73,10 @@
             </view>
 
         </view>
-        <view class="functionLaw" bindtap="goToMistake" data-category="易错20题">
+        <!-- <view class="functionLaw" bindtap="goToMistake" data-category="易错20题">
             <image class="module-icon" src="/assets/icons/顺序练习.png"></image>
             <text class="module-name">易错20题</text>
-        </view>
+        </view> -->
     </view>
     <!-- 基础理论模块 -->
     <!-- <view class="module-section">
