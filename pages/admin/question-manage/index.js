@@ -213,11 +213,22 @@ Page({
         });
 
         getWrongQuestionPercent(questionId).then(res => {
+            if (res !== null && res !== undefined) {
+                const percent = parseFloat(res) * 100;
+                this.setData({
+                    wrongQuestionPercent: percent.toFixed(2)
+                });
+            } else {
+                this.setData({
+                    wrongQuestionPercent: '暂无数据'
+                });
+            }
+        }).catch(err => {
+            console.error('获取正确率失败:', err);
             this.setData({
-                wrongQuestionPercent: res * 100
-            })
-            console.log(this.data.wrongQuestionPercent);
-        })
+                wrongQuestionPercent: '暂无数据'
+            });
+        });
     },
 
     // 添加题目
