@@ -165,7 +165,8 @@
 
 .btn.export {
     background: #f6ffed;
-    color: #52c41a;
+    /* color: #52c41a; */
+    
     /* border: 1rpx solid rgba(245, 34, 45, 0.3); */
 }
 
@@ -311,8 +312,8 @@ button::after {
 }
 
 
-/* 用户详情模态框样式 */
-.modal-mask {
+/* 用户详情弹窗样式 */
+.user-detail-modal-mask {
     position: fixed;
     top: 0;
     left: 0;
@@ -323,7 +324,7 @@ button::after {
     backdrop-filter: blur(4px);
 }
 
-.modal-container {
+.user-detail-modal-container {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -335,7 +336,7 @@ button::after {
     box-shadow: 0 12rpx 48rpx rgba(0, 0, 0, 0.08);
 }
 
-.modal-header {
+.user-detail-modal-header {
     padding: 32rpx;
     display: flex;
     justify-content: space-between;
@@ -343,13 +344,13 @@ button::after {
     border-bottom: 1rpx solid #f5f5f5;
 }
 
-.modal-header text {
+.user-detail-modal-header text {
     font-size: 34rpx;
     font-weight: 600;
     color: #1a1a1a;
 }
 
-.close-btn {
+.user-detail-close-btn {
     width: 48rpx;
     height: 48rpx;
     display: flex;
@@ -362,15 +363,15 @@ button::after {
     transition: all 0.2s;
 }
 
-.close-btn:active {
+.user-detail-close-btn:active {
     background: #f5f5f5;
 }
 
-.modal-body {
+.user-detail-modal-body {
     padding: 32rpx;
 }
 
-.detail-item {
+.user-detail-item {
     display: flex;
     align-items: center;
     margin-bottom: 28rpx;
@@ -379,17 +380,17 @@ button::after {
     border-radius: 16rpx;
 }
 
-.detail-item:last-child {
+.user-detail-item:last-child {
     margin-bottom: 0;
 }
 
-.detail-item label {
+.user-detail-item label {
     width: 160rpx;
     color: #666;
     font-size: 28rpx;
 }
 
-.detail-item text {
+.user-detail-item text {
     flex: 1;
     color: #333;
     font-size: 28rpx;
@@ -429,12 +430,142 @@ button::after {
 }
 
 .function-item button:last-child {
-    background: #10b981;
+    /* background: #10b981; */
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+
     box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.2);
 }
 
 .function-item button:active {
     transform: scale(0.98);
     opacity: 0.9;
+}
+
+.add-user-btn {
+    position: fixed;
+    right: 30rpx;
+    bottom: 30rpx;
+    width: 120rpx;
+    height: 120rpx;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+    z-index: 100;
+}
+
+.add-icon {
+    width: 48rpx;
+    height: 48rpx;
+    margin-bottom: 8rpx;
+}
+
+/* 添加用户弹窗样式 */
+.add-user-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1000;
+}
+
+.add-user-modal-mask {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1001;
+}
+
+.add-user-modal-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    background: #fff;
+    border-radius: 20rpx;
+    padding: 40rpx;
+    z-index: 1002;
+    box-shadow: 0 12rpx 48rpx rgba(0, 0, 0, 0.08);
+}
+
+.add-user-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40rpx;
+    padding-bottom: 20rpx;
+    border-bottom: 1rpx solid #f5f5f5;
+}
+
+.add-user-modal-title {
+    font-size: 34rpx;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.add-user-close-icon {
+    width: 40rpx;
+    height: 40rpx;
+    padding: 10rpx;
+}
+
+.add-user-modal-body {
+    margin-bottom: 40rpx;
+}
+
+.add-user-form-item {
+    margin-bottom: 30rpx;
+}
+
+.add-user-label {
+    display: block;
+    font-size: 28rpx;
+    color: #666;
+    margin-bottom: 16rpx;
+}
+
+.add-user-input {
+    width: 100%;
+    height: 88rpx;
+    padding: 0 30rpx;
+    border: 2rpx solid #e5e5e5;
+    border-radius: 44rpx;
+    font-size: 28rpx;
+    box-sizing: border-box;
+}
+
+.add-user-modal-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 20rpx;
+}
+
+.add-user-cancel-btn, .add-user-confirm-btn {
+    flex: 1;
+    height: 88rpx;
+    line-height: 88rpx;
+    text-align: center;
+    border-radius: 44rpx;
+    font-size: 32rpx;
+}
+
+.add-user-cancel-btn {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.add-user-confirm-btn {
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #333;
 }
 

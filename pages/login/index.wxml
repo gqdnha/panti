@@ -1,10 +1,16 @@
 <!--pages/login/index.wxml-->
 <view class="container">
+    <!-- 欢迎语 -->
+    <view class="welcome-text">
+        <view class="welcome-title">欢迎使用</view>
+        <view class="welcome-subtitle">让生活更美好</view>
+    </view>
+
     <!-- 微信登录界面 -->
     <view class="login-box" wx:if="{{!showPhoneVerify}}">
         <view class="title">欢迎登录</view>
         <view class="login-btn" hover-class="button-hover" bindtap="wxLogin">
-            <image class="wechat-icon" src="/assets/images/wechat.png" mode="aspectFit"></image>
+            <image class="wechat-icon" src="/assets/icons/wechat.png" mode="aspectFit"></image>
             微信一键登录
         </view>
     </view>

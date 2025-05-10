@@ -24,7 +24,7 @@ Page({
         wx.login({
             success: (res) => {
                 console.log(res.code);
-                if (res.code) {
+                /* if (res.code) {
                     // 获取用户信息
                     wx.getUserProfile({
                         desc: '用于完善用户资料',
@@ -67,7 +67,7 @@ Page({
                             });
                         }
                     });
-                }
+                } */
             }
         });
     },

@@ -3,10 +3,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
     position: relative;
     overflow: hidden;
+    padding-top: 15vh;
 }
 
 .container::before {
@@ -24,6 +24,37 @@
     }
     to {
         transform: rotate(360deg);
+    }
+}
+
+.welcome-text {
+    text-align: center;
+    margin-bottom: 60rpx;
+    animation: fadeIn 1s ease-out;
+}
+
+.welcome-title {
+    font-size: 56rpx;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20rpx;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.welcome-subtitle {
+    font-size: 32rpx;
+    color: #666;
+    opacity: 0.8;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20rpx);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 

@@ -1,4 +1,10 @@
 <view class="container">
+    <!-- 添加用户按钮 -->
+    <view class="add-user-btn" bindtap="showAddUserModal">
+        <image class="add-icon" src="/assets/icons/add.png" mode="aspectFit"></image>
+        <!-- 添加用户 -->
+    </view>
+
     <!-- 搜索框 -->
     <view class="search-box">
         <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}" />
@@ -35,32 +41,32 @@
         <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
     </view>
 
-    <!-- 用户详情模态框 -->
-    <view class="modal-mask" wx:if="{{showUserDetailModal}}" bindtap="closeUserDetailModal"></view>
-    <view class="modal-container" wx:if="{{showUserDetailModal}}">
-        <view class="modal-header">
-            <text class="modal-title">用户详情</text>
-            <view class="close-btn" bindtap="closeUserDetailModal">×</view>
+    <!-- 用户详情弹窗 -->
+    <view class="user-detail-modal-mask" wx:if="{{showUserDetailModal}}" bindtap="closeUserDetailModal"></view>
+    <view class="user-detail-modal-container" wx:if="{{showUserDetailModal}}">
+        <view class="user-detail-modal-header">
+            <text class="user-detail-modal-title">用户详情</text>
+            <view class="user-detail-close-btn" bindtap="closeUserDetailModal">×</view>
         </view>
-        <view class="modal-body">
+        <view class="user-detail-modal-body">
             <view class="user-info-section">
-                <view class="detail-item">
+                <view class="user-detail-item">
                     <label>姓名</label>
                     <text class="info-text">{{currentUserDetail.name}}</text>
                 </view>
-                <view class="detail-item">
+                <view class="user-detail-item">
                     <label>手机号</label>
                     <text class="info-text">{{currentUserDetail.phone}}</text>
                 </view>
-                <view class="detail-item">
+                <view class="user-detail-item">
                     <label>部门</label>
                     <text class="info-text">{{currentUserDetail.department}}</text>
                 </view>
-                <view class="detail-item">
+                <view class="user-detail-item">
                     <label>学习时间</label>
                     <text class="info-text highlight">{{currentUserDetail.learn_time}} 分钟</text>
                 </view>
-                <view class="detail-item">
+                <view class="user-detail-item">
                     <label>正确率</label>
                     <text class="info-text highlight">{{rightPercent}}%</text>
                 </view>
@@ -69,16 +75,43 @@
             <view class="action-buttons"> 
                 <view class="function-item" bindtap="goToOneWrongBook">
                     <button class="action-btn wrong-book">
-                        <!-- <text class="btn-icon">📚</text> -->
                         <text class="btn-text">错题本</text>
                     </button>
                 </view>
                 <view class="function-item" bindtap="goToOneDaily">
                     <button class="action-btn daily-practice">
-                        <!-- <text class="btn-icon">📝</text> -->
                         <text class="btn-text">每日练习</text>
                     </button>
                 </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 添加用户弹窗 -->
+    <view class="add-user-modal" wx:if="{{showModal}}">
+        <view class="add-user-modal-mask" bindtap="hideAddUserModal"></view>
+        <view class="add-user-modal-content">
+            <view class="add-user-modal-header">
+                <text class="add-user-modal-title">添加用户</text>
+                <image class="add-user-close-icon" src="/assets/icons/close.png" bindtap="hideAddUserModal" mode="aspectFit"></image>
+            </view>
+            <view class="add-user-modal-body">
+                <view class="add-user-form-item">
+                    <text class="add-user-label">姓名</text>
+                    <input class="add-user-input" type="text" placeholder="请输入姓名" value="{{newUser.name}}" bindinput="onNameInput" />
+                </view>
+                <view class="add-user-form-item">
+                    <text class="add-user-label">手机号</text>
+                    <input class="add-user-input" type="number" placeholder="请输入手机号" value="{{newUser.phone}}" bindinput="onPhoneInput" maxlength="11" />
+                </view>
+                <view class="add-user-form-item">
+                    <text class="add-user-label">部门</text>
+                    <input class="add-user-input" type="text" placeholder="请输入部门" value="{{newUser.department}}" bindinput="onDepartmentInput" />
+                </view>
+            </view>
+            <view class="add-user-modal-footer">
+                <button class="add-user-cancel-btn" bindtap="hideAddUserModal">取消</button>
+                <button class="add-user-confirm-btn" bindtap="handleAddUser">确定</button>
             </view>
         </view>
     </view>
