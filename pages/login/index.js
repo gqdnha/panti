@@ -1,6 +1,4 @@
-import {
-    judgeCode,sendCode 
-} from '../../api/login'
+import { request } from '../../api/request';
 
 Page({
 
@@ -8,18 +6,122 @@ Page({
      * 页面的初始数据
      */
     data: {
-        //   到时候删除
-        phone: '13581036903',
+        phone: '',
+        isNewUser: false, // 是否是新用户
+        showPhoneVerify: false, // 是否显示手机号验证界面
         code: '111111',
-        // phone: '',
-        // code: '',
         counting: false,
         countDown: 60
     },
 
-    inputPhone(e) {
+    onLoad() {
+        // 页面加载时直接进行微信登录
+        this.wxLogin();
+    },
+
+    // 微信登录
+    wxLogin() {
+        wx.login({
+            success: (res) => {
+                console.log(res.code);
+                if (res.code) {
+                    // 获取用户信息
+                    wx.getUserProfile({
+                        desc: '用于完善用户资料',
+                        success: (userInfo) => {
+                            // 调用微信登录接口
+                            request({
+                                url: '/user/login',
+                                method: 'POST',
+                                data: {
+                                    code: res.code,
+                                }
+                            }).then(res => {
+                                if (res.isNewUser) {
+                                    // 新用户，显示手机号验证界面
+                                    this.setData({
+                                        isNewUser: true,
+                                        showPhoneVerify: true
+                                    });
+                                } else {
+                                    // 老用户，直接跳转首页
+                                    wx.setStorageSync('token', res.token);
+                                    wx.setStorageSync('userId', res.userId);
+                                    wx.switchTab({
+                                        url: '/pages/index/index'
+                                    });
+                                }
+                            }).catch(err => {
+                                console.error('微信登录失败:', err);
+                                wx.showToast({
+                                    title: '登录失败，请重试',
+                                    icon: 'none'
+                                });
+                            });
+                        },
+                        fail: (err) => {
+                            console.error('获取用户信息失败:', err);
+                            wx.showToast({
+                                title: '获取用户信息失败',
+                                icon: 'none'
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    },
+
+    // 输入手机号
+    onPhoneInput(e) {
         this.setData({
             phone: e.detail.value
+        });
+    },
+
+    // 验证手机号
+    verifyPhone() {
+        const { phone } = this.data;
+        
+        if (!phone) {
+            wx.showToast({
+                title: '请输入手机号',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 验证手机号格式
+        if (!/^1[3-9]\d{9}$/.test(phone)) {
+            wx.showToast({
+                title: '请输入正确的手机号',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 调用验证手机号接口
+        request({
+            url: '/user/verifyPhone',
+            method: 'POST',
+            data: {
+                phone
+            }
+        }).then(res => {
+            // 验证成功，保存token和用户ID
+            wx.setStorageSync('token', res.token);
+            wx.setStorageSync('userId', res.userId);
+            
+            // 跳转到首页
+            wx.switchTab({
+                url: '/pages/index/index'
+            });
+        }).catch(err => {
+            console.error('验证手机号失败:', err);
+            wx.showToast({
+                title: '验证失败，请重试',
+                icon: 'none'
+            });
         });
     },
 
@@ -63,12 +165,24 @@ Page({
         }, 1000);
 
         // TODO: 调用发送验证码接口
-        sendCode(phone).then(res => {
+        request({
+            url: '/user/sendCode',
+            method: 'POST',
+            data: {
+                phone
+            }
+        }).then(res => {
             console.log(res);
-        })
-        wx.showToast({
-            title: '验证码已发送',
-            icon: 'success'
+            wx.showToast({
+                title: '验证码已发送',
+                icon: 'success'
+            });
+        }).catch(err => {
+            console.error('发送验证码失败:', err);
+            wx.showToast({
+                title: '发送验证码失败，请重试',
+                icon: 'none'
+            });
         });
     },
 
@@ -96,17 +210,14 @@ Page({
             code
         }
         console.log(data);
-        judgeCode(data).then(res => {
+        request({
+            url: '/user/login',
+            method: 'POST',
+            data: data
+        }).then(res => {
             wx.showLoading({
                 title: '登录中...'
             });
-        })
-        // TODO: 调用登录接口
-
-
-        // 模拟登录请求
-        setTimeout(() => {
-            wx.hideLoading();
             // 存储用户信息
             wx.setStorageSync('userInfo', {
                 phone,
@@ -124,6 +235,13 @@ Page({
                     url: '/pages/index/index'
                 });
             }
-        }, 1500);
+        }).catch(err => {
+            console.error('登录失败:', err);
+            wx.hideLoading();
+            wx.showToast({
+                title: '登录失败，请重试',
+                icon: 'none'
+            });
+        });
     }
 })
