@@ -320,6 +320,7 @@ Page({
         const newQuestionStates = [...questionStates];
         const newIsSubmitted = [...this.data.isSubmitted];
         const question = questionList[currentQuestion - 1];
+        
         if (!question) {
             console.error('当前题目数据不存在，currentQuestion 可能越界:', currentQuestion);
             return;
@@ -328,6 +329,37 @@ Page({
             console.error('当前题目缺少questionId:', question);
             return;
         }
+
+        // 验证是否已选择答案
+        if (question.type === '单选题' || question.type === '判断题') {
+            const selectedChar = selectedOptions[currentQuestion - 1];
+            if (!selectedChar) {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        } else if (question.type === '多选题') {
+            const selectedChars = selectedOptions[currentQuestion - 1] || [];
+            if (selectedChars.length === 0) {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        } else if (question.type === '填空题') {
+            const userAnswer = allAnswers[currentQuestion - 1];
+            if (!userAnswer || userAnswer.trim() === '') {
+                wx.showToast({
+                    title: '请输入答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        }
+
         const userAnswer = allAnswers[currentQuestion - 1];
         const questionId = question.questionId;
         let userAnswerToSubmit;

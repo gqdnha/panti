@@ -158,6 +158,35 @@ Page({
         const userAnswer = allAnswers[currentQuestion - 1];
         let userAnswerToSubmit;
 
+        // 验证是否已选择答案
+        if (question.type === '单选题' || question.type === '判断题') {
+            const selectedChar = selectedOptions[currentQuestion - 1];
+            if (!selectedChar) {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        } else if (question.type === '多选题') {
+            const selectedChars = selectedOptions[currentQuestion - 1] || [];
+            if (selectedChars.length === 0) {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        } else if (question.type === '填空题') {
+            if (!userAnswer || userAnswer.trim() === '') {
+                wx.showToast({
+                    title: '请输入答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        }
+
         if (question.type === '单选题' || question.type === '判断题') {
             const selectedChar = selectedOptions[currentQuestion - 1];
             userAnswerToSubmit = selectedChar || '';

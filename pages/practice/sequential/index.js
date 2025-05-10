@@ -155,12 +155,33 @@ Page({
 
     // 提交答案
     submitAnswer: function () {
-        if (!this.data.answer && this.data.answer!== false) {
-            wx.showToast({
-                title: '请选择或输入答案',
-                icon: 'none'
-            });
-            return;
+        const { currentQuestionData, answer } = this.data;
+        
+        // 验证是否已选择答案
+        if (currentQuestionData.type === '单选题' || currentQuestionData.type === '判断题') {
+            if (!answer) {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        } else if (currentQuestionData.type === '多选题') {
+            if (!answer || answer.length === 0) {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none'
+                });
+                return;
+            }
+        } else if (currentQuestionData.type === '填空题') {
+            if (!answer || answer.trim() === '') {
+                wx.showToast({
+                    title: '请输入答案',
+                    icon: 'none'
+                });
+                return;
+            }
         }
 
         if (this.data.isSubmitted) {
