@@ -146,27 +146,61 @@ Page({
     },
     submitSingleAnswer: function () {
         const { allQuestions, allAnswers, selectedOptions, questionStates, currentQuestion } = this.data;
-        const newQuestionStates = [...questionStates];
-        const newIsSubmitted = [...this.data.isSubmitted];
         const question = allQuestions[currentQuestion - 1];
-        const userAnswer = allAnswers[currentQuestion - 1];
-        let userAnswerToSubmit;
+        let userAnswerToSubmit = '';
 
+        // 检查是否选择了答案
         if (question.type === '单选题' || question.type === '判断题') {
             const selectedChar = selectedOptions[currentQuestion - 1];
-            userAnswerToSubmit = selectedChar || '';
+            if (selectedChar === undefined || selectedChar === null || selectedChar === '') {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
+            userAnswerToSubmit = selectedChar;
         } else if (question.type === '多选题') {
-            const selectedChars = selectedOptions[currentQuestion - 1] || [];
+            const selectedChars = selectedOptions[currentQuestion - 1];
+            if (!selectedChars || selectedChars.length === 0) {
+                wx.showToast({
+                    title: '请选择答案',
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
             const sortedSelectedChars = selectedChars.slice().sort();
-            const sortedAnswerString = sortedSelectedChars.join('');
-            userAnswerToSubmit = sortedAnswerString;
+            userAnswerToSubmit = sortedSelectedChars.join('');
         } else if (question.type === '填空题') {
+            const userAnswer = allAnswers[currentQuestion - 1];
+            if (!userAnswer || userAnswer.trim() === '') {
+                wx.showToast({
+                    title: '请输入答案',
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
             userAnswerToSubmit = userAnswer;
         }
 
+        // 如果答案为空，不调用后端接口
+        if (!userAnswerToSubmit) {
+            wx.showToast({
+                title: '请选择或输入答案',
+                icon: 'none',
+                duration: 2000
+            });
+            return;
+        }
+
+        // 只有在有答案的情况下才继续执行
+        const newQuestionStates = [...questionStates];
+        const newIsSubmitted = [...this.data.isSubmitted];
         newIsSubmitted[currentQuestion - 1] = true;
         
-
         this.setData({
             isSubmitted: newIsSubmitted
         });
@@ -174,11 +208,13 @@ Page({
         const data = [{
             questionId: question.questionId,
             answer: userAnswerToSubmit,
-            type:this.data.type
-        }]
-        console.log(data);
+            type: this.data.type
+        }];
+        console.log('提交的答案数据:', data);
 
-        apiJudgeTest(data).then(response => {
+        // 只有在有答案的情况下才调用接口
+        if (userAnswerToSubmit) {
+            apiJudgeTest(data).then(response => {
                 console.log('后端返回结果：', response);
                 const result = response[0];
                 const isCorrect = result.rightOrWrong === '对';
@@ -187,13 +223,18 @@ Page({
                     questionStates: newQuestionStates,
                     detailData: result
                 }, () => {
-                    // 在这里可以添加一些额外的逻辑，确保页面正确更新
                     console.log('questionStates 更新后:', this.data.questionStates);
                 });
             })
-           .catch(error => {
+            .catch(error => {
                 console.error('提交答案到后端时出错：', error);
+                // 发生错误时重置提交状态
+                newIsSubmitted[currentQuestion - 1] = false;
+                this.setData({
+                    isSubmitted: newIsSubmitted
+                });
             });
+        }
     },
 
     showAnalysis: function () {
