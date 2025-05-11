@@ -259,33 +259,6 @@
     color: #fff;
 }
 
-/* 添加按钮 */
-.add-button {
-    position: fixed;
-    right: 48rpx;
-    bottom: 48rpx;
-    width: 120rpx;
-    height: 120rpx;
-    background: linear-gradient(135deg, #6c5ce7, #4b4bff);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 12rpx 32rpx rgba(108, 92, 231, 0.3);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.add-button:active {
-    transform: scale(0.95) translateY(4rpx);
-    box-shadow: 0 6rpx 24rpx rgba(108, 92, 231, 0.3);
-}
-
-.add-icon {
-    width: 56rpx;
-    height: 56rpx;
-    filter: drop-shadow(0 2rpx 4rpx rgba(0, 0, 0, 0.1));
-}
-
 /* 全局按钮样式重置 */
 button {
     margin: 0;
@@ -486,26 +459,28 @@ button::after {
     opacity: 0.9;
 }
 
-.add-user-btn {
-    position: fixed;
-    right: 30rpx;
-    bottom: 30rpx;
-    width: 120rpx;
-    height: 120rpx;
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    border-radius: 50%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-    z-index: 100;
-}
-
 .add-icon {
     width: 48rpx;
     height: 48rpx;
     margin-bottom: 8rpx;
 }
+.search-box {
+    display: flex;
+    flex-direction: row;
+}
+.search-box button {
+    margin-left: 10rpx;
+    width: 200rpx;
+    height: 50rpx;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    border-radius: 25rpx ;
+    font-weight: 600;
+    color: #333;
+}
+.search-box input {
+    width: 400rpx;
+    height: 50rpx;
+    border-radius: 25rpx;
+    border: rgb(255, 255, 255) 1px solid;
 
-
+}
