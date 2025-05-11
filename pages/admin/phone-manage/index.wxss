@@ -164,7 +164,7 @@
 }
 
 .modal-content input {
-    width: 100%;
+    width: 80%;
     height: 80rpx;
     background: #f5f7fa;
     border-radius: 8rpx;

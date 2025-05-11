@@ -1,5 +1,6 @@
 import {request} from "./request";
-import {getUserId} from './getUserId'
+// import {getUserId} from './getUserId'
+import {getUserId} from './NogetUserId'
 import { baseURL } from "./request";
 // 删除法律 
 export const deleteLawApi = (regulationId) => {
@@ -26,6 +27,7 @@ export const deletePicApi = (data) => {
 // 禁用题目
 export const deleteQuestionApi = (questionId) => {
     const userId =getUserId()
+    console.log(userId);
     // const userId =1
 
     console.log(questionId);
