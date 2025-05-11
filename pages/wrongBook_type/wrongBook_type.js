@@ -165,10 +165,12 @@ Page({
         }
 
         newIsSubmitted[currentQuestion - 1] = true;
+        
 
         this.setData({
             isSubmitted: newIsSubmitted
         });
+        
         const data = [{
             questionId: question.questionId,
             answer: userAnswerToSubmit,
