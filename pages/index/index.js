@@ -1,11 +1,15 @@
 import {getUserInfo} from '../../api/getUserInfo'
 import {getDailyFinesh} from '../../api/getDeilyFinash'
+import { request } from '../../api/request';
+import { getUserId } from '../../api/getUserId';
 
 Page({
     data: {
         ifFinash:0,
         motto: 'Hello World',
-        userInfo: null,
+        userInfo: {
+            name: ''
+        },
         hasUserInfo: false,
         canIUseGetUserProfile: wx.canIUse('getUserProfile'),
         canIUseNicknameComp: wx.canIUse('input.type.nickname'),
@@ -17,6 +21,11 @@ Page({
         recommended: [],
         currentDate: '',
         practiceCount: 0,
+        studyStats: {
+            totalQuestions: 0,
+            correctRate: 0,
+            totalTime: 0
+        }
     },
     bindViewTap() {
         wx.navigateTo({
@@ -71,24 +80,23 @@ Page({
         this.setCurrentDate();
         this.loadUserInfo();
         this.userFinash()
-        // this.loadStatistics();
-        // this.getRecentExams();
-        // this.getRecommended();
+        this.getUserInfo();
+        this.getStudyStats();
     },
     onShow() {
-        // 每次显示页面时更新数据
-        // this.getUserInfo();
+        this.getUserInfo();
         this.getStudyStats();
     },
     // 获取信息
     getStudyStats() {
-        // 使用模拟数据，添加默认值防止undefined
-        getUserInfo().then (res => {
-            console.log(res);
+        getUserInfo().then(res => {
+            console.log(res.rightPercent);
             this.setData({
-                // studyTime : res.
-                totalQuestions:res.count || 0,
-                correctRate:res.rightPercent || 0,
+                studyStats: {
+                    totalQuestions: res.count,
+                    correctRate: res.rightPercent,
+                    totalTime: 120
+                }
             });
         })  
     },
@@ -245,5 +253,34 @@ Page({
     // 显示进度条
     showProgress(current, total) {
         return `${current}/${total}`;
+    },
+    // 获取用户信息
+    getUserInfo() {
+        const name = wx.getStorageSync('name');
+        if (name) {
+            this.setData({
+                'userInfo.name': name
+            });
+        }
+    },
+    // 去错题本
+    goToWrongQuestions() {
+        wx.navigateTo({
+            url: '/pages/wrongBook/wrongBook'
+        });
+    },
+
+    // 去答题历史
+    goToAnswerHistory() {
+        wx.navigateTo({
+            url: '/pages/history/history'
+        });
+    },
+
+    // 去答题
+    goToAnswer() {
+        wx.navigateTo({
+            url: '/pages/answer/answer'
+        });
     }
 })

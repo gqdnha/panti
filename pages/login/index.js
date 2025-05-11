@@ -5,7 +5,7 @@ Page({
         showPhoneVerify: false,
         phone: '',
         name: '',
-        department: '研发部', // 默认选择第一个部门
+        department: '',
         loginCode: '', // 保存登录code
         userId: '', // 保存用户ID
         departmentList: ['研发部', '市场部', '销售部', '人事部', '财务部', '行政部'], // 部门列表
@@ -36,9 +36,14 @@ Page({
                         }
                     }).then(res => {
                         wx.hideLoading();
-                        // 保存登录态和用户ID
+                        // 保存用户信息到缓存
                         wx.setStorageSync('token', res.token);
                         wx.setStorageSync('userId', res.userId);
+                        wx.setStorageSync('name', res.name);
+                        wx.setStorageSync('phone', res.phone);
+                        wx.setStorageSync('role', res.role);
+                        wx.setStorageSync('department', res.department);
+                        
                         this.setData({
                             userId: res.userId
                         });
@@ -150,8 +155,9 @@ Page({
         }).then(res => {
             wx.hideLoading();
             if (res.success) {
-                wx.setStorageSync('phone', phone);
+                // 保存用户信息到缓存
                 wx.setStorageSync('name', name);
+                wx.setStorageSync('phone', phone);
                 wx.setStorageSync('department', department);
                 
                 wx.showToast({

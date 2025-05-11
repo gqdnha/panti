@@ -2,10 +2,10 @@
     <!-- 用户信息卡片 -->
     <view class="user-card">
         <view class="user-info">
-            <image class="avatar" src="{{userInfo.avatarUrl || '/assets/icons/user.png'}}" mode="aspectFill" bindtap="navigateToLoginIfNotLoggedIn"></image>
             <view class="user-detail">
                 <view class="nickname" bindtap="navigateToLoginIfNotLoggedIn">{{userInfo.nickName || '未登录'}}</view>
                 <view class="phone">{{userInfo.phone || ''}}</view>
+                <view class="department">{{userInfo.department || ''}}</view>
             </view>
         </view>
         <!-- 设置 -->

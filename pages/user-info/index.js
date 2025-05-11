@@ -1,4 +1,6 @@
-import {getUserInfo} from '../../api/getUserInfo'
+import { getUserId } from '../../api/getUserId';
+import { getUserInfo } from '../../api/getUserInfo'
+
 Page({
 
     /**
@@ -17,6 +19,7 @@ Page({
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
+        this.getUserInfo();
         this.getStudyStats();
     },
 
@@ -31,7 +34,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
-        // 每次显示页面时更新数据
+        this.getUserInfo();
         this.getStudyStats();
     },
 
@@ -70,6 +73,22 @@ Page({
 
     },
 
+    // 获取用户信息
+    getUserInfo() {
+        const name = wx.getStorageSync('name');
+        const phone = wx.getStorageSync('phone');
+        const department = wx.getStorageSync('department');
+
+        if (name || phone || department) {
+            this.setData({
+                userInfo: {
+                    nickName: name || '未设置',
+                    phone: phone || '未设置',
+                    department: department || '未设置'
+                }
+            });
+        }
+    },
 
     // 从服务器获取学习统计数据
     getStudyStats() {
@@ -85,12 +104,7 @@ Page({
         })
     },
 
-
     navigateToSettings() {
-        /* if (!this.data.userInfo) {
-            this.showLoginTip();
-            return;
-        } */
         wx.navigateTo({
             url: '/pages/setting/setting'
         });
@@ -119,6 +133,10 @@ Page({
                 if (res.confirm) {
                     // 清除用户信息
                     wx.removeStorageSync('userInfo');
+                    wx.removeStorageSync('userId');
+                    wx.removeStorageSync('name');
+                    wx.removeStorageSync('phone');
+                    wx.removeStorageSync('department');
                     this.setData({
                         userInfo: null
                     });
@@ -130,12 +148,9 @@ Page({
             }
         });
     },
+
     // 去错题本
     goToWrongQuestions() {
-        /*  if (!this.data.userInfo) {
-             this.showLoginTip();
-             return;
-         } */
         wx.navigateTo({
             url: '/pages/wrongBook/wrongBook'
         });
