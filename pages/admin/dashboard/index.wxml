@@ -26,6 +26,11 @@
             <view class="card-title">答题情况</view>
             <view class="card-desc">查看用户答题数据统计</view>
         </view>
+        <view class="function-card" bindtap="navigateToPhoneManage">
+            <image class="card-icon" src="/assets/icons/phone.png" mode="aspectFit"></image>
+            <view class="card-title">手机号管理</view>
+            <view class="card-desc">管理用户手机号信息</view>
+        </view>
 
         <view class="function-card" bindtap="navigateToQuestionManage">
             <image class="card-icon" src="/assets/icons/題目管理.png" mode="aspectFit"></image>
@@ -45,10 +50,6 @@
             <view class="card-desc">查看易错20题</view>
         </view>
 
-        <view class="function-card" bindtap="navigateToPhoneManage">
-            <image class="card-icon" src="/assets/icons/手机.png" mode="aspectFit"></image>
-            <view class="card-title">手机号管理</view>
-            <view class="card-desc">管理用户手机号信息</view>
-        </view>
+        
     </view>
 </view>
