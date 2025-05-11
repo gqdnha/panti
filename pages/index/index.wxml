@@ -9,7 +9,7 @@
                     <view class="notice-text finished">恭喜您已完成今日练习！继续保持，明天见！</view>
                 </swiper-item>
                 <swiper-item wx:if="{{ifFinash === 100}}">
-                    <view class="notice-text finished">坚持就是胜利，您已经完成{{totalQuestions}}道练习题！</view>
+                    <view class="notice-text finished">坚持就是胜利，您已经完成{{studyStats.totalQuestions}}道练习题！</view>
                 </swiper-item>
                 <swiper-item wx:if="{{ifFinash !== 100}}">
                     <view class="notice-text not-finished">今日练习还未完成，快去完成吧！</view>
@@ -39,12 +39,12 @@
         </view>
         <view class="study-item">
             <!-- <image class="module-icon" src="/assets/icons/错题本.png"></image> -->
-            <text class="studyValue">{{totalQuestions}}</text>
+            <text class="studyValue">{{studyStats.totalQuestions}}</text>
             <text class="studyName">已答题</text>
         </view>
         <view class="study-item">
             <!-- <image class="module-icon" src="/assets/icons/答题历史.png"></image> -->
-            <text class="studyValue">{{correctRate}}%</text>
+            <text class="studyValue">{{studyStats.correctRate}}%</text>
             <text class="studyName">正确率</text>
         </view>
     </view>
