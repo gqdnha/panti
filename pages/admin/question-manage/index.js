@@ -75,6 +75,7 @@ Page({
             success: (res) => {
                 if (res.confirm) {
                     deleteQuestionApi(questionId).then(() => {
+                        console.log(res);
                         wx.showToast({
                             title: '删除成功',
                             icon:'success'

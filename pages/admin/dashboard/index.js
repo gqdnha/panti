@@ -14,8 +14,8 @@ Page({
         totalUsers: 0,
         todayUsers: 0,
         avgCorrectRate: 0,
-        dailyQuestionRate: 0,
-        dailyQuestionUserCount: 0
+        dailyQuestionRate:0,
+        dailyQuestionUserCount:0
     },
 
     /**
@@ -38,30 +38,26 @@ Page({
         };
         console.log(data);
         getAllUserInfo(data).then(res => {
-            console.log('用户统计数据:', res.pageInfo);
-            if (res && res.pageInfo) {
-                this.setData({
-                    totalUsers: res.pageInfo.totalSize || 0,
-                    avgCorrectRate: res.pageInfo.avgCorrectRate ? parseFloat(res.pageInfo.avgCorrectRate).toFixed(2) : '0.00',
-                    dailyQuestionRate: res.pageInfo.dailyQuestionRate ? parseFloat(res.pageInfo.dailyQuestionRate).toFixed(2) : '0.00'
-                });
-            }
+            console.log(res.pageInfo);
+            // 假设 res 包含 userList 和 totalPages 数据
+            this.setData({
+                totalUsers: res.pageInfo.totalSize
+            });
+            console.log(this.data.totalUsers);
         }).catch(err => {
-            console.error('获取用户统计失败:', err);
+            console.error(err);
         });
     },
     getUserToday() {
         getUserToday().then(res => {
-            console.log('今日数据:', res);
-            if (res) {
-                this.setData({
-                    dailyQuestionRate: res.dailyQuestionRate ? parseFloat(res.dailyQuestionRate).toFixed(2) : '0.00',
-                    dailyQuestionUserCount: res.dailyQuestionUserCount || 0
-                });
-            }
-        }).catch(err => {
-            console.error('获取今日数据失败:', err);
-        });
+            console.log(res);
+            this.setData({
+                dailyQuestionRate : res.dailyQuestionRate,
+                dailyQuestionUserCount : res.dailyQuestionUserCount
+            })
+        })
+        console.log(this.data.dailyQuestionRate);
+        console.log(this.data.dailyQuestionUserCount);
     },
 
     /**
@@ -135,6 +131,7 @@ Page({
     // 易错20题
     navigateTo20Mistake() {
         wx.navigateTo({
+            // url: '/pages/admin/mistake20/mistake20'
             url: '/pages/canMistake20/canMistake20'
         })
     }

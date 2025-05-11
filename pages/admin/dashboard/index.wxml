@@ -14,7 +14,7 @@
         </view>
 
         <view class="stats-card">
-            <view class="stats-title">完成率</view>
+            <view class="stats-title">今日完成率</view>
             <view class="stats-value">{{dailyQuestionRate}}%</view>
         </view>
     </view>

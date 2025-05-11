@@ -26,6 +26,8 @@ export const deletePicApi = (data) => {
 // 禁用题目
 export const deleteQuestionApi = (questionId) => {
     const userId =getUserId()
+    // const userId =1
+
     console.log(questionId);
     return request({
         url: `/mange/deleteQuestion?questionId=${questionId}&userId=${userId}`,
