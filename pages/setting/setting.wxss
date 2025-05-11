@@ -1,21 +1,28 @@
 .container {
-    margin: 0;
-    padding: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
+    padding: 24rpx;
+    position: relative;
     display: flex;
     flex-direction: column;
-    /* align-items: center; */
-    justify-content: start;
-    background: linear-gradient(to bottom, #e6f7ff, #ffffff);
+    gap: 24rpx;
+    align-items: center;
 }
 
 .login-box {
-    margin-top: 100rpx;
-    width: 85%;
-    padding: 40rpx;
-    background-color: rgba(255, 255, 255, 0.5);
-    /* background-color: rgba(227, 255, 252, 0.5); */
-    border-radius: 30rpx;
-    box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+    width: 90%;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border-radius: 24rpx;
+    padding: 30rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.login-box:hover {
+    transform: translateY(-2rpx);
+    box-shadow: 0 6rpx 24rpx rgba(0, 0, 0, 0.15);
 }
 
 .title {
@@ -40,26 +47,29 @@
 }
 
 .input-group {
-    margin-bottom: 40rpx;
-    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 24rpx;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20rpx;
+    border-radius: 16rpx;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.input-group text {
+    font-size: 32rpx;
+    color: #0f172a;
+    font-weight: 500;
+    margin-right: 20rpx;
+    min-width: 140rpx;
 }
 
 .input-group input {
-    width: 100%;
-    height: 100rpx;
-    padding: 0 30rpx;
-    border: 2rpx solid #e8e8e8;
-    border-radius: 50rpx;
-    box-sizing: border-box;
+    flex: 1;
+    height: 60rpx;
     font-size: 32rpx;
-    background-color: #f8f8f8;
-    transition: all 0.3s ease;
-}
-
-.input-group input:focus {
-    border-color: #1296db;
-    background-color: #fff;
-    box-shadow: 0 0 10rpx rgba(18, 150, 219, 0.1);
+    color: #0f172a;
+    background: transparent;
 }
 
 .verification {
@@ -97,20 +107,34 @@
 
 .login-btn {
     width: 100%;
-    /* line-height: 100rpx; */
-    background: linear-gradient(to right, #1296db, #40a9ff);
-    color: #fff;
-    border-radius: 50rpx;
-    font-size: 36rpx;
-    font-weight: bold;
-    margin-top: 20rpx;
-    box-shadow: 0 8rpx 20rpx rgba(18, 150, 219, 0.2);
+    height: 88rpx;
+    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    color: #64748b;
+    font-size: 32rpx;
+    font-weight: 500;
+    border-radius: 44rpx;
+    box-shadow: 0 4rpx 20rpx rgba(168, 237, 234, 0.2);
+    backdrop-filter: blur(8px);
+    border: none;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-btn:hover {
+    background: linear-gradient(135deg, #93e2e0 0%, #f5c4d0 100%);
+    transform: translateY(-2rpx);
+    box-shadow: 0 6rpx 24rpx rgba(168, 237, 234, 0.3);
 }
 
 .login-btn:active {
     transform: scale(0.98);
-    box-shadow: 0 4rpx 10rpx rgba(18, 150, 219, 0.2);
+    background: linear-gradient(135deg, #7ed7d5 0%, #ecb2bd 100%);
+}
+
+.login-btn::after {
+    border: none;
 }
 
 /* 添加输入框图标 */
