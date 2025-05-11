@@ -43,6 +43,7 @@ Page({
                         wx.setStorageSync('phone', res.phone);
                         wx.setStorageSync('role', res.role);
                         wx.setStorageSync('department', res.department);
+                        wx.setStorageSync('learnTime', res.learnTime);
                         
                         this.setData({
                             userId: res.userId

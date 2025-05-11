@@ -26,7 +26,7 @@
             <view class="stats-label">正确率</view>
         </view>
         <view class="stats-item">
-            <view class="stats-value">{{studyStats.totalTime}}</view>
+            <view class="stats-value">{{studyTime}}</view>
             <view class="stats-label">学习时长(分钟)</view>
         </view>
     </view>

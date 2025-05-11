@@ -11,8 +11,8 @@ Page({
         studyStats: {
             totalQuestions: 0,
             correctRate: 0,
-            totalTime: 0
-        }
+        },
+        studyTime:0,
     },
 
     /**
@@ -21,6 +21,15 @@ Page({
     onLoad(options) {
         this.getUserInfo();
         this.getStudyStats();
+        this.getUserLearnTime()
+    },
+    getUserLearnTime() {
+        const learnTime = wx.getStorageSync('learnTime');
+        if (learnTime) {
+            this.setData({
+                'studyTime': learnTime
+            });
+        }
     },
 
     /**
@@ -98,7 +107,6 @@ Page({
                 studyStats: {
                     totalQuestions: res.count,
                     correctRate: res.rightPercent,
-                    totalTime: 120
                 }
             });
         })

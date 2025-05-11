@@ -82,6 +82,7 @@ Page({
         this.userFinash()
         this.getUserInfo();
         this.getStudyStats();
+        this.getUserLearnTime()
     },
     onShow() {
         this.getUserInfo();
@@ -253,6 +254,15 @@ Page({
     // 显示进度条
     showProgress(current, total) {
         return `${current}/${total}`;
+    },
+    // 获取用户学习时间
+    getUserLearnTime() {
+        const learnTime = wx.getStorageSync('learnTime');
+        if (learnTime) {
+            this.setData({
+                'studyTime': learnTime
+            });
+        }
     },
     // 获取用户信息
     getUserInfo() {
