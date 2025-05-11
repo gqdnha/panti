@@ -37,15 +37,26 @@ Page({
     // 搜索输入
     onSearchInput(e) {
         this.setData({
-            phone: e.detail.value
+            searchValue: e.detail.value
         });
     },
 
     // 搜索
     onSearch() {
-        console.log(this.data.phone);
-        this.loadPhoneList();
-
+        const searchValue = this.data.searchValue;
+        console.log(searchValue);
+        getphoneApi(searchValue).then(res => {
+            console.log(res);
+            this.setData({
+                phoneList: res || []
+            });
+        }).catch(err => {
+            console.error('搜索手机号失败:', err);
+            wx.showToast({
+                title: '搜索失败，请重试',
+                icon: 'none'
+            });
+        });
     },
 
     // 显示新增弹窗

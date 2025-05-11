@@ -1,12 +1,11 @@
 /* 页面容器 */
 .container {
     min-height: 100vh;
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 0rpx;
-    position: relative;
+    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
+    padding: 24rpx;
     display: flex;
     flex-direction: column;
-    justify-content: start;
+    align-items: center;
 }
 
 /* 操作按钮区域 */
@@ -56,122 +55,68 @@
     background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
 }
 
-/* 题目列表 */
-.question-list {
-    background: #ffffff;
-    border-radius: 24rpx;
-    overflow: auto;
-    box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.08);
-}
-
-.list-header {
-    width: 100vw;
-    display: grid;
-    padding: 20rpx;
-    font-size: 28rpx;
-    color: #636e72;
-    background: #f8f9fa;
-    font-weight: 600;
-}
-
-.table-header {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-}
-.header-item {
-    margin: auto;
-}
-
-
-.list-content {
-    max-height: calc(100vh - 400rpx);
-    overflow-y: auto;
-}
-
-/* 列表项 */
-.list-item {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr 1fr;
-    padding: 32rpx;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.list-item:active {
-    background: rgba(241, 242, 244, 0.5);
-}
-
-.question-id {
-    font-size: 22rpx;
-    text-align: center;
-}
-
-.user-name {
-    text-align: center;
-    font-size: 25rpx;
-    color: #2d3436;
-    font-weight: 500;
-    line-height: 1.4;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-/* .question-count {
-    font-size: 22rpx;
-    color: #636e72;
-    text-align: center;
-    padding: 8rpx 10rpx;
-    background: rgba(233, 236, 239, 0.5);
-    border-radius: 8rpx;
-    margin: 0 20rpx;
-} */
-.user-count {
-    text-align: center;
-    color: rgb(91, 206, 187);
-}
-.correctRate {
-    text-align: center;
-}
-
-/* 操作按钮组 */
-.item-actions {
+/* 搜索栏样式 */
+.search-bar {
     display: flex;
-    /* gap: 16rpx; */
+    flex-direction: row;
+    align-items: center;
+    gap: 16rpx;
+    margin-bottom: 24rpx;
+    width: 90%;
+    max-width: 1200rpx;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16rpx;
+    padding: 16rpx;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.search-bar input {
+    flex: 1;
+    height: 72rpx;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 8rpx;
+    padding: 0 24rpx;
+    font-size: 28rpx;
+    color: #1e293b;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.search-bar input::placeholder {
+    color: rgba(30, 41, 59, 0.5);
+}
+
+.search-btn {
+    width: 120rpx;
+    height: 72rpx;
+    border-radius: 8rpx;
+    display: flex;
+    align-items: center;
     justify-content: center;
+    font-size: 28rpx;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #1e293b;
+    font-weight: 500;
+    background: rgba(24, 144, 255, 0.2);
+    transition: all 0.3s ease;
+    flex-shrink: 0;
 }
 
-.btn {
-    width: 50rpx;
-    font-size: 20rpx;
-    padding: 16rpx 32rpx;
-    border-radius: 12rpx;
-    transition: all 0.2s ease;
-    text-align: center;
+.search-btn:active {
+    transform: scale(0.98);
+    background: rgba(24, 144, 255, 0.3);
 }
 
-.btn.edit {
-    background: rgba(74, 144, 226, 0.1);
-    color: #4a90e2;
-    /* border: 1rpx solid rgba(74, 144, 226, 0.3); */
-}
-
-.btn.edit:active {
-    background: rgba(74, 144, 226, 0.2);
-}
-
-.btn.export {
-    background: #f6ffed;
-    /* color: #52c41a; */
-    
-    /* border: 1rpx solid rgba(245, 34, 45, 0.3); */
-}
-
-.btn.export:active {
-    background: rgba(245, 34, 45, 0.2);
+/* 列表样式 */
+.user-list {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16rpx;
+    overflow: auto;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    width: 90%;
+    max-width: 1200rpx;
 }
 
 .question-table {
@@ -179,13 +124,139 @@
     border-collapse: collapse;
 }
 
-.list-header th {
-    padding: 16rpx;
-    text-align: left;
+.list-header {
+    background: rgba(255, 255, 255, 0.1);
 }
 
-.list-content td {
-    padding: 16rpx;
+.table-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    padding: 24rpx;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.header-item {
+    font-size: 28rpx;
+    color: #1e293b;
+    font-weight: 500;
+    text-align: center;
+}
+
+.list-content {
+    max-height: 800rpx;
+    overflow-y: auto;
+}
+
+.list-item {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 2fr;
+    padding: 24rpx;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+}
+
+.list-item:active {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.user-name, .user-count, .correctRate {
+    font-size: 28rpx;
+    color: #1e293b;
+    text-align: center;
+}
+
+.item-actions {
+    display: flex;
+    gap: 16rpx;
+    justify-content: center;
+}
+
+.btn {
+    padding: 8rpx 24rpx;
+    border-radius: 6rpx;
+    font-size: 24rpx;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-weight: 500;
+}
+
+.btn.edit {
+    background: rgba(24, 144, 255, 0.2);
+    color: #1e293b;
+}
+
+.btn.delete {
+    background: rgba(255, 77, 79, 0.2);
+    color: #1e293b;
+}
+
+/* 弹窗样式 */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    width: 600rpx;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16rpx;
+    padding: 32rpx;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
+}
+
+.modal-title {
+    font-size: 32rpx;
+    font-weight: 500;
+    margin-bottom: 24rpx;
+    text-align: center;
+    color: #1e293b;
+}
+
+.modal-content input {
+    width: 100%;
+    height: 80rpx;
+    background: #f5f7fa;
+    border-radius: 8rpx;
+    padding: 0 24rpx;
+    margin-bottom: 24rpx;
+    font-size: 28rpx;
+    border: 1px solid #e8e8e8;
+    color: #1e293b;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 24rpx;
+}
+
+.modal-buttons .btn {
+    flex: 1;
+    height: 80rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28rpx;
+    font-weight: 500;
+}
+
+.btn.cancel {
+    background: #f5f7fa;
+    color: #1e293b;
+}
+
+.btn.confirm {
+    background: #1890ff;
+    color: #fff;
 }
 
 /* 添加按钮 */
@@ -283,32 +354,6 @@ button::after {
     box-shadow: none;
     cursor: not-allowed;
     opacity: 0.7;
-}
-
-
-/* 搜索框样式 */
-.search-box {
-    padding: 20rpx;
-    background-color: #ffffff;
-    display: flex;
-    gap: 16rpx;
-}
-
-.search-box input {
-    flex: 1;
-    padding: 16rpx;
-    border: 1rpx solid #ccc;
-    border-radius: 8rpx;
-    font-size: 24rpx;
-}
-
-.search-box button {
-    padding: 16rpx 32rpx;
-    background-color: #4a90e2;
-    color: #ffffff;
-    border: none;
-    border-radius: 8rpx;
-    font-size: 24rpx;
 }
 
 
@@ -463,109 +508,4 @@ button::after {
     margin-bottom: 8rpx;
 }
 
-/* 添加用户弹窗样式 */
-.add-user-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 1000;
-}
-
-.add-user-modal-mask {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    z-index: 1001;
-}
-
-.add-user-modal-content {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 85%;
-    background: #fff;
-    border-radius: 20rpx;
-    padding: 40rpx;
-    z-index: 1002;
-    box-shadow: 0 12rpx 48rpx rgba(0, 0, 0, 0.08);
-}
-
-.add-user-modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 40rpx;
-    padding-bottom: 20rpx;
-    border-bottom: 1rpx solid #f5f5f5;
-}
-
-.add-user-modal-title {
-    font-size: 34rpx;
-    font-weight: 600;
-    color: #1a1a1a;
-}
-
-.add-user-close-icon {
-    width: 40rpx;
-    height: 40rpx;
-    padding: 10rpx;
-}
-
-.add-user-modal-body {
-    margin-bottom: 40rpx;
-}
-
-.add-user-form-item {
-    margin-bottom: 30rpx;
-}
-
-.add-user-label {
-    display: block;
-    font-size: 28rpx;
-    color: #666;
-    margin-bottom: 16rpx;
-}
-
-.add-user-input {
-    width: 100%;
-    height: 88rpx;
-    padding: 0 30rpx;
-    border: 2rpx solid #e5e5e5;
-    border-radius: 44rpx;
-    font-size: 28rpx;
-    box-sizing: border-box;
-}
-
-.add-user-modal-footer {
-    display: flex;
-    justify-content: space-between;
-    gap: 20rpx;
-}
-
-.add-user-cancel-btn, .add-user-confirm-btn {
-    flex: 1;
-    height: 88rpx;
-    line-height: 88rpx;
-    text-align: center;
-    border-radius: 44rpx;
-    font-size: 32rpx;
-}
-
-.add-user-cancel-btn {
-    background: #f5f5f5;
-    color: #666;
-}
-
-.add-user-confirm-btn {
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-    color: #333;
-}
 
