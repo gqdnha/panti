@@ -26,7 +26,8 @@
     "pages/userPages/oneDaily/oneDaily",
     "pages/userPages/oneWrongBook/ontWrongBook",
     "pages/userPages/oneWrongBook_type/ontWrongBook_type",
-    "pages/setting/setting"
+    "pages/setting/setting",
+    "pages/admin/phone-manage/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

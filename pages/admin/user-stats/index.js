@@ -110,15 +110,6 @@ Page({
             showUserDetailModal: false
         });
     },
-    
-    //导出
-    /* exportUserData(e) {
-        const userId = e.currentTarget.dataset.id;
-        wx.showToast({
-            title: '导出成功',
-            icon: 'success'
-        });
-    }, */
 
     onNextPage() {
         const { pageNum, totalPages } = this.data;
@@ -146,20 +137,6 @@ Page({
         }
     },
 
-    importQuestions() {
-        wx.showToast({
-            title: '开发中...',
-            icon: 'none'
-        });
-    },
-
-    exportQuestions() {
-        wx.showToast({
-            title: '导出成功',
-            icon: 'success'
-        });
-    },
-
     editQuestion(e) {
         const questionId = e.currentTarget.dataset.id;
         wx.navigateTo({
@@ -167,27 +144,6 @@ Page({
         });
     },
 
-    deleteQuestion(e) {
-        const questionId = e.currentTarget.dataset.id;
-        wx.showModal({
-            title: '确认删除',
-            content: '确定要删除这道题目吗？',
-            success: (res) => {
-                if (res.confirm) {
-                    wx.showToast({
-                        title: '删除成功',
-                        icon: 'success'
-                    });
-                }
-            }
-        });
-    },
-
-    onAddModalClose() {
-        this.setData({
-            isAddModalVisible: false
-        });
-    },
 
     onNewQuestionInput(e) {
         const { field } = e.currentTarget.dataset;

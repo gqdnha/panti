@@ -92,22 +92,22 @@
         <view class="add-user-modal-mask" bindtap="hideAddUserModal"></view>
         <view class="add-user-modal-content">
             <view class="add-user-modal-header">
-                <text class="add-user-modal-title">添加用户</text>
+                <text class="add-user-modal-title">添加用户手机号</text>
                 <image class="add-user-close-icon" src="/assets/icons/close.png" bindtap="hideAddUserModal" mode="aspectFit"></image>
             </view>
             <view class="add-user-modal-body">
-                <view class="add-user-form-item">
+                <!-- <view class="add-user-form-item">
                     <text class="add-user-label">姓名</text>
                     <input class="add-user-input" type="text" placeholder="请输入姓名" value="{{newUser.name}}" bindinput="onNameInput" />
-                </view>
+                </view> -->
                 <view class="add-user-form-item">
                     <text class="add-user-label">手机号</text>
                     <input class="add-user-input" type="number" placeholder="请输入手机号" value="{{newUser.phone}}" bindinput="onPhoneInput" maxlength="11" />
                 </view>
-                <view class="add-user-form-item">
+                <!-- <view class="add-user-form-item">
                     <text class="add-user-label">部门</text>
                     <input class="add-user-input" type="text" placeholder="请输入部门" value="{{newUser.department}}" bindinput="onDepartmentInput" />
-                </view>
+                </view> -->
             </view>
             <view class="add-user-modal-footer">
                 <button class="add-user-cancel-btn" bindtap="hideAddUserModal">取消</button>

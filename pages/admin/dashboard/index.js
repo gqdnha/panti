@@ -134,5 +134,10 @@ Page({
             // url: '/pages/admin/mistake20/mistake20'
             url: '/pages/canMistake20/canMistake20'
         })
+    },
+    navigateToPhoneManage() {
+        wx.navigateTo({
+            url: '/pages/admin/phone-manage/index'
+        });
     }
 })

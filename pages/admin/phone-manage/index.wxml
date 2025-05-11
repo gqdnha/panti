@@ -1,0 +1,55 @@
+<view class="container">
+    <!-- 搜索栏 -->
+    <view class="search-bar">
+        <input type="text" placeholder="搜索手机号" bindinput="onSearchInput" value="{{searchValue}}" />
+        <view class="search-btn" bindtap="onSearch">搜索</view>
+        <view class="add-btn" bindtap="showAddModal">新增</view>
+    </view>
+
+    <!-- 手机号列表 -->
+    <view class="phone-list">
+        <table class="question-table">
+            <thead class="list-header">
+                <tr class="table-header">
+                    <th class="header-item">序号</th>
+                    <th class="header-item">手机号</th>
+                    <th class="header-item">操作</th>
+                </tr>
+            </thead>
+            <tbody class="list-content">
+                <tr class="list-item" wx:for="{{phoneList}}" wx:key="phoneId">
+                    <td class="user-name">{{index + 1}}</td>
+                    <td class="user-count">{{item.phone}}</td>
+                    <td class="item-actions">
+                        <view class="btn delete" bindtap="deletePhone" data-id="{{item.phoneId}}">删除</view>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </view>
+
+    <!-- 编辑弹窗 -->
+    <view class="modal" wx:if="{{showEditModal}}">
+        <view class="modal-content">
+            <view class="modal-title">编辑手机号</view>
+            <input type="text" placeholder="请输入手机号" value="{{editPhone}}" bindinput="onPhoneInput" />
+            <view class="modal-buttons">
+                <view class="btn cancel" bindtap="cancelEdit">取消</view>
+                <view class="btn confirm" bindtap="confirmEdit">确认</view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 新增弹窗 -->
+    <view class="modal" wx:if="{{showAddModal}}">
+        <view class="modal-content">
+            <view class="modal-title">新增手机号</view>
+            <input type="text" placeholder="请输入用户名" value="{{newName}}" bindinput="onNameInput" />
+            <input type="text" placeholder="请输入手机号" value="{{newPhone}}" bindinput="onNewPhoneInput" />
+            <view class="modal-buttons">
+                <view class="btn cancel" bindtap="cancelAdd">取消</view>
+                <view class="btn confirm" bindtap="confirmAdd">确认</view>
+            </view>
+        </view>
+    </view>
+</view> 
