@@ -1,6 +1,6 @@
 <view class="container">
     <!-- 欢迎语 -->
-    <view class="welcome-text">
+    <view class="welcome-text" wx:if="{{!showPhoneVerify}}">
         <view class="welcome-title">欢迎使用</view>
         <view class="welcome-subtitle">让生活更美好</view>
     </view>
@@ -16,10 +16,36 @@
 
     <!-- 手机号验证界面 -->
     <view class="login-box" wx:if="{{showPhoneVerify}}">
-        <view class="title">验证手机号</view>
+        <view class="title">完善信息</view>
+        <view class="input-group">
+            <input type="text" placeholder="请输入姓名" bindinput="onNameInput" value="{{name}}" />
+        </view>
+        <view class="input-group">
+            <picker bindchange="onDepartmentChange" value="{{departmentIndex}}" range="{{departmentList}}">
+                <view class="picker">
+                    <text class="{{department ? '' : 'placeholder'}}">{{department || '请选择部门'}}</text>
+                    <image class="arrow-icon" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
+                </view>
+            </picker>
+        </view>
         <view class="input-group">
             <input type="number" placeholder="请输入手机号" bindinput="onPhoneInput" value="{{phone}}" maxlength="11" />
         </view>
-        <view class="login-btn" hover-class="button-hover" bindtap="verifyPhone">验证</view>
+        <view class="login-btn" hover-class="button-hover" bindtap="verifyPhone">提交</view>
+    </view>
+
+    <!-- 部门选择器 -->
+    <view class="department-picker-mask" wx:if="{{showDepartmentPicker}}" bindtap="hideDepartmentPicker">
+        <view class="department-picker-content" catchtap="stopPropagation">
+            <view class="picker-header">
+                <text>选择部门</text>
+                <image class="close-icon" src="/assets/icons/close.png" bindtap="hideDepartmentPicker" mode="aspectFit"></image>
+            </view>
+            <picker-view class="picker-view" indicator-style="height: 50px;" value="{{departmentIndex}}" bindchange="onDepartmentChange">
+                <picker-view-column>
+                    <view class="picker-item" wx:for="{{departmentList}}" wx:key="*this">{{item}}</view>
+                </picker-view-column>
+            </picker-view>
+        </view>
     </view>
 </view>

@@ -4,7 +4,12 @@ Page({
     data: {
         showPhoneVerify: false,
         phone: '',
-        loginCode: '' // 保存登录code
+        name: '',
+        department: '研发部', // 默认选择第一个部门
+        loginCode: '', // 保存登录code
+        userId: '', // 保存用户ID
+        departmentList: ['研发部', '市场部', '销售部', '人事部', '财务部', '行政部'], // 部门列表
+        departmentIndex: 0 // 默认选中第一个
     },
 
     // 微信登录
@@ -34,6 +39,9 @@ Page({
                         // 保存登录态和用户ID
                         wx.setStorageSync('token', res.token);
                         wx.setStorageSync('userId', res.userId);
+                        this.setData({
+                            userId: res.userId
+                        });
                         
                         // 判断是否需要验证手机号
                         if (!res.phone) {
@@ -90,9 +98,27 @@ Page({
         });
     },
 
+    // 姓名输入处理
+    onNameInput(e) {
+        this.setData({
+            name: e.detail.value
+        });
+    },
+
+    // 选择部门
+    onDepartmentChange(e) {
+        const index = e.detail.value;
+        this.setData({
+            department: this.data.departmentList[index],
+            departmentIndex: index
+        });
+    },
+
     // 验证手机号
     verifyPhone() {
-        const { phone, loginCode } = this.data;
+        const { phone, name, department, userId } = this.data;
+        
+        // 验证输入
         if (!phone || phone.length !== 11) {
             wx.showToast({
                 title: '请输入正确的手机号',
@@ -100,25 +126,36 @@ Page({
             });
             return;
         }
+        if (!name || name.trim() === '') {
+            wx.showToast({
+                title: '请输入姓名',
+                icon: 'none'
+            });
+            return;
+        }
 
         wx.showLoading({
-            title: '验证中...',
+            title: '提交中...',
         });
 
         request({
-            url: '/user/verify-phone',
+            url: '/user/addUserInfo',
             method: 'POST',
             data: {
+                userId: userId,
                 phone: phone,
-                code: loginCode
+                name: name,
+                department: department
             }
         }).then(res => {
             wx.hideLoading();
             if (res.success) {
                 wx.setStorageSync('phone', phone);
+                wx.setStorageSync('name', name);
+                wx.setStorageSync('department', department);
                 
                 wx.showToast({
-                    title: '验证成功',
+                    title: '提交成功',
                     icon: 'success',
                     duration: 1500,
                     success: () => {
@@ -131,15 +168,15 @@ Page({
                 });
             } else {
                 wx.showToast({
-                    title: res.message || '验证失败',
+                    title: res.message || '提交失败',
                     icon: 'none'
                 });
             }
         }).catch(err => {
             wx.hideLoading();
-            console.error('手机号验证失败:', err);
+            console.error('提交失败:', err);
             wx.showToast({
-                title: '验证失败，请重试',
+                title: '提交失败，请重试',
                 icon: 'none'
             });
         });
