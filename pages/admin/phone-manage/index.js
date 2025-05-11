@@ -10,8 +10,6 @@ Page({
         phoneList: [],
         showEditModal: false,
         showAddModal: false,
-        editPhone: '',
-        newName: '',
         newPhone: '',
         currentId: null,
         pageNum: 1,
@@ -54,15 +52,7 @@ Page({
     showAddModal() {
         this.setData({
             showAddModal: true,
-            newName: '',
             newPhone: ''
-        });
-    },
-
-    // 用户名输入
-    onNameInput(e) {
-        this.setData({
-            newName: e.detail.value
         });
     },
 
@@ -72,23 +62,17 @@ Page({
             newPhone: e.detail.value
         });
     },
-
     // 取消新增
     cancelAdd() {
         this.setData({
             showAddModal: false,
-            newName: '',
             newPhone: ''
         });
     },
-
     // 确认新增
     confirmAdd() {
-        const {
-            newName,
-            newPhone
-        } = this.data;
-        if (!newName || !newPhone) {
+        const newPhone = this.data.newPhone
+        if (!newPhone) {
             wx.showToast({
                 title: '请填写完整信息',
                 icon: 'none'
@@ -97,31 +81,18 @@ Page({
         }
 
         // TODO: 调用后端API新增手机号
-        console.log('新增手机号:', newName, newPhone);
+        console.log('新增手机号:', newPhone);
+        addPhone(newPhone).then(res => {
+            console.log(res);
+        })
 
         this.setData({
             showAddModal: false,
-            newName: '',
             newPhone: ''
         }, () => {
             this.loadPhoneList();
         });
     },
-
-    /* // 编辑手机号
-    editPhone(e) {
-        const {
-            id
-        } = e.currentTarget.dataset;
-        const user = this.data.phoneList.find(item => item.id === id);
-        if (user) {
-            this.setData({
-                showEditModal: true,
-                editPhone: user.phone,
-                currentId: id
-            });
-        }
-    }, */
 
     // 删除手机号
     deletePhone(e) {
@@ -153,49 +124,6 @@ Page({
             }
         });
     },
-
-    // 手机号输入
-    onPhoneInput(e) {
-        this.setData({
-            editPhone: e.detail.value
-        });
-    },
-
-    // 取消编辑
-    /* cancelEdit() {
-        this.setData({
-            showEditModal: false,
-            editPhone: '',
-            currentId: null
-        });
-    }, */
-
-    // 确认编辑
-    /* confirmEdit() {
-        const {
-            editPhone,
-            currentId
-        } = this.data;
-        if (!editPhone) {
-            wx.showToast({
-                title: '请输入手机号',
-                icon: 'none'
-            });
-            return;
-        }
-
-        // TODO: 调用后端API更新手机号
-        console.log('更新手机号:', currentId, editPhone);
-
-        this.setData({
-            showEditModal: false,
-            editPhone: '',
-            currentId: null
-        }, () => {
-            this.loadPhoneList();
-        });
-    }, */
-
     // 下拉刷新
     onPullDownRefresh() {
         this.setData({
