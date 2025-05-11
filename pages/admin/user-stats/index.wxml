@@ -28,7 +28,7 @@
                     <td class="correctRate">{{item.learn_time}}</td>
 
                     <td class="item-actions">
-                        <view class="btn edit" bindtap="viewDetail" data-id="{{item.id}}">详情</view>
+                        <view class="btn edit" bindtap="viewDetail" data-id="{{item.user_id}}">详情</view>
                         <!-- <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view> -->
                     </td>
                 </tr>

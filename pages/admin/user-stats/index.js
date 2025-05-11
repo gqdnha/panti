@@ -74,18 +74,35 @@ Page({
 
     viewDetail(e) {
         const { id } = e.currentTarget.dataset;
-        const user = this.data.userList.find(item => item.id === id);
+        console.log('点击的用户ID:', id);
+        const user = this.data.userList.find(item => item.user_id === id);
+        console.log('找到的用户信息:', user);
+        
+        if (!user) {
+            wx.showToast({
+                title: '未找到用户信息',
+                icon: 'none'
+            });
+            return;
+        }
+
         this.setData({
             showUserDetailModal: true,
             currentUserDetail: user
         });
+
         getUserInfo().then(res => {
-            console.log(res);
+            console.log('获取到的用户信息:', res);
             this.setData({
-                rightPercent:res.rightPercent
-            })
-            console.log(this.data.rightPercent);
-        })
+                rightPercent: res.rightPercent
+            });
+        }).catch(err => {
+            console.error('获取用户信息失败:', err);
+            wx.showToast({
+                title: '获取用户信息失败',
+                icon: 'none'
+            });
+        });
     },
 
     closeUserDetailModal() {
