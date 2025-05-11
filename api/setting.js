@@ -12,12 +12,14 @@ export const changeUserName = (data) => {
 };
 
 // 修改手机号
-export const changePhone = (data) => {
+export const chengePhone = (data) => {
     const userId = getUserId()
-    const phoneNumber = phoneNumber
-    const code = code
+    const phone = data
+    console.log(data);
+    console.log(userId,phone);
+    // const code = code
     return request({
-        url: `/user/updateName?phoneNumber=${phoneNumber}&userId=${userId}&code=${code}`,
+        url: `/user/updatePhone?phone=${phone}&userId=${userId}`,
         method: 'POST',
     });
 };
