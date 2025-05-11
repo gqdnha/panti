@@ -52,7 +52,7 @@ Page({
         getUserToday().then(res => {
             console.log(res);
             this.setData({
-                dailyQuestionRate : res.dailyQuestionRate,
+                dailyQuestionRate : res.dailyQuestionRate.toFixed(2),
                 dailyQuestionUserCount : res.dailyQuestionUserCount
             })
         })
