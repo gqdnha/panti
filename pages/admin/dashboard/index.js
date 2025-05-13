@@ -15,7 +15,8 @@ Page({
         todayUsers: 0,
         avgCorrectRate: 0,
         dailyQuestionRate:0,
-        dailyQuestionUserCount:0
+        dailyQuestionUserCount:0,
+        department: ''
     },
 
     /**
@@ -25,6 +26,11 @@ Page({
         // 加载数据
         this.loadUserStats()
         this.getUserToday()
+        // 获取部门信息
+        const department = wx.getStorageSync('department');
+        this.setData({
+            department: department || ''
+        });
     },
     loadUserStats() {
         const {
@@ -113,8 +119,22 @@ Page({
 
     },
 
+    // 检查权限
+    checkPermission() {
+        if (this.data.department !== '超级管理员') {
+            wx.showToast({
+                title: '您没有权限访问此功能',
+                icon: 'none',
+                duration: 2000
+            });
+            return false;
+        }
+        return true;
+    },
+
     // 导航到用户答题统计页面
     navigateToUserStats() {
+        // if (!this.checkPermission()) return;
         wx.navigateTo({
             url: '/pages/admin/user-stats/index'
         })
@@ -122,24 +142,29 @@ Page({
 
     // 导航到题目管理页面
     navigateToQuestionManage() {
+        if (!this.checkPermission()) return;
         wx.navigateTo({
             url: '/pages/admin/question-manage/index'
         })
     },
+
     // 导航到法律管理页面
     navigateToLawManage() {
+        if (!this.checkPermission()) return;
         wx.navigateTo({
             url: '/pages/admin/law/law'
         })
     },
+
     // 易错20题
     navigateTo20Mistake() {
         wx.navigateTo({
-            // url: '/pages/admin/mistake20/mistake20'
             url: '/pages/canMistake20/canMistake20'
         })
     },
+
     navigateToPhoneManage() {
+        if (!this.checkPermission()) return;
         wx.navigateTo({
             url: '/pages/admin/phone-manage/index'
         });
