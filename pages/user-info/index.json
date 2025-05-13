@@ -1,4 +1,6 @@
 {
-    "usingComponents": {},
-    "navigationBarTitleText": "用户信息"
+    "navigationBarTitleText": "用户信息",
+    "usingComponents": {
+        "custom-tab-bar": "/custom-tab-bar/index"
+    }
 }

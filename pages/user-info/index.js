@@ -1,5 +1,6 @@
-import { getUserId } from '../../api/getUserId';
+// import { getUserId } from '../../api/getUserId';
 import { getUserInfo } from '../../api/getUserInfo'
+import { setupTabBar } from '../../utils/tabBar';
 
 Page({
 
@@ -43,8 +44,14 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
+        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+            this.getTabBar().setData({
+                selected: 1
+            });
+        }
         this.getUserInfo();
         this.getStudyStats();
+        
     },
 
     /**
@@ -145,9 +152,14 @@ Page({
                     wx.removeStorageSync('name');
                     wx.removeStorageSync('phone');
                     wx.removeStorageSync('department');
+                    wx.removeStorageSync('role');
                     this.setData({
                         userInfo: null
                     });
+                    
+                    // 重置tabBar显示
+                    setupTabBar();
+                    
                     wx.showToast({
                         title: '已退出登录',
                         icon: 'success'

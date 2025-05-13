@@ -1,4 +1,5 @@
 import { request } from '../../api/request';
+import { setupTabBar } from '../../utils/tabBar';
 
 Page({
     data: {
@@ -49,6 +50,9 @@ Page({
                             userId: res.userId
                         });
                         
+                        // 设置tabBar显示
+                        setupTabBar();
+                        
                         // 判断是否需要验证手机号
                         if (!res.phone) {
                             // 手机号为空，显示验证界面
@@ -72,7 +76,7 @@ Page({
                         }
                     }).catch(err => {
                         wx.hideLoading();
-                        console.error('登录请求失败:', err);
+                        console.error('登录失败:', err);
                         wx.showToast({
                             title: '登录失败，请重试',
                             icon: 'none'
