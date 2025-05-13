@@ -13,15 +13,6 @@ import {
 
 Page({
     data: {
-        // 后端数据
-        /*  questionId:'', //题目id
-         content:'', //题目
-         options:'', //选项
-         answer:'', //答案
-         isActive : '', //
-         category : '', //分类
-         analysis : '', //解析
-         eh : '', //难易状况 */
 
         // 页面数据
         currentQuestion: 1, //题目序号
@@ -66,24 +57,15 @@ Page({
 
             // 初始化选中选项数组和选项状态数组
             const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
-            const initialOptionStates = res.map(question => {
-                const states = new Array(question.options.length).fill(false);
-                if (states.length > 0) {
-                    states[0] = true; // 默认选中第一个选项
-                }
-                return states;
-            });
+            const initialOptionStates = res.map(question =>
+                new Array(question.options.length).fill(false)
+            );
 
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
                 questionStates: new Array(res.length).fill(null),
-                selectedOptions: initialSelectedOptions.map((_, index) => {
-                    if (res[index].options && res[index].options.length > 0) {
-                        return res[index].options[0][0]; // 默认选中第一个选项的首字母
-                    }
-                    return null;
-                }),
+                selectedOptions: initialSelectedOptions,
                 optionStates: initialOptionStates,
                 answerSheetStates: new Array(res.length).fill(false)
             }, () => {
