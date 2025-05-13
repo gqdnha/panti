@@ -38,6 +38,7 @@ Page({
         const category = decodeURIComponent(options.category);
         const type = decodeURIComponent(options.questionType);
 
+        this.loadQuestions()
         // 重置所有状态
         this.setData({
             category,
@@ -69,6 +70,8 @@ Page({
         console.log('接收到的类别:', this.data.category);
         console.log('接收到的类别:', type);
     },
+
+
     loadQuestions() {
         const {
             pageNum,
