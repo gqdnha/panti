@@ -61,22 +61,30 @@ Page({
             })
             // 初始化选中选项数组和选项状态数组
             const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
-            const initialOptionStates = res.map(question =>
-                new Array(question.options.length).fill(false)
-            );
+            const initialOptionStates = res.map(question => {
+                const states = new Array(question.options.length).fill(false);
+                if (states.length > 0) {
+                    states[0] = true; // 默认选中第一个选项
+                }
+                return states;
+            });
 
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
                 questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
-                selectedOptions: initialSelectedOptions,
+                selectedOptions: initialSelectedOptions.map((_, index) => {
+                    if (res[index].options && res[index].options.length > 0) {
+                        return res[index].options[0][0]; // 默认选中第一个选项的首字母
+                    }
+                    return null;
+                }),
                 optionStates: initialOptionStates,
                 answerSheetStates: new Array(res.length).fill(false), // 初始化答题卡状态数组，默认都未作答
             })
             console.log(this.data.allQuestions);
             console.log(this.data.totalQuestions);
             console.log(this.data.allQuestions[1].options);
-
         })
     },
     nextQuestion: function () {

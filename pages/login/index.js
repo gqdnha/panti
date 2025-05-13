@@ -175,12 +175,10 @@ Page({
             }
         }).then(res => {
             wx.hideLoading();
-            if (res.success) {
                 // 保存用户信息到缓存
                 wx.setStorageSync('name', name);
                 wx.setStorageSync('phone', phone);
                 wx.setStorageSync('department', department);
-                
                 wx.showToast({
                     title: '提交成功',
                     icon: 'success',
@@ -193,12 +191,6 @@ Page({
                         }, 1500);
                     }
                 });
-            } else {
-                wx.showToast({
-                    title: res.message || '提交失败',
-                    icon: 'none'
-                });
-            }
         }).catch(err => {
             wx.hideLoading();
             console.error('提交失败:', err);

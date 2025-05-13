@@ -33,7 +33,9 @@ Page({
     },
 
     handleChangePhone() {
-        const { phone } = this.data;
+        const {
+            phone
+        } = this.data;
         if (!phone) {
             wx.showToast({
                 title: '请输入手机号',
@@ -56,12 +58,12 @@ Page({
         chengePhone(phone).then(res => {
             console.log(res);
             wx.hideLoading();
-                // 更新缓存
-                wx.setStorageSync('phone', phone);
-                wx.showToast({
-                    title: '手机号修改成功',
-                    icon: 'success'
-                });
+            // 更新缓存
+            wx.setStorageSync('phone', phone);
+            wx.showToast({
+                title: '手机号修改成功',
+                icon: 'success'
+            });
         }).catch(err => {
             wx.hideLoading();
             console.error('修改失败:', err);
@@ -73,7 +75,9 @@ Page({
     },
 
     handleUserName() {
-        const { userName } = this.data;
+        const {
+            userName
+        } = this.data;
         if (!userName.trim()) {
             wx.showToast({
                 title: '请输入用户名',
@@ -87,20 +91,14 @@ Page({
         });
 
         changeUserName(userName).then(res => {
+            console.log(res);
             wx.hideLoading();
-            if (res.success) {
-                // 更新缓存
-                wx.setStorageSync('name', userName);
-                wx.showToast({
-                    title: '用户名修改成功',
-                    icon: 'success'
-                });
-            } else {
-                wx.showToast({
-                    title: res.message || '用户名修改失败',
-                    icon: 'none'
-                });
-            }
+            // 更新缓存
+            wx.setStorageSync('name', userName);
+            wx.showToast({
+                title: '用户名修改成功',
+                icon: 'success'
+            });
         }).catch(err => {
             wx.hideLoading();
             console.error('修改失败:', err);
