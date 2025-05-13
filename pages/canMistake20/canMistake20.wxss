@@ -78,7 +78,7 @@
 
 .option-item {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     padding: 20rpx;
     margin-bottom: 20rpx;
     background-color: #f8f9fa;
@@ -87,16 +87,30 @@
     position: relative;
 }
 
-.option-item.selected {
-    background-color: #e6f0ff;
-    border: 2rpx solid #0066cc;
+.option-label {
+    font-size: 30rpx;
+    color: #666;
+    margin-right: 20rpx;
+    min-width: 40rpx;
 }
 
-.option-item.correct.selected {
-    border-color: #52c41a;
+.option-content {
+    font-size: 30rpx;
+    color: #333;
+    flex: 1;
+}
+
+.correct-mark {
+    color: #52c41a;
+    font-size: 36rpx;
+    margin-left: 20rpx;
+    font-weight: bold;
+}
+
+.option-item.correct {
     background-color: rgba(82, 196, 26, 0.1);
+    border: 2rpx solid #52c41a;
     box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
-    transition: all 0.3s ease;
 }
 
 .option-item.wrong.selected {
@@ -104,19 +118,6 @@
     background-color: rgba(245, 34, 45, 0.1);
     box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
     transition: all 0.3s ease;
-}
-
-.option-label {
-    font-size: 30rpx;
-    color: #0066cc;
-    margin-right: 20rpx;
-    font-weight: bold;
-}
-
-.option-content {
-    font-size: 30rpx;
-    color: #333;
-    flex: 1;
 }
 
 /* 判断题样式 */
@@ -132,12 +133,6 @@
     border-radius: 8rpx;
     font-size: 32rpx;
     color: #333;
-}
-
-.judge-item.selected {
-    background-color: #e6f0ff;
-    border: 2rpx solid #0066cc;
-    color: #0066cc;
 }
 
 .judge-item.correct.selected {
@@ -176,6 +171,50 @@
     border-color: #f5222d;
     box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
     transition: all 0.3s ease;
+}
+
+/* 填空题答案样式 */
+.fill-blank-answer {
+    padding: 20rpx;
+    background-color: rgba(82, 196, 26, 0.1);
+    border: 2rpx solid #52c41a;
+    border-radius: 8rpx;
+    margin-top: 20rpx;
+    display: flex;
+    align-items: center;
+}
+
+.answer-label {
+    font-size: 30rpx;
+    color: #666;
+    margin-right: 20rpx;
+}
+
+.answer-content {
+    font-size: 30rpx;
+    color: #333;
+    font-weight: bold;
+}
+
+/* 答案解析样式 */
+.analysis-section {
+    margin-top: 40rpx;
+    padding: 20rpx;
+    background-color: #f8f9fa;
+    border-radius: 8rpx;
+}
+
+.analysis-title {
+    font-size: 30rpx;
+    color: #0066cc;
+    font-weight: bold;
+    margin-bottom: 10rpx;
+}
+
+.analysis-content {
+    font-size: 28rpx;
+    color: #666;
+    line-height: 1.6;
 }
 
 /* 底部操作栏样式 */
@@ -238,6 +277,8 @@
 .result-header {
     text-align: center;
     margin-bottom: 30rpx;
+    font-size: 32rpx;
+    font-weight: bold;
 }
 
 .correct {
@@ -281,16 +322,15 @@
 }
 
 .modal-btns {
+    margin-top: 30rpx;
     display: flex;
-    justify-content: space-between;
-    gap: 20rpx;
+    justify-content: center;
 }
 
 .modal-btns .btn {
-    flex: 1;
-    background-color: #fd6854;
     background-color: #0066cc;
     color: #fff;
+    width: 200rpx;
 }
 
 .view-detail-btn {
@@ -332,32 +372,30 @@
 }
 
 .question-statuses {
-    margin-bottom: 20rpx;
     display: flex;
     flex-wrap: wrap;
-    /* justify-content: space-between; */
+    gap: 20rpx;
+    justify-content: center;
 }
 
 .question-status-item {
-    margin: 15rpx;
-    height: 70rpx;
-    width: 70rpx;
+    width: 80rpx;
+    height: 80rpx;
     display: flex;
     justify-content: center;
-    align-items: center; 
-    border: 1rpx solid rgb(177, 177, 177); /* 设置边框 */
-    margin-bottom: 10rpx;
-    padding: 10rpx;
+    align-items: center;
+    border: 2rpx solid #e0e0e0;
     border-radius: 8rpx;
-    transition: all 0.3s ease;
+    font-size: 28rpx;
 }
 
 .answered {
     color: #52c41a;
+    border-color: #52c41a;
 }
 
 .unanswered {
-    color: #f5222d;
+    color: #999;
 }
 
 /* 新增：已作答高亮样式 */
