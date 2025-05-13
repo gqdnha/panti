@@ -1,7 +1,5 @@
 import {getUserInfo} from '../../api/getUserInfo'
 import {getDailyFinesh} from '../../api/getDeilyFinash'
-import { request } from '../../api/request';
-import { getUserId } from '../../api/getUserId';
 
 Page({
     data: {
@@ -82,7 +80,8 @@ Page({
         this.userFinash()
         this.getUserInfo();
         this.getStudyStats();
-        this.getUserLearnTime()
+        this.getUserLearnTime();
+        this.userFinash();
     },
     onShow() {
         this.getUserInfo();

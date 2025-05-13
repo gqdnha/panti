@@ -1,6 +1,5 @@
 import {request} from "./request";
-// import {getUserId} from './getUserId'
-import {getUserId} from './NogetUserId'
+import {getUserId} from './getUserId'
 import { baseURL } from "./request";
 // 删除法律 
 export const deleteLawApi = (regulationId) => {

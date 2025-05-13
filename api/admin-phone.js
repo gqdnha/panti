@@ -1,6 +1,5 @@
 import {request} from "./request";
-// import {getUserId} from './getUserId'
-import {getUserId} from './NogetUserId'
+import {getUserId} from './getUserId'
 
 // 获取手机号
 export const getphoneApi = (data) => {
