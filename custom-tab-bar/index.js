@@ -15,29 +15,64 @@ Component({
         text: "我的",
         iconPath: "/assets/icons/user.png",
         selectedIconPath: "/assets/icons/user-active.png"
-      },
-      {
-        pagePath: "/pages/admin/dashboard/index",
-        text: "管理",
-        iconPath: "/assets/icons/admin.png",
-        selectedIconPath: "/assets/icons/admin-active.png"
       }
     ]
   },
   attached() {
-    // 获取用户角色
-    const role = wx.getStorageSync('role');
-    // 如果是普通用户，只显示首页和我的
-    if (role === 'user') {
-      this.setData({
-        list: this.data.list.slice(0, 2)
-      });
+    this.updateTabBar();
+  },
+  pageLifetimes: {
+    show() {
+      this.updateTabBar();
     }
   },
   methods: {
+    updateTabBar() {
+      const role = wx.getStorageSync('role');
+      const list = [
+        {
+          pagePath: "/pages/index/index",
+          text: "首页",
+          iconPath: "/assets/icons/home.png",
+          selectedIconPath: "/assets/icons/home-active.png"
+        },
+        {
+          pagePath: "/pages/user-info/index",
+          text: "我的",
+          iconPath: "/assets/icons/user.png",
+          selectedIconPath: "/assets/icons/user-active.png"
+        }
+      ];
+      
+      if (role === 'admin') {
+        list.push({
+          pagePath: "/pages/admin/dashboard/index",
+          text: "管理",
+          iconPath: "/assets/icons/admin.png",
+          selectedIconPath: "/assets/icons/admin-active.png"
+        });
+      }
+      
+      this.setData({
+        list: list
+      });
+    },
     switchTab(e) {
       const data = e.currentTarget.dataset;
       const url = data.path;
+      
+      // 检查是否是管理页面
+      if (url.includes('/admin/')) {
+        const role = wx.getStorageSync('role');
+        if (role !== 'admin') {
+          wx.showToast({
+            title: '无权限访问',
+            icon: 'none'
+          });
+          return;
+        }
+      }
+      
       wx.switchTab({
         url
       });

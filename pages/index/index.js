@@ -165,13 +165,17 @@ Page({
             currentDate: `${year}年${month}月${day}日`
         });
     },
-    // 基础理论相关功能
-    goToSequentialPractice() {
-        wx.navigateTo({
-            url: '/pages/practice/sequential/index'
-        });
+    // 检查是否登录
+    checkLogin() {
+        const userInfo = wx.getStorageSync('userInfo');
+        const name = wx.getStorageSync('name');
+        return !!(userInfo || name);
     },
     goToTopicalPractice(e) {
+        if (!this.checkLogin()) {
+            this.showLoginTip();
+            return;
+        }
         const {
             category
         } = e.currentTarget.dataset;
@@ -179,7 +183,12 @@ Page({
             url: `/pages/practice/topical/index?category=${category}`
         });
     },
+    // 每日练习
     goToDailyPractice(e) {
+        if (!this.checkLogin()) {
+            this.showLoginTip();
+            return;
+        }
         const { ifFinash } = this.data;
         if (ifFinash === 100) {
             wx.showModal({
@@ -202,28 +211,12 @@ Page({
     },
     // 法律
     goToResources(e) {
-        /* const {
-            category
-        } = e.currentTarget.dataset; */
+        if (!this.checkLogin()) {
+            this.showLoginTip();
+            return;
+        }
         wx.navigateTo({
             url: `/pages/resources/law_type/index`
-        });
-    },
-    // 易错二十题
-    goToMistake(e) {
-        wx.navigateTo({
-            url: `/pages/canMistake20/canMistake20`
-        });
-    },
-    // 综合题相关功能
-    goToShortAnswer() {
-        wx.navigateTo({
-            url: '/pages/comprehensive/short-answer/index'
-        });
-    },
-    goToCaseAnalysis() {
-        wx.navigateTo({
-            url: '/pages/comprehensive/case-analysis/index'
         });
     },
     // 个人数据统计相关功能
@@ -240,12 +233,6 @@ Page({
         });
     },
 
-    // 用户反馈
-    onFeedback() {
-        wx.navigateTo({
-            url: '/pages/feedback/index'
-        });
-    },
     // 加载用户信息
     loadUserInfo() {
         const userInfo = wx.getStorageSync('userInfo');
@@ -270,31 +257,16 @@ Page({
     },
     // 获取用户信息
     getUserInfo() {
+        const userInfo = wx.getStorageSync('userInfo');
         const name = wx.getStorageSync('name');
-        if (name) {
+        if (userInfo) {
+            this.setData({
+                userInfo: userInfo
+            });
+        } else if (name) {
             this.setData({
                 'userInfo.name': name
             });
         }
     },
-    // 去错题本
-    goToWrongQuestions() {
-        wx.navigateTo({
-            url: '/pages/wrongBook/wrongBook'
-        });
-    },
-
-    // 去答题历史
-    goToAnswerHistory() {
-        wx.navigateTo({
-            url: '/pages/history/history'
-        });
-    },
-
-    // 去答题
-    goToAnswer() {
-        wx.navigateTo({
-            url: '/pages/answer/answer'
-        });
-    }
 })

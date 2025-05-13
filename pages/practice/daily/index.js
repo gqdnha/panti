@@ -13,7 +13,6 @@ import {
 
 Page({
     data: {
-
         // 页面数据
         currentQuestion: 1, //题目序号
         totalQuestions: 0, //总数
@@ -26,17 +25,31 @@ Page({
         questionStates: [], // 记录每个题目的答题状态（正确/错误）
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
-
-        // 新增：答题卡状态，记录每个题目是否已作答
         answerSheetStates: [],
-        showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
-        questionStatuses: [], // 存储题目作答情况数据
-        optionStates: [], // 存储每个题目的选项状态
-        startTime: 0, // 新增：记录开始时间
+        showAnswerSheetModal: false,
+        questionStatuses: [],
+        optionStates: [],
+        startTime: 0,
+        elapsedTime: 0, // 新增：记录已经过去的时间
+        timer: null, // 新增：存储计时器
     },
     onLoad: function () {
-        this.startCountdown()
-        this.getData()
+        // 检查登录状态
+        const token = wx.getStorageSync('token');
+        if (!token) {
+            wx.showToast({
+                title: '请先登录',
+                icon: 'none'
+            });
+            wx.navigateTo({
+                url: '/pages/login/index'
+            });
+            return;
+        }
+        
+        // 尝试从缓存加载数据
+        this.loadCachedData();
+        this.getData();
     },
     // 请求接口
     getData: function () {
@@ -102,55 +115,33 @@ Page({
         }
     },
     selectOption: function (e) {
-        const {
-            index
-        } = e.currentTarget.dataset;
-        const {
-            currentQuestion,
-            selectedOptions,
-            allQuestions
-        } = this.data;
+        const { index } = e.currentTarget.dataset;
+        const { currentQuestion, selectedOptions, allQuestions } = this.data;
         const newSelectedOptions = [...selectedOptions];
         const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
         newSelectedOptions[currentQuestion - 1] = optionFirstChar;
+        
         this.setData({
             selectedOptions: newSelectedOptions
         });
-        // 打印当前选中的选项首字
-        console.log(`第 ${currentQuestion} 题选中的选项首字：`, optionFirstChar);
 
-        // 更新答题卡状态为已作答
         const answerSheetStates = [...this.data.answerSheetStates];
         answerSheetStates[currentQuestion - 1] = true;
         this.setData({
             answerSheetStates: answerSheetStates
         });
+
+        // 保存缓存
+        this.saveCachedData();
     },
     // 多选题
     selectMultipleOption: function (e) {
-        const {
-            index
-        } = e.currentTarget.dataset;
-        const {
-            currentQuestion,
-            selectedOptions,
-            allQuestions,
-            optionStates
-        } = this.data;
+        const { index } = e.currentTarget.dataset;
+        const { currentQuestion, selectedOptions, allQuestions, optionStates } = this.data;
 
-        console.log('选择选项前的状态：', {
-            currentQuestion,
-            index,
-            selectedOptions: selectedOptions[currentQuestion - 1],
-            optionStates: optionStates[currentQuestion - 1]
-        });
-
-        // 获取当前题目的选项状态
         let currentOptionStates = [...optionStates[currentQuestion - 1]];
-        // 切换当前选项的状态
         currentOptionStates[index] = !currentOptionStates[index];
 
-        // 更新选中选项
         let currentSelected = [];
         currentOptionStates.forEach((isSelected, idx) => {
             if (isSelected) {
@@ -158,10 +149,8 @@ Page({
             }
         });
 
-        // 对选项进行排序
         currentSelected.sort();
 
-        // 更新数据
         const newSelectedOptions = [...selectedOptions];
         newSelectedOptions[currentQuestion - 1] = currentSelected;
 
@@ -172,14 +161,10 @@ Page({
             selectedOptions: newSelectedOptions,
             optionStates: newOptionStates,
             [`answerSheetStates[${currentQuestion - 1}]`]: true
-        }, () => {
-            console.log('选择选项后的状态：', {
-                index,
-                currentQuestion,
-                selectedOptions: this.data.selectedOptions[currentQuestion - 1],
-                optionStates: this.data.optionStates[currentQuestion - 1]
-            });
         });
+
+        // 保存缓存
+        this.saveCachedData();
     },
     onInputAnswer: function (e) {
         const {
@@ -203,44 +188,49 @@ Page({
         });
     },
     // 开始倒计时
-    startCountdown: function () {
+    startCountdown: function (initialElapsedTime = 0) {
         this.clearCountdown();
-        // 获取当前时间
         const now = new Date();
-        // 记录开始时间
         this.setData({
-            startTime: now.getTime()
+            startTime: now.getTime(),
+            elapsedTime: initialElapsedTime
         });
-        // 计算距离当天24:00的剩余时间（单位：秒）
+
         const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
         const endOfDaySeconds = Math.floor((endOfDay - now) / 1000);
-
-        let remainingSeconds = 1200; // 初始倒计时时间
-        // 取较小值作为实际倒计时时间
+        let remainingSeconds = 1200 - initialElapsedTime; // 考虑已经过去的时间
         remainingSeconds = Math.min(remainingSeconds, endOfDaySeconds);
 
         this.data.timer = setInterval(() => {
             if (remainingSeconds > 0) {
                 remainingSeconds--;
+                this.setData({
+                    elapsedTime: this.data.elapsedTime + 1
+                });
                 const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
                 const seconds = (remainingSeconds % 60).toString().padStart(2, '0');
                 this.setData({
                     remainingTime: `${minutes}:${seconds}`
                 });
+                // 保存缓存
+                this.saveCachedData();
             } else {
                 this.clearCountdown();
                 this.submitAllAnswers();
             }
         }, 1000);
-
     },
     // 清除倒计时
     clearCountdown: function () {
         if (this.data.timer) {
             clearInterval(this.data.timer);
+            this.data.timer = null;
         }
     },
     submitAllAnswers: function () {
+        // 清除缓存
+        wx.removeStorageSync('dailyPracticeCache');
+        
         const {
             allQuestions,
             allAnswers,
@@ -248,7 +238,8 @@ Page({
             questionStates,
             answerSheetStates,
             optionStates,
-            startTime
+            startTime,
+            elapsedTime
         } = this.data;
         const newQuestionStates = [...questionStates];
         const allUserAnswers = [];
@@ -338,14 +329,14 @@ Page({
             isSubmitted: true
         });
 
-        // 计算使用的时间
+        // 计算使用的时间（包括缓存的时间）
         const endTime = new Date().getTime();
-        const usedTime = endTime - startTime;
+        const usedTime = endTime - startTime + (elapsedTime * 1000);
         const minutes = Math.floor(usedTime / (1000 * 60));
-        console.log(`使用了 ${minutes} 分钟`);
+        
         addLearnTime(minutes).then(res => {
-            console.log('传时间',minutes);
-        })
+            console.log('传时间', minutes);
+        });
         // 调用后端接口
         apiJudgeTest(allUserAnswers).then(response => {
                 console.log('后端返回结果：', response);
@@ -417,5 +408,52 @@ Page({
             currentQuestion: index
         });
         this.closeAnswerSheetModal();
+    },
+    // 新增：加载缓存数据
+    loadCachedData() {
+        const cachedData = wx.getStorageSync('dailyPracticeCache');
+        if (cachedData) {
+            const {
+                currentQuestion,
+                selectedOptions,
+                optionStates,
+                answerSheetStates,
+                elapsedTime
+            } = cachedData;
+
+            this.setData({
+                currentQuestion,
+                selectedOptions,
+                optionStates,
+                answerSheetStates,
+                elapsedTime
+            });
+
+            // 恢复计时器
+            this.startCountdown(elapsedTime);
+        } else {
+            this.startCountdown();
+        }
+    },
+    // 新增：保存缓存数据
+    saveCachedData() {
+        const cacheData = {
+            currentQuestion: this.data.currentQuestion,
+            selectedOptions: this.data.selectedOptions,
+            optionStates: this.data.optionStates,
+            answerSheetStates: this.data.answerSheetStates,
+            elapsedTime: this.data.elapsedTime
+        };
+        wx.setStorageSync('dailyPracticeCache', cacheData);
+    },
+    // 新增：页面隐藏时保存缓存
+    onHide: function() {
+        this.saveCachedData();
+    },
+    // 新增：页面卸载时清除缓存
+    onUnload: function() {
+        if (!this.data.isAllSubmitted) {
+            this.saveCachedData();
+        }
     }
 })    

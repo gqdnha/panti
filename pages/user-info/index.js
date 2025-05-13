@@ -51,7 +51,6 @@ Page({
         }
         this.getUserInfo();
         this.getStudyStats();
-        
     },
 
     /**
@@ -120,6 +119,10 @@ Page({
     },
 
     navigateToSettings() {
+        if (!this.data.userInfo) {
+            this.showLoginTip();
+            return;
+        }
         wx.navigateTo({
             url: '/pages/setting/setting'
         });
@@ -171,6 +174,10 @@ Page({
 
     // 去错题本
     goToWrongQuestions() {
+        if (!this.data.userInfo) {
+            this.showLoginTip();
+            return;
+        }
         wx.navigateTo({
             url: '/pages/wrongBook/wrongBook'
         });

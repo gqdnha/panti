@@ -83,6 +83,38 @@ Page({
                                 duration: 1500,
                                 success: () => {
                                     setTimeout(() => {
+                                        // 重新初始化tabBar
+                                        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+                                            const role = wx.getStorageSync('role');
+                                            const list = [
+                                                {
+                                                    pagePath: "/pages/index/index",
+                                                    text: "首页",
+                                                    iconPath: "/assets/icons/home.png",
+                                                    selectedIconPath: "/assets/icons/home-active.png"
+                                                },
+                                                {
+                                                    pagePath: "/pages/user-info/index",
+                                                    text: "我的",
+                                                    iconPath: "/assets/icons/user.png",
+                                                    selectedIconPath: "/assets/icons/user-active.png"
+                                                }
+                                            ];
+                                            
+                                            if (role === 'admin') {
+                                                list.push({
+                                                    pagePath: "/pages/admin/dashboard/index",
+                                                    text: "管理",
+                                                    iconPath: "/assets/icons/admin.png",
+                                                    selectedIconPath: "/assets/icons/admin-active.png"
+                                                });
+                                            }
+                                            
+                                            this.getTabBar().setData({
+                                                selected: 0,
+                                                list: list
+                                            });
+                                        }
                                         wx.switchTab({
                                             url: '/pages/index/index'
                                         });
