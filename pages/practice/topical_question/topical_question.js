@@ -8,7 +8,9 @@ import {
     addLearnTime
 } from '../../../api/addLearnTime'
 
-import {getFinashQuestionId} from '../../../api/getFinashQuestionId'
+import {
+    getFinashQuestionId
+} from '../../../api/getFinashQuestionId'
 Page({
     data: {
         currentQuestion: 1,
@@ -37,8 +39,6 @@ Page({
     onLoad(options) {
         const category = decodeURIComponent(options.category);
         const type = decodeURIComponent(options.questionType);
-
-        this.loadQuestions()
         // 重置所有状态
         this.setData({
             category,
@@ -67,17 +67,19 @@ Page({
             });
         }, 60000);
 
-        console.log('接收到的类别:', this.data.category);
+        /* console.log('接收到的类别:', this.data.category);
         console.log('接收到的类别:', type);
+        console.log(this.data.type); */
+        this.loadQuestions()
     },
 
-
+    // 加载题目
     loadQuestions() {
         const {
             pageNum,
             pageSize,
             finishedQuestionIds,
-            isAllFinished
+            isAllFinished,
         } = this.data;
 
         const data = {
@@ -87,8 +89,8 @@ Page({
             type: this.data.type
         };
 
-        console.log('请求参数：', data);
-        console.log('当前已完成题目ID：', finishedQuestionIds);
+/*         console.log('请求参数：', data);
+        console.log('当前已完成题目ID：', finishedQuestionIds); */
 
         getAllQuestion(data).then(res => {
             console.log('获取到的题目数据:', res);
@@ -170,7 +172,7 @@ Page({
             console.log('已完成的题目ID：', res);
             // 确保res是数组
             const finishedIds = Array.isArray(res) ? res : [];
-            
+
             // 先获取所有题目数量
             getAllQuestion({
                 category: this.data.category,
@@ -180,10 +182,10 @@ Page({
             }).then(allRes => {
                 const totalQuestions = allRes.pageInfo.totalSize;
                 console.log('总题目数：', totalQuestions, '已完成题目数：', finishedIds.length);
-                
+
                 // 如果已完成题目数等于总题目数，说明全部完成
                 const isAllFinished = finishedIds.length === totalQuestions;
-                
+
                 this.setData({
                     finishedQuestionIds: finishedIds,
                     isAllFinished: isAllFinished
@@ -199,9 +201,9 @@ Page({
             currentQuestion,
             totalQuestions
         } = this.data;
-        
+
         console.log('当前题目:', currentQuestion, '总题目数:', totalQuestions);
-        
+
         if (currentQuestion < totalQuestions) {
             this.setData({
                 currentQuestion: currentQuestion + 1
@@ -219,9 +221,9 @@ Page({
         const {
             currentQuestion
         } = this.data;
-        
+
         console.log('当前题目:', currentQuestion);
-        
+
         if (currentQuestion > 1) {
             this.setData({
                 currentQuestion: currentQuestion - 1
@@ -267,12 +269,12 @@ Page({
             questionList,
             optionStates
         } = this.data;
-        if (!questionList ||!questionList[currentQuestion - 1] ||!questionList[currentQuestion - 1].options) {
+        if (!questionList || !questionList[currentQuestion - 1] || !questionList[currentQuestion - 1].options) {
             console.error('题目数据不完整');
             return;
         }
         let currentOptionStates = [...optionStates[currentQuestion - 1]];
-        currentOptionStates[index] =!currentOptionStates[index];
+        currentOptionStates[index] = !currentOptionStates[index];
         let currentSelected = [];
         currentOptionStates.forEach((isSelected, idx) => {
             if (isSelected && questionList[currentQuestion - 1].options[idx]) {
@@ -323,7 +325,7 @@ Page({
         const newQuestionStates = [...questionStates];
         const newIsSubmitted = [...this.data.isSubmitted];
         const question = questionList[currentQuestion - 1];
-        
+
         if (!question) {
             console.error('当前题目数据不存在，currentQuestion 可能越界:', currentQuestion);
             return;
@@ -387,11 +389,11 @@ Page({
             console.log('后端返回结果：', res);
             newQuestionStates[currentQuestion - 1] = res[0].rightOrWrong === '对';
             newIsSubmitted[currentQuestion - 1] = true;
-            
+
             // 更新题目的完成状态
             const newQuestionList = [...questionList];
             newQuestionList[currentQuestion - 1].isFinished = true;
-            
+
             this.setData({
                 questionStates: newQuestionStates,
                 isSubmitted: newIsSubmitted,
@@ -402,7 +404,7 @@ Page({
             // 计算做题时间（分钟）
             const endTime = new Date();
             const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
-            
+
             // 上传学习时间
             addLearnTime(durationInMinutes).then(timeRes => {
                 console.log('学习时间上传结果：', timeRes);
@@ -460,7 +462,7 @@ Page({
         } = this.data;
         const endTime = new Date();
         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
-        
+
         // 打印详细的时间信息
         console.log('学习时间统计：', {
             '开始时间': startTime.toLocaleString(),
