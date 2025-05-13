@@ -156,14 +156,14 @@ Page({
                     this.setData({
                         userInfo: null
                     });
-                    
-                    // 重置tabBar显示
-                    setupTabBar();
-                    
                     wx.showToast({
                         title: '已退出登录',
                         icon: 'success'
                     });
+                    wx.navigateTo({
+                        url: '/pages/login/index'
+                    });
+                   
                 }
             }
         });
