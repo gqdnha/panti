@@ -195,8 +195,13 @@
 }
 
 .prev {
+    
     background-color: #f8f9fa;
     color: #666;
+    width: 200rpx;
+    height: 50rpx;
+    margin-bottom: 50rpx;
+    border-radius: 50rpx;
 }
 
 .submit {
@@ -210,6 +215,10 @@
     background-color: #f8f9fa;
     color: #666;
     margin-left: 20rpx;
+    width: 200rpx;
+    height: 50rpx;
+    margin-bottom: 50rpx;
+    border-radius: 50rpx;
 }
 
 /* 答案解析弹窗样式 */

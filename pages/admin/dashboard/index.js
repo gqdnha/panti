@@ -14,7 +14,7 @@ Page({
         totalUsers: 0,
         todayUsers: 0,
         avgCorrectRate: 0,
-        dailyQuestionRate:0,
+        dailyQuestionRate:'',
         dailyQuestionUserCount:0,
         department: ''
     },
@@ -57,13 +57,15 @@ Page({
     getUserToday() {
         getUserToday().then(res => {
             console.log(res);
+            console.log(res.dailyQuestionRate);
             this.setData({
                 dailyQuestionRate : res.dailyQuestionRate,
                 dailyQuestionUserCount : res.dailyQuestionUserCount
             })
-        })
         console.log(this.data.dailyQuestionRate);
         console.log(this.data.dailyQuestionUserCount);
+
+        })
     },
     
     /**

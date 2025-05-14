@@ -8,16 +8,6 @@ import {
 Page({
     data: {
         userId:0,
-        // 后端数据
-        /*  questionId:'', //题目id
-         content:'', //题目
-         options:'', //选项
-         answer:'', //答案
-         isActive : '', //
-         category : '', //分类
-         analysis : '', //解析
-         eh : '', //难易状况 */
-
         // 页面数据
         currentQuestion: 1, //题目序号
         totalQuestions: 0, //总数
@@ -37,7 +27,7 @@ Page({
         questionStatuses: [], // 存储题目作答情况数据
         optionStates: [], // 存储每个题目的选项状态
     },
-    onLoad(options) {
+    onLoad: function () {
         const id = options.id
         const userId = parseInt(id)
         this.setData({
@@ -52,7 +42,8 @@ Page({
         const userId = this.data.userId
         console.log(userId); 
         apiGetoneDailyTest(userId).then(res => {
-            console.log(res);
+            console.log('跳转个人daily：', res);
+
             res.forEach(question => {
                 if (question.options && typeof question.options === 'string') {
                     try {
@@ -62,34 +53,30 @@ Page({
                         question.options = []
                     }
                 }
-            })
+            });
+
             // 初始化选中选项数组和选项状态数组
             const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
-            const initialOptionStates = res.map(question => {
-                const states = new Array(question.options.length).fill(false);
-                if (states.length > 0) {
-                    states[0] = true; // 默认选中第一个选项
-                }
-                return states;
-            });
-            
+            const initialOptionStates = res.map(question =>
+                new Array(question.options.length).fill(false)
+            );
+
             this.setData({
                 allQuestions: res,
                 totalQuestions: res.length,
-                questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
-                selectedOptions: initialSelectedOptions.map((_, index) => {
-                    if (res[index].options && res[index].options.length > 0) {
-                        return res[index].options[0][0]; // 默认选中第一个选项的首字母
-                    }
-                    return null;
-                }),
+                questionStates: new Array(res.length).fill(null),
+                selectedOptions: initialSelectedOptions,
                 optionStates: initialOptionStates,
-                answerSheetStates: new Array(res.length).fill(false), // 初始化答题卡状态数组，默认都未作答
-            })
-            console.log(this.data.allQuestions);
-            console.log(this.data.totalQuestions);
-            console.log(this.data.allQuestions[1].options);
-        })
+                answerSheetStates: new Array(res.length).fill(false)
+            }, () => {
+                console.log('初始化完成：', {
+                    totalQuestions: this.data.totalQuestions,
+                    firstQuestionOptions: this.data.allQuestions[0].options,
+                    selectedOptions: this.data.selectedOptions,
+                    optionStates: this.data.optionStates
+                });
+            });
+        });
     },
     nextQuestion: function () {
         const { currentQuestion, totalQuestions, selectedOptions } = this.data;
@@ -100,7 +87,10 @@ Page({
         }
     },
     prevQuestion: function () {
-        const { currentQuestion, selectedOptions } = this.data;
+        const {
+            currentQuestion,
+            selectedOptions
+        } = this.data;
         if (currentQuestion > 1) {
             this.setData({
                 currentQuestion: currentQuestion - 1
@@ -108,8 +98,14 @@ Page({
         }
     },
     selectOption: function (e) {
-        const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions, allQuestions } = this.data;
+        const {
+            index
+        } = e.currentTarget.dataset;
+        const {
+            currentQuestion,
+            selectedOptions,
+            allQuestions
+        } = this.data;
         const newSelectedOptions = [...selectedOptions];
         const optionFirstChar = allQuestions[currentQuestion - 1].options[index][0];
         newSelectedOptions[currentQuestion - 1] = optionFirstChar;
@@ -128,14 +124,22 @@ Page({
     },
     // 多选题
     selectMultipleOption: function (e) {
-        const { index } = e.currentTarget.dataset;
-        const { currentQuestion, selectedOptions, allQuestions, optionStates } = this.data;
+        const {
+            index
+        } = e.currentTarget.dataset;
+        const {
+            currentQuestion,
+            selectedOptions,
+            allQuestions,
+            optionStates
+        } = this.data;
 
-        // 检查数据是否存在
-        if (!allQuestions || !allQuestions[currentQuestion - 1] || !allQuestions[currentQuestion - 1].options) {
-            console.error('题目数据不完整');
-            return;
-        }
+        console.log('选择选项前的状态：', {
+            currentQuestion,
+            index,
+            selectedOptions: selectedOptions[currentQuestion - 1],
+            optionStates: optionStates[currentQuestion - 1]
+        });
 
         // 获取当前题目的选项状态
         let currentOptionStates = [...optionStates[currentQuestion - 1]];
@@ -145,7 +149,7 @@ Page({
         // 更新选中选项
         let currentSelected = [];
         currentOptionStates.forEach((isSelected, idx) => {
-            if (isSelected && allQuestions[currentQuestion - 1].options[idx]) {
+            if (isSelected) {
                 currentSelected.push(allQuestions[currentQuestion - 1].options[idx][0]);
             }
         });
@@ -173,8 +177,13 @@ Page({
         });
     },
     onInputAnswer: function (e) {
-        const { value } = e.detail;
-        const { currentQuestion, allAnswers } = this.data;
+        const {
+            value
+        } = e.detail;
+        const {
+            currentQuestion,
+            allAnswers
+        } = this.data;
         const newAllAnswers = [...allAnswers];
         newAllAnswers[currentQuestion - 1] = value;
         this.setData({
@@ -223,9 +232,23 @@ Page({
         }
     },
     submitAllAnswers: function () {
-        const { allQuestions, allAnswers, selectedOptions, questionStates, answerSheetStates } = this.data;
-        const newQuestionStates = [...questionStates];
+        const {
+            allQuestions,
+            allAnswers,
+            selectedOptions,
+            questionStates,
+            answerSheetStates,
+            optionStates,
+            startTime
+        } = this.data;
         const allUserAnswers = [];
+
+        console.log('提交答案前的状态：', {
+            allQuestions,
+            selectedOptions,
+            optionStates,
+            answerSheetStates
+        });
 
         // 检查是否所有题目都已作答
         const allAnswered = answerSheetStates.every(state => state === true);
@@ -239,62 +262,97 @@ Page({
 
         allQuestions.forEach((question, index) => {
             const userAnswer = allAnswers[index];
-            const correctAnswer = question.answer;
-            let isCorrect;
-            const questionId = question.questionId; // 确保从question对象中获取questionId
-
-            if (!questionId) {
-                console.error(`第${index + 1}题缺少questionId`);
-                return;
-            }
+            const questionId = question.questionId;
 
             if (question.type === '单选题' || question.type === '判断题') {
                 const selectedChar = selectedOptions[index];
-                if (selectedChar !== undefined) {
-                    isCorrect = selectedChar === correctAnswer[0];
-                } else {
-                    isCorrect = false;
-                }
                 allUserAnswers.push({
                     'questionId': questionId,
                     'answer': selectedChar || ''
                 });
             } else if (question.type === '多选题') {
-                const selectedChars = selectedOptions[index] || [];
-                const sortedSelectedChars = selectedChars.slice().sort();
-                const sortedAnswerString = sortedSelectedChars.join('');
-                allUserAnswers.push({
-                    'questionId': questionId,
-                    'answer': sortedAnswerString
+                const selectedIndexes = optionStates[index] || [];
+                const selectedChars = [];
+
+                selectedIndexes.forEach((isSelected, idx) => {
+                    if (isSelected && question.options && question.options[idx]) {
+                        selectedChars.push(question.options[idx][0]);
+                    }
                 });
-                const correctFirstChars = correctAnswer.split('').map(char => char.trim());
-                isCorrect = sortedAnswerString.split('').every(char => correctFirstChars.includes(char)) && correctFirstChars.length === sortedAnswerString.length;
-            } else if (question.type === '填空题') {
-                isCorrect = userAnswer === correctAnswer;
+
+                const selectedAnswer = selectedChars.sort().join('');
                 allUserAnswers.push({
                     'questionId': questionId,
-                    'answer': userAnswer || ''
+                    'answer': selectedAnswer
+                });
+            } else if (question.type === '填空题') {
+                allUserAnswers.push({
+                    'questionId': questionId,
+                    'answer': userAnswer
                 });
             }
-            newQuestionStates[index] = isCorrect;
         });
 
-        this.setData({
-            isAllSubmitted: true,
-            questionStates: newQuestionStates,
-            isSubmitted: true
-        });
+        console.log('提交的答案：', allUserAnswers);
 
-        console.log('提交的答案数据：', allUserAnswers);
+        // 计算使用的时间
+        const endTime = new Date().getTime();
+        const usedTime = endTime - startTime;
+        const minutes = Math.floor(usedTime / (1000 * 60));
+        addLearnTime(minutes).then(res => {
+            console.log('传时间', minutes);
+        })
+
         // 调用后端接口
-        apiJudgeTest(allUserAnswers)
-            .then(response => {
-                console.log('后端返回结果：', response);
-                // 可以在这里处理后端返回的结果，例如更新页面显示等
-            })
-            .catch(error => {
-                console.error('提交答案到后端时出错：', error);
+        apiJudgeTest(allUserAnswers).then(response => {
+            console.log('后端返回结果：', response);
+
+            // 根据后端返回结果设置题目状态和解析
+            const newQuestionStates = [];
+            const newQuestionAnalysis = {};
+            const newCorrectAnswers = {}; // 改为对象，使用questionId作为键
+            
+            // 创建questionId到索引的映射
+            const questionIdToIndex = {};
+            this.data.allQuestions.forEach((question, index) => {
+                questionIdToIndex[question.questionId] = index;
             });
+
+            response.forEach((result) => {
+                const index = questionIdToIndex[result.questionId];
+                if (index !== undefined) {
+                    newQuestionStates[index] = result.rightOrWrong === '对';
+                    newQuestionAnalysis[result.questionId] = result.analysis || '';
+                    newCorrectAnswers[result.questionId] = result.answer; // 使用questionId作为键
+                }
+            });
+
+            this.setData({
+                isAllSubmitted: true,
+                questionStates: newQuestionStates,
+                isSubmitted: true,
+                questionAnalysis: newQuestionAnalysis,
+                correctAnswers: newCorrectAnswers // 现在correctAnswers是一个对象
+            });
+        })
+        .catch(error => {
+            console.error('提交答案到后端时出错：', error);
+            // 如果后端出错，可以使用本地判断作为备选方案
+            const newQuestionStates = [...questionStates];
+            allQuestions.forEach((question, index) => {
+                // 本地判断逻辑...
+            });
+            this.setData({
+                isAllSubmitted: true,
+                questionStates: newQuestionStates,
+                isSubmitted: true
+            });
+        });
+
+        const totalCount = this.data.totalQuestions;
+        dailyQuestionCount(totalCount).then(res => {
+            console.log(res, '请求成功');
+        })
     },
     onTouchStart: function (e) {
         // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
@@ -303,11 +361,23 @@ Page({
         // 在这里添加触摸结束事件的处理逻辑，如果暂时没有逻辑，可以先空着
     },
     showAnalysis: function () {
-        const { currentQuestion, allQuestions } = this.data;
+        const {
+            currentQuestion,
+            allQuestions,
+            questionAnalysis,
+            correctAnswers
+        } = this.data;
         const currentQuestionData = allQuestions[currentQuestion - 1];
+        const analysis = questionAnalysis[currentQuestionData.questionId];
+        const correctAnswer = correctAnswers[currentQuestionData.questionId]; // 使用questionId获取答案
+
         this.setData({
             showAnalysis: true,
-            currentQuestionData: currentQuestionData
+            currentQuestionData: {
+                ...currentQuestionData,
+                analysis: analysis,
+                correctAnswer: correctAnswer
+            }
         });
     },
     closeAnalysisAndContinue: function () {
@@ -317,11 +387,15 @@ Page({
     },
     // 自定义函数，用于判断数组是否包含某个元素
     isArrayAndIncludes: function (arr, item) {
-        return Array.isArray(arr) && arr.includes(item);
+        if (!arr) return false;
+        if (!Array.isArray(arr)) return false;
+        return arr.includes(item);
     },
     // 新增：点击答题卡的事件处理函数
     showAnswerSheet: function () {
-        const { answerSheetStates } = this.data;
+        const {
+            answerSheetStates
+        } = this.data;
         const questionStatuses = answerSheetStates.map((state, index) => ({
             index: index + 1,
             isAnswered: state,
@@ -340,7 +414,9 @@ Page({
     },
     // 新增：点击答题卡上的题目跳转到对应题目的函数
     jumpToQuestion: function (e) {
-        const { index } = e.currentTarget.dataset;
+        const {
+            index
+        } = e.currentTarget.dataset;
         this.setData({
             currentQuestion: index
         });
