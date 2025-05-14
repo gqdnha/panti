@@ -9,6 +9,7 @@
 
 /* 进度条样式 */
 .progress-bar {
+    width: 300rpx;
     background-color: #fff;
     padding: 20rpx;
     border-radius: 10rpx;
@@ -21,6 +22,10 @@
     margin-bottom: 10rpx;
     font-size: 28rpx;
     color: #333;
+}
+.progress-info text {
+    width: 100%;
+    text-align: center;
 }
 
 .progress-track {

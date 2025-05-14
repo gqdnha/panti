@@ -5,7 +5,7 @@ import {
 // import {apiJudgeTest} from '../../api/judgeTest'
 Page({
     data: {
-        userId:0,
+        userId: 0,
         type: '',
         //  查看详情
         detailData: {},
@@ -41,16 +41,24 @@ Page({
     // 请求接口
     getData() {
         console.log(this.data.type);
-        const type =this.data.type 
-        const userId =this.data.userId 
+        const type = this.data.type
+        const userId = this.data.userId
         const data = {
             type,
             userId
         }
         getOneWrongQuestion(data).then(res => {
             console.log(res);
+            if (res.length === 0) {
+                wx.showToast({
+                    title: '没有错题',
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
             res.forEach(question => {
-                if (question.options && typeof question.options === 'string') {
+                if (question.options && typeof question.options ==='string') {
                     try {
                         question.options = JSON.parse(question.options);
                     } catch (error) {
@@ -115,7 +123,7 @@ Page({
         // 获取当前题目的选项状态
         let currentOptionStates = [...optionStates[currentQuestion - 1]];
         // 切换当前选项的状态
-        currentOptionStates[index] = !currentOptionStates[index];
+        currentOptionStates[index] =!currentOptionStates[index];
 
         // 更新选中选项
         let currentSelected = [];
@@ -207,7 +215,7 @@ Page({
         const data = [{
             questionId: question.questionId,
             answer: userAnswerToSubmit,
-            type:this.data.type
+            type: this.data.type
         }]
         console.log(data);
 
@@ -247,26 +255,26 @@ Page({
         return Array.isArray(arr) && arr.includes(item);
     },
     onUnload: function () {
-        const { startTime } = this.data;
-        const endTime = new Date();
-        const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
-        console.log(`做题总时间（分钟）：${durationInMinutes}`);
+        // const { startTime } = this.data;
+        // const endTime = new Date();
+        // const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
+        // console.log(`做题总时间（分钟）：${durationInMinutes}`);
         /* addLearnTime(durationInMinutes).then(res => {
             console.log(res);
         }) */
     },
     submitAnswer() {
         if (this.data.isSubmitted) return;
-        
+
         const currentQuestion = this.data.currentQuestion - 1;
         const question = this.data.allQuestions[currentQuestion];
         const options = question.options;
-        
+
         // 判断答案是否正确
         options.forEach(option => {
             option.isCorrect = option.selected === option.isAnswer;
         });
-        
+
         this.setData({
             isSubmitted: true,
             [`allQuestions[${currentQuestion}].options`]: options

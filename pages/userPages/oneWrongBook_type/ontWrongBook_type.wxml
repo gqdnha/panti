@@ -3,7 +3,7 @@
     <view class="progress-bar">
         <view class="progress-info">
             <text>第{{currentQuestion}}/{{totalQuestions}}题</text>
-            <text>学习时长：{{studyTime}}分钟</text>
+            <!-- <text>学习时长：{{studyTime}}分钟</text> -->
         </view>
         <!-- 进度条 -->
         <view class="progress-track">
