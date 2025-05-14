@@ -8,7 +8,6 @@ export const getOneWrongQuestion = (data) => {
     const type = data.type
     console.log(userId);
     return request({
-        // url: `/dailyQuestion/getEverydayQuestion/${data}`,
         url:`/wrongQuestion/getWrongQuestion?userId=${userId}&type=${type}`,
         method: 'GET'
     })

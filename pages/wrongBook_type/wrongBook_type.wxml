@@ -12,7 +12,7 @@
     </view>
 
     <!-- 题目内容 -->
-    <view class="question-container">
+    <view wx:if="{{hasData && !isLoading}}" class="question-container">
         <view class="question-type">{{allQuestions[currentQuestion - 1].type}}</view>
         <view class="question-content">
             <text>{{currentQuestion}}.{{allQuestions[currentQuestion - 1].content}}</text>
@@ -57,6 +57,18 @@
         </view>
         <!-- 每道题的提交按钮 -->
         <view class="btn submit" bindtap="submitSingleAnswer" wx:if="{{!isSubmitted[currentQuestion - 1]}}">提交答案</view>
+    </view>
+
+    <!-- 没有数据时的提示 -->
+    <view wx:if="{{!hasData && !isLoading}}" class="no-data">
+        <image src="/assets/icons/nodata.png" class="no-data-icon"></image>
+        <text class="no-data-text">暂无{{type}}错题</text>
+        <text class="no-data-subtitle">快去做题吧，做错的题目会自动收录到这里</text>
+    </view>
+
+    <!-- 加载中状态 -->
+    <view wx:if="{{isLoading}}" class="loading">
+        <text>加载中...</text>
     </view>
 
     <!-- 底部操作栏 -->

@@ -300,3 +300,42 @@
 .view-detail-btn {
     margin-top: 50rpx;
 }
+
+.no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100rpx 20rpx;
+    min-height: 60vh;
+    color: #999;
+}
+
+.no-data-icon {
+    width: 200rpx;
+    height: 200rpx;
+    margin-bottom: 30rpx;
+    opacity: 0.5;
+}
+
+.no-data-text {
+    font-size: 32rpx;
+    color: #666;
+    margin-bottom: 15rpx;
+}
+
+.no-data-subtitle {
+    font-size: 26rpx;
+    color: #999;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+    color: #666;
+    font-size: 28rpx;
+}
