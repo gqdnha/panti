@@ -33,6 +33,7 @@ Page({
         questionStatuses: [], // 存储题目作答情况数据
         optionStates: [], // 存储每个题目的选项状态
         startTime: 0, // 新增：记录开始时间
+        questionAnalysis: {}, // 存储每个题目的解析信息
     },
     onLoad: function () {
         this.startCountdown()
@@ -250,7 +251,6 @@ Page({
             optionStates,
             startTime
         } = this.data;
-        const newQuestionStates = [...questionStates];
         const allUserAnswers = [];
 
         console.log('提交答案前的状态：', {
@@ -271,30 +271,16 @@ Page({
         }
 
         allQuestions.forEach((question, index) => {
-            console.log(`处理第${index + 1}题：`, {
-                question,
-                selectedOptions: selectedOptions[index],
-                optionStates: optionStates[index]
-            });
-
             const userAnswer = allAnswers[index];
-            const correctAnswer = question.answer;
-            let isCorrect;
             const questionId = question.questionId;
 
             if (question.type === '单选题' || question.type === '判断题') {
                 const selectedChar = selectedOptions[index];
-                if (selectedChar !== undefined) {
-                    isCorrect = selectedChar === correctAnswer[0];
-                } else {
-                    isCorrect = false;
-                }
                 allUserAnswers.push({
                     'questionId': questionId,
                     'answer': selectedChar || ''
                 });
             } else if (question.type === '多选题') {
-                // 从选项状态中获取选中的选项
                 const selectedIndexes = optionStates[index] || [];
                 const selectedChars = [];
 
@@ -305,56 +291,64 @@ Page({
                 });
 
                 const selectedAnswer = selectedChars.sort().join('');
-                const correctAnswerString = correctAnswer.split('').sort().join('');
-
-                isCorrect = selectedAnswer === correctAnswerString;
-
                 allUserAnswers.push({
                     'questionId': questionId,
                     'answer': selectedAnswer
                 });
-
-                console.log(`多选题${index + 1}的答案：`, {
-                    selectedChars,
-                    selectedAnswer,
-                    correctAnswerString,
-                    isCorrect
-                });
             } else if (question.type === '填空题') {
-                isCorrect = userAnswer === correctAnswer;
                 allUserAnswers.push({
                     'questionId': questionId,
                     'answer': userAnswer
                 });
             }
-            newQuestionStates[index] = isCorrect;
         });
 
         console.log('提交的答案：', allUserAnswers);
-
-        this.setData({
-            isAllSubmitted: true,
-            questionStates: newQuestionStates,
-            isSubmitted: true
-        });
 
         // 计算使用的时间
         const endTime = new Date().getTime();
         const usedTime = endTime - startTime;
         const minutes = Math.floor(usedTime / (1000 * 60));
-        console.log(`使用了 ${minutes} 分钟`);
         addLearnTime(minutes).then(res => {
             console.log('传时间',minutes);
         })
+
         // 调用后端接口
         apiJudgeTest(allUserAnswers).then(response => {
-                console.log('后端返回结果：', response);
-            })
-            .catch(error => {
-                console.error('提交答案到后端时出错：', error);
+            console.log('后端返回结果：', response);
+            
+            // 根据后端返回结果设置题目状态和解析
+            const newQuestionStates = [];
+            const newQuestionAnalysis = {};
+            
+            response.forEach((result, index) => {
+                // 假设后端返回格式为 { isCorrect: boolean, analysis: string, questionId: number }
+                newQuestionStates[index] = result.isCorrect;
+                newQuestionAnalysis[result.questionId] = result.analysis || '';
             });
-        const totalCount = this.data.totalQuestions
-        console.log(totalCount);
+
+            this.setData({
+                isAllSubmitted: true,
+                questionStates: newQuestionStates,
+                isSubmitted: true,
+                questionAnalysis: newQuestionAnalysis
+            });
+        })
+        .catch(error => {
+            console.error('提交答案到后端时出错：', error);
+            // 如果后端出错，可以使用本地判断作为备选方案
+            const newQuestionStates = [...questionStates];
+            allQuestions.forEach((question, index) => {
+                // 本地判断逻辑...
+            });
+            this.setData({
+                isAllSubmitted: true,
+                questionStates: newQuestionStates,
+                isSubmitted: true
+            });
+        });
+
+        const totalCount = this.data.totalQuestions;
         dailyQuestionCount(totalCount).then(res => {
             console.log(res,'请求成功');
         })
@@ -368,12 +362,18 @@ Page({
     showAnalysis: function () {
         const {
             currentQuestion,
-            allQuestions
+            allQuestions,
+            questionAnalysis
         } = this.data;
         const currentQuestionData = allQuestions[currentQuestion - 1];
+        const analysis = questionAnalysis ? questionAnalysis[currentQuestionData.questionId] : '';
+        
         this.setData({
             showAnalysis: true,
-            currentQuestionData: currentQuestionData
+            currentQuestionData: {
+                ...currentQuestionData,
+                analysis: analysis,
+            }
         });
     },
     closeAnalysisAndContinue: function () {
