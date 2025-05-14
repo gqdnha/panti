@@ -228,9 +228,6 @@ Page({
         }
     },
     submitAllAnswers: function () {
-        // 清除缓存
-        wx.removeStorageSync('dailyPracticeCache');
-        
         const {
             allQuestions,
             allAnswers,
@@ -262,62 +259,38 @@ Page({
         }
 
         allQuestions.forEach((question, index) => {
-            console.log(`处理第${index + 1}题：`, {
-                question,
-                selectedOptions: selectedOptions[index],
-                optionStates: optionStates[index]
-            });
+            if (!question) {
+                console.error(`第${index + 1}题数据不存在`);
+                return;
+            }
 
-            const userAnswer = allAnswers[index];
-            const correctAnswer = question.answer;
-            let isCorrect;
-            const questionId = question.questionId;
+            const questionId = question.id;
+            const correctAnswer = question.correctAnswer;
+            let isCorrect = false;
+            let userAnswer = '';
+
+            if (!correctAnswer) {
+                console.error(`第${index + 1}题缺少正确答案`);
+                return;
+            }
 
             if (question.type === '单选题' || question.type === '判断题') {
-                const selectedChar = selectedOptions[index];
-                if (selectedChar !== undefined) {
-                    isCorrect = selectedChar === correctAnswer[0];
-                } else {
-                    isCorrect = false;
-                }
-                allUserAnswers.push({
-                    'questionId': questionId,
-                    'answer': selectedChar || ''
-                });
+                userAnswer = selectedOptions[index] || '';
+                isCorrect = userAnswer === (correctAnswer[0] || '');
             } else if (question.type === '多选题') {
-                // 从选项状态中获取选中的选项
-                const selectedIndexes = optionStates[index] || [];
-                const selectedChars = [];
-
-                selectedIndexes.forEach((isSelected, idx) => {
-                    if (isSelected && question.options && question.options[idx]) {
-                        selectedChars.push(question.options[idx][0]);
-                    }
-                });
-
-                const selectedAnswer = selectedChars.sort().join('');
-                const correctAnswerString = correctAnswer.split('').sort().join('');
-
-                isCorrect = selectedAnswer === correctAnswerString;
-
-                allUserAnswers.push({
-                    'questionId': questionId,
-                    'answer': selectedAnswer
-                });
-
-                console.log(`多选题${index + 1}的答案：`, {
-                    selectedChars,
-                    selectedAnswer,
-                    correctAnswerString,
-                    isCorrect
-                });
+                const selectedChars = selectedOptions[index] || [];
+                userAnswer = selectedChars.sort().join('');
+                const correctAnswerString = (correctAnswer || '').split('').sort().join('');
+                isCorrect = userAnswer === correctAnswerString;
             } else if (question.type === '填空题') {
+                userAnswer = allAnswers[index] || '';
                 isCorrect = userAnswer === correctAnswer;
-                allUserAnswers.push({
-                    'questionId': questionId,
-                    'answer': userAnswer
-                });
             }
+
+            allUserAnswers.push({
+                'questionId': questionId,
+                'answer': userAnswer
+            });
             newQuestionStates[index] = isCorrect;
         });
 
@@ -334,21 +307,35 @@ Page({
         const usedTime = endTime - startTime + (elapsedTime * 1000);
         const minutes = Math.floor(usedTime / (1000 * 60));
         
+        // 保存最终状态到缓存
+        const finalCacheData = {
+            currentQuestion: this.data.currentQuestion,
+            selectedOptions: this.data.selectedOptions,
+            optionStates: this.data.optionStates,
+            answerSheetStates: this.data.answerSheetStates,
+            elapsedTime: this.data.elapsedTime,
+            isAllSubmitted: true,
+            questionStates: newQuestionStates,
+            isSubmitted: true
+        };
+        wx.setStorageSync('dailyPracticeCache', finalCacheData);
+
         addLearnTime(minutes).then(res => {
             console.log('传时间', minutes);
         });
+
         // 调用后端接口
         apiJudgeTest(allUserAnswers).then(response => {
-                console.log('后端返回结果：', response);
-            })
-            .catch(error => {
-                console.error('提交答案到后端时出错：', error);
-            });
-        const totalCount = this.data.totalQuestions
+            console.log('后端返回结果：', response);
+        }).catch(error => {
+            console.error('提交答案到后端时出错：', error);
+        });
+
+        const totalCount = this.data.totalQuestions;
         console.log(totalCount);
         dailyQuestionCount(totalCount).then(res => {
             console.log(res,'请求成功');
-        })
+        });
     },
     onTouchStart: function (e) {
         // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
@@ -418,7 +405,10 @@ Page({
                 selectedOptions,
                 optionStates,
                 answerSheetStates,
-                elapsedTime
+                elapsedTime,
+                isAllSubmitted,
+                questionStates,
+                isSubmitted
             } = cachedData;
 
             this.setData({
@@ -426,11 +416,16 @@ Page({
                 selectedOptions,
                 optionStates,
                 answerSheetStates,
-                elapsedTime
+                elapsedTime,
+                isAllSubmitted,
+                questionStates,
+                isSubmitted
             });
 
-            // 恢复计时器
-            this.startCountdown(elapsedTime);
+            // 如果已经提交过答案，不再启动计时器
+            if (!isAllSubmitted) {
+                this.startCountdown(elapsedTime);
+            }
         } else {
             this.startCountdown();
         }
@@ -452,8 +447,16 @@ Page({
     },
     // 新增：页面卸载时清除缓存
     onUnload: function() {
-        if (!this.data.isAllSubmitted) {
-            this.saveCachedData();
+        // 清除缓存
+        wx.removeStorageSync('dailyPracticeCache');
+        
+        // 清除计时器
+        if (this.data.timer) {
+            clearInterval(this.data.timer);
+            this.data.timer = null;
         }
+
+        // 重新获取数据
+        this.getData();
     }
 })    

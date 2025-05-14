@@ -4,6 +4,7 @@ import { request } from '../../../api/request'
 
 Page({
     data: {
+        department: '',
         // 正确率
         rightPercent:0,
         userId: null,
@@ -25,30 +26,42 @@ Page({
     },
 
     onLoad(options) {
+        // 获取部门信息
+        const department = wx.getStorageSync('department');
+        console.log('当前用户部门：', department);
+        
+        this.setData({
+            department: department || ''
+        });
+
+        // 打印部门信息，用于调试
+        console.log('页面数据中的部门信息：', this.data.department);
+
         this.loadUserStats();
     },
 
     loadUserStats() {
-        const { pageNum, pageSize, searchKeyword } = this.data;
+        const { pageNum, pageSize, searchKeyword, department } = this.data;
         const data = {
-            department: "",
+            // 如果是超级管理员，department传空字符串，否则传当前用户的department
+            department: department === '超级管理员' ? "" : department,
             // 判断 searchKeyword 是否有值，有则传其值，否则传空字符串
             userName: searchKeyword || "",
             pageNum: pageNum,
             pageSize: pageSize
         };
-        console.log(data);
+        console.log('请求参数：', data);
         getAllUserInfo(data).then(res => {
-            console.log(res);
+            console.log('获取到的数据：', res);
             // 假设 res 包含 userList 和 totalPages 数据
             this.setData({
                 userList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage
             });
-            console.log(this.data.userList);
-            console.log(this.data.totalPages);
+            console.log('用户列表：', this.data.userList);
+            console.log('总页数：', this.data.totalPages);
         }).catch(err => {
-            console.error(err);
+            console.error('请求失败：', err);
         });
     },
 
