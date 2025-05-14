@@ -16,10 +16,10 @@ const handleUnauthorized = () => {
 // 处理请求成功但业务逻辑错误的情况
 const handleBusinessError = (res) => {
     console.log('handleBusinessError: 业务逻辑错误，响应数据:', res);
-    wx.showToast({
+    /* wx.showToast({
         title: res.data.message,
         icon: "none"
-    });
+    }); */
     return res.data.message;
 };
 
@@ -36,10 +36,10 @@ const responseInterceptor = (response) => {
     
     // 处理业务状态码
     if (response.data.code !== 200) {
-        wx.showToast({
+        /* wx.showToast({
             title: response.data.message || '请求失败',
             icon: 'none'
-        });
+        }); */
     }
     
     return response;
@@ -82,10 +82,10 @@ export const request = function request(option) {
                         reject(handleUnauthorized());
                     } else if (res.statusCode === 400) {
                         console.log('request success: 400 Bad Request, 详细信息:', res.data);
-                        wx.showToast({
+                        /* wx.showToast({
                             title: res.data.error || "请求参数错误",
                             icon: "none"
-                        });
+                        }); */
                         reject(res.data.error || "请求参数错误");
                     } else {
                         reject(handleBusinessError(res));

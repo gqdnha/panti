@@ -77,7 +77,6 @@ Page({
     onLoad() {
         this.setCurrentDate();
         this.loadUserInfo();
-        this.userFinash()
         this.getUserInfo();
         this.getStudyStats();
         this.getUserLearnTime();
