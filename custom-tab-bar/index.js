@@ -62,6 +62,37 @@ Component({
     switchTab(e) {
       const data = e.currentTarget.dataset;
       const url = data.path;
+      const index = data.index;
+      
+      // 检查是否点击的是"我的"页面
+      if (url === "/pages/user-info/index") {
+        const name = wx.getStorageSync('name');
+        const role = wx.getStorageSync('role');
+        
+        // 检查是否登录
+        if (!name && !role) {
+          wx.showModal({
+            title: '提示',
+            content: '您未登录',
+            confirmText: '去登录',
+            cancelText: '取消',
+            showCancel: true,
+            success: (res) => {
+              if (res.confirm) {
+                wx.navigateTo({
+                  url: '/pages/login/index'
+                });
+              } else {
+                // 点击取消，保持在首页
+                this.setData({
+                  selected: 0
+                });
+              }
+            }
+          });
+          return; // 阻止跳转
+        }
+      }
       
       // 检查是否是管理页面
       if (url.includes('/admin/')) {
@@ -79,7 +110,7 @@ Component({
         url
       });
       this.setData({
-        selected: data.index
+        selected: index
       });
     }
   }
