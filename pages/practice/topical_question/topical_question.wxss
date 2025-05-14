@@ -210,6 +210,7 @@
 .next {
     background-color: #f8f9fa;
     color: #666;
+    margin: auto;
 }
 
 /* 答案解析弹窗样式 */
