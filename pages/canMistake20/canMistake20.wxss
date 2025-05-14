@@ -21,6 +21,11 @@
     margin-bottom: 10rpx;
     font-size: 28rpx;
     color: #333;
+    width: 300rpx;
+}
+.progress-info text {
+    text-align: center;
+    width: 100%;
 }
 
 .progress-track {
@@ -236,6 +241,10 @@
 .prev {
     background-color: #f8f9fa;
     color: #666;
+    width: 200rpx;
+    height: 50rpx;
+    margin-bottom: 50rpx;
+    border-radius: 50rpx;
 }
 
 .submit {
@@ -249,6 +258,10 @@
     background-color: #f8f9fa;
     color: #666;
     margin-left: 20rpx;
+    width: 200rpx;
+    height: 50rpx;
+    margin-bottom: 50rpx;
+    border-radius: 50rpx;
 }
 
 /* 答案解析弹窗样式 */
