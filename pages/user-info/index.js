@@ -49,8 +49,8 @@ Page({
                 selected: 1
             });
         }
-        this.getUserInfo();
         this.getStudyStats();
+        this.getUserInfo();
     },
 
     /**
@@ -93,13 +93,14 @@ Page({
         const name = wx.getStorageSync('name');
         const phone = wx.getStorageSync('phone');
         const department = wx.getStorageSync('department');
+        console.log(phone);
 
         if (name || phone || department) {
             this.setData({
                 userInfo: {
-                    nickName: name || '未设置',
-                    phone: phone || '未设置',
-                    department: department || '未设置'
+                    nickName: name || '未登录',
+                    phone: phone || '未登录',
+                    department: department || '未登录'
                 }
             });
         }
