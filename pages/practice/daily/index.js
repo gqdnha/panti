@@ -32,8 +32,8 @@ Page({
         optionStates: [], // 存储每个题目的选项状态
         startTime: 0, // 新增：记录开始时间
         questionAnalysis: {}, // 存储每个题目的解析信息
-        // 新增：存储每个题目的正确答案
-        correctAnswers: [] 
+        // 新增：存储每个题目的正确答案（改为对象，使用questionId作为键）
+        correctAnswers: {} 
     },
     onLoad: function () {
         this.startCountdown()
@@ -320,13 +320,21 @@ Page({
             // 根据后端返回结果设置题目状态和解析
             const newQuestionStates = [];
             const newQuestionAnalysis = {};
-            const newCorrectAnswers = [];
+            const newCorrectAnswers = {}; // 改为对象，使用questionId作为键
+            
+            // 创建questionId到索引的映射
+            const questionIdToIndex = {};
+            this.data.allQuestions.forEach((question, index) => {
+                questionIdToIndex[question.questionId] = index;
+            });
 
-            response.forEach((result, index) => {
-                // 假设后端返回格式为 { isCorrect: boolean, analysis: string, questionId: number, answer: string }
-                newQuestionStates[index] = result.rightOrWrong === '对';
-                newQuestionAnalysis[result.questionId] = result.analysis || '';
-                newCorrectAnswers[index] = result.answer;
+            response.forEach((result) => {
+                const index = questionIdToIndex[result.questionId];
+                if (index !== undefined) {
+                    newQuestionStates[index] = result.rightOrWrong === '对';
+                    newQuestionAnalysis[result.questionId] = result.analysis || '';
+                    newCorrectAnswers[result.questionId] = result.answer; // 使用questionId作为键
+                }
             });
 
             this.setData({
@@ -334,7 +342,7 @@ Page({
                 questionStates: newQuestionStates,
                 isSubmitted: true,
                 questionAnalysis: newQuestionAnalysis,
-                correctAnswers: newCorrectAnswers
+                correctAnswers: newCorrectAnswers // 现在correctAnswers是一个对象
             });
         })
         .catch(error => {
@@ -371,7 +379,7 @@ Page({
         } = this.data;
         const currentQuestionData = allQuestions[currentQuestion - 1];
         const analysis = questionAnalysis[currentQuestionData.questionId];
-        const correctAnswer = correctAnswers[currentQuestion - 1];
+        const correctAnswer = correctAnswers[currentQuestionData.questionId]; // 使用questionId获取答案
 
         this.setData({
             showAnalysis: true,
@@ -424,4 +432,4 @@ Page({
         });
         this.closeAnswerSheetModal();
     }
-}) 
+})

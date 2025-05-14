@@ -95,7 +95,7 @@
                 </text>
             </view>
             <view class="correct-answer">
-                <text>正确答案：{{currentQuestionData.answer}}</text>
+                <text>正确答案：{{currentQuestionData.correctAnswer}}</text>
             </view>
             <view class="analysis-content">
                 <text class="analysis-title">解析：</text>
