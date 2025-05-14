@@ -1,8 +1,9 @@
 import {
     getWrongQuestion,
 } from "../../api/getWrongQuestion";
-import {addLearnTime} from '../../api/addLearnTime'
-import {apiJudgeTest} from '../../api/judgeTest'
+import { addLearnTime } from '../../api/addLearnTime'
+import { apiJudgeTest } from '../../api/judgeTest'
+
 Page({
     data: {
         type: '',
@@ -21,8 +22,8 @@ Page({
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
         optionStates: [], // 存储每个题目的选项状态
-        startTime: null, // 新增：记录开始时间
-        answerSheetStates: [] // 新增：记录每个题目的答案状态
+        startTime: null, // 记录开始时间
+        answerSheetStates: [] // 记录每个题目的答案状态
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
@@ -43,6 +44,14 @@ Page({
         const type = this.data.type;
         getWrongQuestion(type).then(res => {
             console.log(res);
+            if (res.length === 0) {
+                wx.showToast({
+                    title: '没有错题',
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
             res.forEach(question => {
                 if (question.options && typeof question.options ==='string') {
                     try {
