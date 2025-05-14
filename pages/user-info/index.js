@@ -11,7 +11,7 @@ Page({
         userInfo: null,
         studyStats: {
             totalQuestions: 0,
-            correctRate: 0,
+            correctRate: '',
         },
         studyTime:0,
     },
@@ -115,6 +115,7 @@ Page({
                     correctRate: res.rightPercent,
                 }
             });
+            console.log(this.data.studyStats);
         })
     },
 

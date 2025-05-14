@@ -13,7 +13,7 @@ Page({
         canIUseNicknameComp: wx.canIUse('input.type.nickname'),
         studyTime: 0,
         totalQuestions: 0,
-        correctRate: 0,
+        // correctRate: '',
         totalTime: 0,
         recentExams: [],
         recommended: [],
@@ -21,9 +21,17 @@ Page({
         practiceCount: 0,
         studyStats: {
             totalQuestions: 0,
-            correctRate: 0,
+            correctRate: '',
             totalTime: 0
         }
+    },
+    onLoad() {
+        this.setCurrentDate();
+        this.loadUserInfo();
+        this.getUserInfo();
+        this.getStudyStats();
+        this.getUserLearnTime();
+        this.userFinash();
     },
     bindViewTap() {
         wx.navigateTo({
@@ -74,17 +82,11 @@ Page({
             }
         })
     },
-    onLoad() {
-        this.setCurrentDate();
-        this.loadUserInfo();
-        this.getUserInfo();
-        this.getStudyStats();
-        this.getUserLearnTime();
-        this.userFinash();
-    },
+    
     onShow() {
         this.getUserInfo();
         this.getStudyStats();
+        this.userFinash();
         if (typeof this.getTabBar === 'function' && this.getTabBar()) {
             this.getTabBar().setData({
                 selected: 0
