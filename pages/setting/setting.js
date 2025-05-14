@@ -68,7 +68,7 @@ Page({
             wx.hideLoading();
             console.error('修改失败:', err);
             wx.showToast({
-                title: '修改失败，请重试',
+                title: err,
                 icon: 'none'
             });
         });
