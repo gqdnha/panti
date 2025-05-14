@@ -16,8 +16,7 @@
 }
 
 .progress-info {
-    display: flex;
-    justify-content: space-between;
+    text-align: center;
     margin-bottom: 10rpx;
     font-size: 28rpx;
     color: #333;
@@ -74,43 +73,17 @@
 /* 选项样式 */
 .options-container {
     margin-top: 30rpx;
+    margin-bottom: 30rpx;
 }
 
 .option-item {
     display: flex;
     align-items: flex-start;
     padding: 20rpx;
-    margin-bottom: 20rpx;
+    margin-bottom: 15rpx;
     background-color: #f8f9fa;
     border-radius: 8rpx;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.option-item.selected {
-    background-color: #e6f0ff;
-    border: 2rpx solid #0066cc;
-}
-
-.option-item.correct.selected {
-    border-color: #52c41a;
-    background-color: rgba(82, 196, 26, 0.1);
-    box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
-    transition: all 0.3s ease;
-}
-
-.option-item.wrong.selected {
-    border-color: #f5222d;
-    background-color: rgba(245, 34, 45, 0.1);
-    box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
-    transition: all 0.3s ease;
-}
-
-.option-label {
-    font-size: 30rpx;
-    color: #0066cc;
-    margin-right: 20rpx;
-    font-weight: bold;
+    border: 1rpx solid #e0e0e0;
 }
 
 .option-content {
@@ -119,63 +92,43 @@
     flex: 1;
 }
 
-/* 判断题样式 */
-.judge-options {
-    display: flex;
-    justify-content: center;
-    gap: 40rpx;
-}
-
-.judge-item {
-    padding: 20rpx 60rpx;
+/* 填空题显示样式 */
+.fill-blank-display {
+    padding: 20rpx;
     background-color: #f8f9fa;
     border-radius: 8rpx;
-    font-size: 32rpx;
-    color: #333;
+    border: 1rpx solid #e0e0e0;
 }
 
-.judge-item.selected {
-    background-color: #e6f0ff;
-    border: 2rpx solid #0066cc;
-    color: #0066cc;
-}
-
-.judge-item.correct.selected {
-    border-color: #52c41a;
-    background-color: rgba(82, 196, 26, 0.1);
-    box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
-    color: #52c41a;
-    transition: all 0.3s ease;
-}
-
-.judge-item.wrong.selected {
-    border-color: #f5222d;
-    background-color: rgba(245, 34, 45, 0.1);
-    box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
-    color: #f5222d;
-    transition: all 0.3s ease;
-}
-
-/* 填空题样式 */
-.fill-blank-input {
-    width: 80%;
+/* 答案和解析区域 */
+.answer-section {
+    margin-top: 30rpx;
     padding: 20rpx;
-    border: 2rpx solid #e0e0e0;
-    border-radius: 8rpx;
-    font-size: 30rpx;
-    margin-top: 20rpx;
+    background-color: #f0f8ff;
+    border-radius: 10rpx;
+    border: 1rpx solid #d1e7dd;
 }
 
-.fill-blank-input.correct {
-    border-color: #52c41a;
-    box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
-    transition: all 0.3s ease;
+.correct-answer {
+    margin-bottom: 15rpx;
 }
 
-.fill-blank-input.wrong {
-    border-color: #f5222d;
-    box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
-    transition: all 0.3s ease;
+.answer-label,
+.analysis-label {
+    font-size: 28rpx;
+    color: #0066cc;
+    font-weight: bold;
+}
+
+.answer-content,
+.analysis-content {
+    font-size: 28rpx;
+    color: #333;
+    line-height: 1.6;
+}
+
+.analysis-section {
+    margin-top: 15rpx;
 }
 
 /* 底部操作栏样式 */
@@ -192,180 +145,61 @@
     border-radius: 8rpx;
     font-size: 30rpx;
     text-align: center;
+    background-color: #0066cc;
+    color: #fff;
+    flex: 1;
+    margin: 0 10rpx;
+}
+
+.btn.disabled {
+    background-color: #f8f9fa;
+    color: #ccc;
 }
 
 .prev {
-    background-color: #f8f9fa;
-    color: #666;
-}
-
-.submit {
-    background-color: #0066cc;
-    color: #fff;
-    flex: 1;
-    margin: 0 20rpx;
+    margin-left: 0;
 }
 
 .next {
-    background-color: #f8f9fa;
-    color: #666;
-    margin-left: 20rpx;
+    margin-right: 0;
 }
 
-/* 答案解析弹窗样式 */
-.analysis-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+/* 空状态和加载状态 */
+.no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100rpx 20rpx;
+    min-height: 60vh;
+    color: #999;
+}
+
+.no-data-icon {
+    width: 200rpx;
+    height: 200rpx;
+    margin-bottom: 30rpx;
+    opacity: 0.5;
+}
+
+.no-data-text {
+    font-size: 32rpx;
+    color: #666;
+    margin-bottom: 15rpx;
+}
+
+.no-data-subtitle {
+    font-size: 26rpx;
+    color: #999;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.loading {
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
-}
-
-.modal-content {
-    width: 80%;
-    max-height: 80vh;
-    background-color: #fff;
-    border-radius: 10rpx;
-    padding: 30rpx;
-    overflow-y: auto;
-}
-
-.result-header {
-    text-align: center;
-    margin-bottom: 30rpx;
-}
-
-.correct {
-    color: #52c41a;
-    font-size: 36rpx;
-    font-weight: bold;
-}
-
-.wrong {
-    color: #f5222d;
-    font-size: 36rpx;
-    font-weight: bold;
-}
-
-.correct-answer {
-    margin-bottom: 20rpx;
-    font-size: 30rpx;
-    color: #333;
-}
-
-.analysis-content {
-    margin-bottom: 20rpx;
-}
-
-.analysis-title {
-    font-size: 30rpx;
-    color: #0066cc;
-    font-weight: bold;
-    margin-right: 10rpx;
-}
-
-.knowledge-points {
-    margin-bottom: 30rpx;
-}
-
-.knowledge-title {
-    font-size: 30rpx;
-    color: #0066cc;
-    font-weight: bold;
-    margin-right: 10rpx;
-}
-
-.modal-btns {
-    display: flex;
-    justify-content: space-between;
-    gap: 20rpx;
-}
-
-.modal-btns .btn {
-    flex: 1;
-    background-color: #fd6854;
-    background-color: #0066cc;
-    color: #fff;
-}
-
-.view-detail-btn {
-    margin-top: 50rpx;
-}
-
-/* 新增：答题卡按钮样式 */
-.answer-sheet-btn {
-    padding: 20rpx 40rpx;
-    border-radius: 8rpx;
-    font-size: 30rpx;
-    text-align: center;
-    background-color: #f8f9fa;
+    min-height: 60vh;
     color: #666;
-    margin: 20rpx 0;
-}
-
-/* 新增：答题卡弹窗样式 */
-.answer-sheet-modal {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-.answer-sheet-modal.modal-content {
-    width: 80%;
-    max-height: 80vh;
-    background-color: #fff;
-    border-radius: 10rpx;
-    padding: 30rpx;
-    overflow-y: auto;
-}
-
-.question-statuses {
-    margin-bottom: 20rpx;
-    display: flex;
-    flex-wrap: wrap;
-    /* justify-content: space-between; */
-}
-
-.question-status-item {
-    margin: 15rpx;
-    height: 70rpx;
-    width: 70rpx;
-    display: flex;
-    justify-content: center;
-    align-items: center; 
-    border: 1rpx solid rgb(177, 177, 177); /* 设置边框 */
-    margin-bottom: 10rpx;
-    padding: 10rpx;
-    border-radius: 8rpx;
-    transition: all 0.3s ease;
-}
-
-.answered {
-    color: #52c41a;
-}
-
-.unanswered {
-    color: #f5222d;
-}
-
-/* 新增：已作答高亮样式 */
-.answered-highlight {
-    color: #52c41a;
-    font-weight: bold;
-}
-/* 新增：未作答暗着样式 */
-.unanswered-dark {
-    color: #ccc;
+    font-size: 28rpx;
 }    
