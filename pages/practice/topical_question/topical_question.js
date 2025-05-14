@@ -34,7 +34,8 @@ Page({
         startTime: null,
         timer: null,
         finishedQuestionIds: [],
-        isAllFinished: false
+        isAllFinished: false,
+        noData: false
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);
@@ -89,11 +90,23 @@ Page({
             type: this.data.type
         };
 
-/*         console.log('请求参数：', data);
-        console.log('当前已完成题目ID：', finishedQuestionIds); */
-
         getAllQuestion(data).then(res => {
             console.log('获取到的题目数据:', res);
+            
+            // 检查是否有数据
+            if (!res.pageInfo.pageData || res.pageInfo.pageData.length === 0) {
+                this.setData({
+                    noData: true,
+                    totalQuestions: 0
+                });
+                return;
+            }
+
+            // 有数据时重置noData状态
+            this.setData({
+                noData: false
+            });
+
             let newQuestionList = res.pageInfo.pageData.map(question => {
                 question.questionId = question.question_id;
                 // 标记已完成的题目
@@ -131,6 +144,9 @@ Page({
             this.setQuestionList(newQuestionList);
         }).catch(err => {
             console.error('加载题目列表失败:', err);
+            this.setData({
+                noData: true
+            });
             wx.showToast({
                 title: '加载题目列表失败',
                 icon: 'none'

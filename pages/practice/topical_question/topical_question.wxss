@@ -9,10 +9,11 @@
 
 /* 进度条样式 */
 .progress-bar {
+    width: 90%;
     background-color: #fff;
     padding: 20rpx;
     border-radius: 10rpx;
-    margin-bottom: 20rpx;
+    margin: 0 auto 20rpx;
 }
 
 .progress-info {
@@ -197,10 +198,6 @@
 .prev {
     background-color: #f8f9fa;
     color: #666;
-    width: 200rpx;
-    height: 50rpx;
-    margin-bottom: 50rpx;
-    border-radius: 50rpx;
 }
 
 .submit {
@@ -213,11 +210,6 @@
 .next {
     background-color: #f8f9fa;
     color: #666;
-    margin-left: 20rpx;
-    width: 200rpx;
-    height: 50rpx;
-    margin-bottom: 50rpx;
-    border-radius: 50rpx;
 }
 
 /* 答案解析弹窗样式 */
@@ -302,4 +294,33 @@
 }
 .view-detail-btn {
     margin-top: 50rpx;
+}
+
+/* 无数据展示样式 */
+.no-data-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 100rpx 40rpx;
+}
+
+.no-data-icon {
+    font-size: 120rpx;
+    margin-bottom: 40rpx;
+    opacity: 0.6;
+}
+
+.no-data-text {
+    font-size: 32rpx;
+    color: #999;
+    margin-bottom: 20rpx;
+}
+
+.no-data-tip {
+    font-size: 28rpx;
+    color: #ccc;
+    text-align: center;
+    line-height: 1.5;
 }
