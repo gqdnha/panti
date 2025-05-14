@@ -38,10 +38,30 @@ Page({
         cachedAnswers: [], // 缓存的用户答案
     },
     onLoad: function () {
-        this.startCountdown()
+        // 先加载缓存，根据缓存情况决定是否开始新倒计时
+        this.checkCacheAndStartTimer()
         this.getData()
-        // 加载缓存的答案
-        this.loadCachedAnswers()
+    },
+    // 检查缓存并启动相应的倒计时
+    checkCacheAndStartTimer: function() {
+        try {
+            const cachedData = wx.getStorageSync('dailyTestAnswers');
+            if (cachedData && cachedData.startTime) {
+                // 有缓存数据，恢复倒计时
+                console.log('发现缓存数据，恢复倒计时');
+                this.setData({
+                    startTime: cachedData.startTime
+                });
+                this.restoreCachedCountdown(cachedData.startTime);
+            } else {
+                // 没有缓存，开始新的倒计时
+                console.log('没有缓存数据，开始新倒计时');
+                this.startCountdown();
+            }
+        } catch (error) {
+            console.log('检查缓存失败，开始新倒计时：', error);
+            this.startCountdown();
+        }
     },
     // 请求接口
     getData: function () {
@@ -75,9 +95,15 @@ Page({
                     answerSheetStates: cachedData.answerSheetStates || new Array(res.length).fill(false),
                     allAnswers: cachedData.allAnswers || [],
                     currentQuestion: cachedData.currentQuestion || 1,
-                    startTime: cachedData.startTime || 0
+                    // 不在这里设置 startTime，因为之前已经设置过了
                 }, () => {
                     console.log('恢复缓存状态完成');
+                    // 显示恢复提示
+                    wx.showToast({
+                        title: '已恢复上次答题进度',
+                        icon: 'success',
+                        duration: 2000
+                    });
                 });
             } else {
                 // 没有缓存或题目数量不匹配，使用初始状态
@@ -237,28 +263,16 @@ Page({
         this.setData({
             startTime: now.getTime()
         });
+        
         // 计算距离当天24:00的剩余时间（单位：秒）
         const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
         const endOfDaySeconds = Math.floor((endOfDay - now) / 1000);
 
-        let remainingSeconds = 1200; // 初始倒计时时间
+        let remainingSeconds = 1200; // 初始倒计时时间（20分钟）
         // 取较小值作为实际倒计时时间
         remainingSeconds = Math.min(remainingSeconds, endOfDaySeconds);
 
-        this.data.timer = setInterval(() => {
-            if (remainingSeconds > 0) {
-                remainingSeconds--;
-                const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
-                const seconds = (remainingSeconds % 60).toString().padStart(2, '0');
-                this.setData({
-                    remainingTime: `${minutes}:${seconds}`
-                });
-            } else {
-                this.clearCountdown();
-                this.submitAllAnswers();
-            }
-        }, 1000);
-
+        this.startCountdownWithTime(remainingSeconds);
     },
     // 清除倒计时
     clearCountdown: function () {
@@ -463,37 +477,6 @@ Page({
         });
         this.closeAnswerSheetModal();
     },
-    // 加载缓存的答案
-    loadCachedAnswers: function() {
-        try {
-            const cachedData = wx.getStorageSync('dailyTestAnswers');
-            if (cachedData) {
-                console.log('发现缓存的答题数据：', cachedData);
-                this.setData({
-                    cachedAnswers: cachedData.cachedAnswers || [],
-                    currentQuestion: cachedData.currentQuestion || 1,
-                    selectedOptions: cachedData.selectedOptions || [],
-                    optionStates: cachedData.optionStates || [],
-                    answerSheetStates: cachedData.answerSheetStates || [],
-                    allAnswers: cachedData.allAnswers || [],
-                    startTime: cachedData.startTime || 0
-                });
-                
-                // 恢复倒计时
-                if (cachedData.startTime) {
-                    this.restoreCachedCountdown(cachedData.startTime);
-                }
-                
-                wx.showToast({
-                    title: '已恢复上次答题进度',
-                    icon: 'success',
-                    duration: 2000
-                });
-            }
-        } catch (error) {
-            console.log('加载缓存答案失败：', error);
-        }
-    },
     // 恢复缓存的倒计时
     restoreCachedCountdown: function(originalStartTime) {
         const currentTime = new Date().getTime();
@@ -538,12 +521,12 @@ Page({
                 optionStates: this.data.optionStates,
                 answerSheetStates: this.data.answerSheetStates,
                 allAnswers: this.data.allAnswers,
-                startTime: this.data.startTime,
+                startTime: this.data.startTime, // 确保缓存开始时间
                 totalQuestions: this.data.totalQuestions,
                 timestamp: new Date().getTime()
             };
             wx.setStorageSync('dailyTestAnswers', cacheData);
-            console.log('答题状态已缓存');
+            console.log('答题状态已缓存，开始时间：', new Date(this.data.startTime));
         } catch (error) {
             console.log('缓存答题状态失败：', error);
         }
