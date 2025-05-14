@@ -65,6 +65,10 @@
                     <label>正确率</label>
                     <text class="info-text highlight">{{rightPercent}}%</text>
                 </view>
+                <view class="user-detail-item">
+                    <label>每日练习完成情况</label>
+                    <text class="info-text {{dailyFinishData === '未完成' ? 'status-incomplete' : ''}}" wx:if="{{!loadingDailyFinish && dailyFinishData}}">{{dailyFinishData}}</text>
+                </view>
             </view>
             
             <view class="action-buttons"> 

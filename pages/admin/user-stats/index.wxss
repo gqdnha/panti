@@ -484,3 +484,14 @@ button::after {
     border: rgb(255, 255, 255) 1px solid;
 
 }
+
+/* 在文件末尾添加以下样式 */
+.status-incomplete {
+    color: #ff4d4f !important;
+    font-weight: bold;
+}
+
+/* 详情间隙 */
+.info-text {
+    margin-left: 10rpx;
+}

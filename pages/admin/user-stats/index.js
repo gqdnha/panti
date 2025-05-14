@@ -1,5 +1,6 @@
 import { getAllUserInfo } from '../../../api/admin'
 import {getUserInfo} from '../../../api/getUserInfo'
+import { getUserDailyFinish } from '../../../api/getDeilyFinash'
 import { request } from '../../../api/request'
 
 Page({
@@ -22,7 +23,9 @@ Page({
             name: '',
             phone: '',
             department: ''
-        }
+        },
+        dailyFinishData: null, // 每日练习完成情况
+        loadingDailyFinish: false // 加载每日练习完成情况的状态
     },
 
     onLoad(options) {
@@ -101,9 +104,12 @@ Page({
 
         this.setData({
             showUserDetailModal: true,
-            currentUserDetail: user
+            currentUserDetail: user,
+            dailyFinishData: null, // 重置每日练习数据
+            loadingDailyFinish: true // 开始加载
         });
 
+        // 获取用户正确率
         getUserInfo().then(res => {
             console.log('获取到的用户信息:', res);
             this.setData({
@@ -116,11 +122,31 @@ Page({
                 icon: 'none'
             });
         });
+
+        // 获取用户每日练习完成情况
+        getUserDailyFinish(user.user_id).then(res => {
+            console.log('获取到的每日练习完成情况:', res);
+            
+            // 判断是否完成：如果是100则已完成，否则未完成
+            const statusText = res === 100 ? '已完成' : '未完成';
+            
+            this.setData({
+                dailyFinishData: statusText,
+                loadingDailyFinish: false
+            });
+        }).catch(err => {
+            console.error('获取每日练习完成情况失败:', err);
+            this.setData({
+                dailyFinishData: '未完成',
+                loadingDailyFinish: false
+            });
+        });
     },
 
     closeUserDetailModal() {
         this.setData({
-            showUserDetailModal: false
+            showUserDetailModal: false,
+            dailyFinishData: null // 清空数据
         });
     },
 
