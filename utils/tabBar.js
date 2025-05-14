@@ -1,17 +1,6 @@
 // 根据用户角色设置tabBar
 export const setupTabBar = () => {
-    const role = wx.getStorageSync('role');
-    
-    // 如果是普通用户，隐藏管理tab
-    if (role === 'user') {
-        // 隐藏管理tab
-        wx.hideTabBar({
-            animation: false
-        });
-    } else {
-        // 如果是管理员，显示所有tab
-        wx.showTabBar({
-            animation: false
-        });
-    }
+    // 由于使用了自定义tabBar，不需要手动控制tabBar的显示和隐藏
+    // 自定义tabBar组件会根据用户角色自动显示对应的选项
+    return;
 }; 

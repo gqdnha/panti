@@ -114,6 +114,8 @@ Page({
                                                 selected: 0,
                                                 list: list
                                             });
+                                            // 更新tabBar显示
+                                            this.getTabBar().updateTabBar();
                                         }
                                         wx.switchTab({
                                             url: '/pages/index/index'

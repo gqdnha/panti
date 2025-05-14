@@ -43,21 +43,15 @@
     "list": [
       {
         "pagePath": "pages/index/index",
-        "text": "首页",
-        "iconPath": "/assets/icons/home.png",
-        "selectedIconPath": "/assets/icons/home-active.png"
+        "text": "首页"
       },
       {
         "pagePath": "pages/user-info/index",
-        "text": "我的",
-        "iconPath": "/assets/icons/user.png",
-        "selectedIconPath": "/assets/icons/user-active.png"
+        "text": "我的"
       },
       {
         "pagePath": "pages/admin/dashboard/index",
-        "text": "管理",
-        "iconPath": "/assets/icons/admin.png",
-        "selectedIconPath": "/assets/icons/admin-active.png"
+        "text": "管理"
       }
     ]
   },

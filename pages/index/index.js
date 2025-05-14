@@ -90,6 +90,8 @@ Page({
             this.getTabBar().setData({
                 selected: 0
             });
+            // 更新tabBar显示
+            this.getTabBar().updateTabBar();
         }
     },
     // 获取信息

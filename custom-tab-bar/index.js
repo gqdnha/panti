@@ -18,8 +18,10 @@ Component({
       }
     ]
   },
-  attached() {
-    this.updateTabBar();
+  lifetimes: {
+    attached() {
+      this.updateTabBar();
+    }
   },
   pageLifetimes: {
     show() {
