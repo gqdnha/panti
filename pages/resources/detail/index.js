@@ -13,7 +13,9 @@ Page({
         totalSize: 0,
         totalPages: 0,
         lawList: [],
-        isLoading: false
+        isLoading: false,
+        hasData: true,
+        isFirstLoad: true
     },
 
     onLoad(options) {
@@ -42,14 +44,40 @@ Page({
             console.log(res);
             const totalSize = res.pageInfo.totalSize;
             const totalPages = Math.ceil(totalSize / pageSize);
+            const newData = res.pageInfo.pageData || [];
+            const updatedLawList = this.data.lawList.concat(newData);
+            
             this.setData({
                 totalSize: totalSize,
                 totalPages: totalPages,
-                lawList: this.data.lawList.concat(res.pageInfo.pageData),
-                isLoading: false
+                lawList: updatedLawList,
+                isLoading: false,
+                hasData: updatedLawList.length > 0,
+                isFirstLoad: false
             });
-        }).catch(() => {
-            this.setData({ isLoading: false });
+
+            if (this.data.pageNum === 1 && updatedLawList.length === 0) {
+                wx.showToast({
+                    title: '该分类下暂无数据',
+                    icon: 'none',
+                    duration: 2000
+                });
+            }
+        }).catch((error) => {
+            console.error('获取数据失败：', error);
+            this.setData({ 
+                isLoading: false,
+                hasData: this.data.lawList.length > 0,
+                isFirstLoad: false
+            });
+            
+            if (this.data.pageNum === 1) {
+                wx.showToast({
+                    title: '获取数据失败，请重试',
+                    icon: 'none',
+                    duration: 2000
+                });
+            }
         });
     },
     openFile(e) {

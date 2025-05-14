@@ -39,14 +39,14 @@ Page({
         })
     },
     // 获取用户完成情况
-    /* userFinash() {
+    userFinash() {
         getDailyFinesh().then(res => {
             console.log(res);
             this.setData({
                 ifFinash:res
             })
         })
-    }, */
+    },
     onChooseAvatar(e) {
         const {
             avatarUrl

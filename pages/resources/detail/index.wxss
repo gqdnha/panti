@@ -105,3 +105,30 @@
     padding: 10px;
     color: #999;
 }
+
+.no-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100rpx 0;
+    color: #999;
+}
+
+.no-data-icon {
+    width: 200rpx;
+    height: 200rpx;
+    margin-bottom: 30rpx;
+    opacity: 0.5;
+}
+
+.no-data-text {
+    font-size: 28rpx;
+    color: #999;
+}
+
+.loading {
+    text-align: center;
+    padding: 40rpx 0;
+    color: #666;
+}

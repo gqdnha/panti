@@ -8,7 +8,7 @@
     <!-- 列表区域 -->
     <view class="content">
         <!-- 列表 -->
-        <view class="law-list">
+        <view wx:if="{{hasData}}" class="law-list">
             <view class="law-list-item" wx:for="{{lawList}}" wx:key="*this" bind:tap="openFile" data-index="{{index}}">
                 <image src="../../../assets/icons/PDF.png" alt=""/>
                 <view class="detil">
@@ -16,6 +16,17 @@
                     <text class="regulation_type"> {{item.regulation_type}} </text>
                 </view>
             </view>
+        </view>
+
+        <!-- 没有数据时的提示 -->
+        <view wx:if="{{!hasData && !isLoading && !isFirstLoad}}" class="no-data">
+            <image src="/assets/icons/nodata.png" class="no-data-icon"></image>
+            <text class="no-data-text">该分类下暂无数据</text>
+        </view>
+
+        <!-- 加载中状态 -->
+        <view wx:if="{{isLoading}}" class="loading">
+            <text>加载中...</text>
         </view>
     </view>
     <!-- 分页按钮 -->
