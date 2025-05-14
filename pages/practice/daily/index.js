@@ -13,7 +13,6 @@ import {
 
 Page({
     data: {
-
         // 页面数据
         currentQuestion: 1, //题目序号
         totalQuestions: 0, //总数
@@ -26,7 +25,6 @@ Page({
         questionStates: [], // 记录每个题目的答题状态（正确/错误）
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
-
         // 新增：答题卡状态，记录每个题目是否已作答
         answerSheetStates: [],
         showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
@@ -34,6 +32,8 @@ Page({
         optionStates: [], // 存储每个题目的选项状态
         startTime: 0, // 新增：记录开始时间
         questionAnalysis: {}, // 存储每个题目的解析信息
+        // 新增：存储每个题目的正确答案
+        correctAnswers: [] 
     },
     onLoad: function () {
         this.startCountdown()
@@ -310,28 +310,31 @@ Page({
         const usedTime = endTime - startTime;
         const minutes = Math.floor(usedTime / (1000 * 60));
         addLearnTime(minutes).then(res => {
-            console.log('传时间',minutes);
+            console.log('传时间', minutes);
         })
 
         // 调用后端接口
         apiJudgeTest(allUserAnswers).then(response => {
             console.log('后端返回结果：', response);
-            
+
             // 根据后端返回结果设置题目状态和解析
             const newQuestionStates = [];
             const newQuestionAnalysis = {};
-            
+            const newCorrectAnswers = [];
+
             response.forEach((result, index) => {
-                // 假设后端返回格式为 { isCorrect: boolean, analysis: string, questionId: number }
-                newQuestionStates[index] = result.isCorrect;
+                // 假设后端返回格式为 { isCorrect: boolean, analysis: string, questionId: number, answer: string }
+                newQuestionStates[index] = result.rightOrWrong === '对';
                 newQuestionAnalysis[result.questionId] = result.analysis || '';
+                newCorrectAnswers[index] = result.answer;
             });
 
             this.setData({
                 isAllSubmitted: true,
                 questionStates: newQuestionStates,
                 isSubmitted: true,
-                questionAnalysis: newQuestionAnalysis
+                questionAnalysis: newQuestionAnalysis,
+                correctAnswers: newCorrectAnswers
             });
         })
         .catch(error => {
@@ -350,7 +353,7 @@ Page({
 
         const totalCount = this.data.totalQuestions;
         dailyQuestionCount(totalCount).then(res => {
-            console.log(res,'请求成功');
+            console.log(res, '请求成功');
         })
     },
     onTouchStart: function (e) {
@@ -363,16 +366,19 @@ Page({
         const {
             currentQuestion,
             allQuestions,
-            questionAnalysis
+            questionAnalysis,
+            correctAnswers
         } = this.data;
         const currentQuestionData = allQuestions[currentQuestion - 1];
-        const analysis = questionAnalysis ? questionAnalysis[currentQuestionData.questionId] : '';
-        
+        const analysis = questionAnalysis[currentQuestionData.questionId];
+        const correctAnswer = correctAnswers[currentQuestion - 1];
+
         this.setData({
             showAnalysis: true,
             currentQuestionData: {
                 ...currentQuestionData,
                 analysis: analysis,
+                correctAnswer: correctAnswer
             }
         });
     },
@@ -395,7 +401,7 @@ Page({
         const questionStatuses = answerSheetStates.map((state, index) => ({
             index: index + 1,
             isAnswered: state,
-            highlightClass: state ? 'answered-highlight' : 'unanswered-dark'
+            highlightClass: state? 'answered-highlight' : 'unanswered-dark'
         }));
         this.setData({
             showAnswerSheetModal: true,
@@ -418,4 +424,4 @@ Page({
         });
         this.closeAnswerSheetModal();
     }
-})    
+}) 
