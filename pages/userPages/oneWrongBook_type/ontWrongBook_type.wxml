@@ -1,9 +1,9 @@
 <view class="container">
     <!-- 顶部进度条 -->
-    <view class="progress-bar">
+    <view wx:if="{{hasData && !isLoading}}" class="progress-bar">
         <view class="progress-info">
             <text>第{{currentQuestion}}/{{totalQuestions}}题</text>
-            <!-- <text>学习时长：{{studyTime}}分钟</text> -->
+            <text>学习时长：{{studyTime}}分钟</text>
         </view>
         <!-- 进度条 -->
         <view class="progress-track">
@@ -12,7 +12,7 @@
     </view>
 
     <!-- 题目内容 -->
-    <view class="question-container">
+    <view wx:if="{{hasData && !isLoading}}" class="question-container">
         <view class="question-type">{{allQuestions[currentQuestion - 1].type}}</view>
         <view class="question-content">
             <text>{{currentQuestion}}.{{allQuestions[currentQuestion - 1].content}}</text>
@@ -59,8 +59,20 @@
         <!-- <view class="btn submit" bindtap="submitSingleAnswer" wx:if="{{!isSubmitted[currentQuestion - 1]}}">提交答案</view> -->
     </view>
 
+    <!-- 没有数据时的提示 -->
+    <view wx:if="{{!hasData && !isLoading}}" class="no-data">
+        <image src="/assets/icons/nodata.png" class="no-data-icon"></image>
+        <text class="no-data-text">该用户暂无{{type}}错题</text>
+        <text class="no-data-subtitle">用户还没有做错过该类型的题目</text>
+    </view>
+
+    <!-- 加载中状态 -->
+    <view wx:if="{{isLoading}}" class="loading">
+        <text>加载中...</text>
+    </view>
+
     <!-- 底部操作栏 -->
-    <view class="bottom-bar">
+    <view wx:if="{{hasData && !isLoading}}" class="bottom-bar">
         <view class="btn prev" bindtap="prevQuestion" wx:if="{{canGoBack && currentQuestion > 1}}">上一题</view>
         <view class="btn next" bindtap="nextQuestion" wx:if="{{currentQuestion < totalQuestions}}">下一题</view>
     </view>

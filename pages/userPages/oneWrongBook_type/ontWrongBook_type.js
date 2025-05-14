@@ -20,7 +20,9 @@ Page({
         selectedOptions: [], //记录每个题目的选中选项
         questionStates: [], // 记录每个题目的答题状态（正确/错误）
         showAnalysis: false, // 控制答案解析弹窗的显示状态
-        currentQuestionData: {} // 存储当前题目的详细数据，用于弹窗显示
+        currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
+        hasData: true, // 新增：是否有数据
+        isLoading: true // 新增：是否正在加载
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
@@ -47,18 +49,25 @@ Page({
             type,
             userId
         }
+        this.setData({ isLoading: true });
+
         getOneWrongQuestion(data).then(res => {
             console.log(res);
-            if (res.length === 0) {
-                wx.showToast({
-                    title: '没有错题',
-                    icon: 'none',
-                    duration: 2000
+            
+            // 检查是否有数据
+            if (!res || res.length === 0) {
+                this.setData({
+                    isLoading: false,
+                    hasData: false,
+                    allQuestions: [],
+                    totalQuestions: 0
                 });
+                // 移除toast提示，改为在页面显示
                 return;
             }
+
             res.forEach(question => {
-                if (question.options && typeof question.options ==='string') {
+                if (question.options && typeof question.options === 'string') {
                     try {
                         question.options = JSON.parse(question.options);
                     } catch (error) {
@@ -67,6 +76,7 @@ Page({
                     }
                 }
             });
+
             // 初始化选中选项数组和选项状态数组
             const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
             const initialOptionStates = res.map(question =>
@@ -79,12 +89,27 @@ Page({
                 questionStates: new Array(res.length).fill(null), // 初始化题目状态数组
                 selectedOptions: initialSelectedOptions,
                 optionStates: initialOptionStates,
-                answerSheetStates: new Array(res.length).fill(false)
+                answerSheetStates: new Array(res.length).fill(false),
+                isLoading: false,
+                hasData: true
             });
             console.log(this.data.allQuestions);
             console.log(this.data.totalQuestions);
-            console.log(this.data.allQuestions[1].options);
+            console.log(this.data.allQuestions[1]?.options);
 
+        }).catch(error => {
+            console.error('获取错题失败：', error);
+            this.setData({
+                isLoading: false,
+                hasData: false,
+                allQuestions: [],
+                totalQuestions: 0
+            });
+            wx.showToast({
+                title: '获取数据失败，请重试',
+                icon: 'none',
+                duration: 2000
+            });
         });
     },
     nextQuestion: function () {

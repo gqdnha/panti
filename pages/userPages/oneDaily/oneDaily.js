@@ -27,7 +27,7 @@ Page({
         questionStatuses: [], // 存储题目作答情况数据
         optionStates: [], // 存储每个题目的选项状态
     },
-    onLoad: function () {
+    onLoad: function (options) {
         const id = options.id
         const userId = parseInt(id)
         this.setData({
