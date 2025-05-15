@@ -6,7 +6,6 @@
     "pages/admin/dashboard/index",
     "pages/admin/user-stats/index",
     "pages/admin/question-manage/index",
-    "pages/practice/sequential/index",
     "pages/practice/topical/index",
     "pages/practice/daily/index",
     "pages/practice/question/index",

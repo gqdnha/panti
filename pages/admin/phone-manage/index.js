@@ -91,17 +91,26 @@ Page({
             return;
         }
 
-        // TODO: 调用后端API新增手机号
+        // 调用后端API新增手机号
         console.log('新增手机号:', newPhone);
         addPhone(newPhone).then(res => {
             console.log(res);
-        })
-
-        this.setData({
-            showAddModal: false,
-            newPhone: ''
-        }, () => {
-            this.loadPhoneList();
+            wx.showToast({
+                title: '添加成功',
+                icon: 'success'
+            });
+            this.setData({
+                showAddModal: false,
+                newPhone: ''
+            }, () => {
+                this.loadPhoneList();
+            });
+        }).catch(err => {
+            console.error('添加手机号失败:', err);
+            wx.showToast({
+                title: err,
+                icon: 'none'
+            });
         });
     },
 
