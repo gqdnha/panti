@@ -229,7 +229,7 @@ Page({
             wx.hideLoading();
             console.error('提交失败:', err);
             wx.showToast({
-                title: '提交失败，请重试',
+                title: err,
                 icon: 'none'
             });
         });
