@@ -339,3 +339,53 @@
     color: #666;
     font-size: 28rpx;
 }
+
+.option-status {
+    margin-left: 20rpx;
+}
+
+.status-icon {
+    font-size: 36rpx;
+    font-weight: bold;
+}
+
+.status-icon.correct {
+    color: #52c41a;
+}
+
+.status-icon.wrong {
+    color: #f5222d;
+}
+
+.correct-answer-section {
+    margin: 20rpx 0;
+    padding: 20rpx;
+    background-color: rgba(82, 196, 26, 0.1);
+    border-radius: 8rpx;
+}
+
+.correct-answer {
+    display: flex;
+    align-items: center;
+    color: #52c41a;
+    font-size: 28rpx;
+}
+
+.analysis-section {
+    margin-top: 30rpx;
+    padding: 20rpx;
+    background-color: #f8f9fa;
+    border-radius: 8rpx;
+}
+
+.analysis-content {
+    font-size: 28rpx;
+    color: #666;
+    line-height: 1.6;
+}
+
+.analysis-title {
+    color: #333;
+    font-weight: bold;
+    margin-right: 10rpx;
+}

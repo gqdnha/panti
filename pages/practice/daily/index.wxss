@@ -286,7 +286,6 @@
     margin-right: 10rpx;
 }
 .right-answer {
-    /* font-size: 35rpx; */
     color: red;
     font-weight: 800;
 }

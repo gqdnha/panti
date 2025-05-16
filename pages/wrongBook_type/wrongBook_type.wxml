@@ -26,6 +26,10 @@
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '单选题'}}">
                 <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
+                    <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                        <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
+                        <text wx:elif="{{selectedOptions[currentQuestion - 1] === item[0] && item[0] !== detailData.answer}}" class="status-icon wrong">×</text>
+                    </text>
                 </view>
             </block>
 
@@ -37,12 +41,20 @@
                       bindtap="selectMultipleOption"
                       data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
+                    <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                        <text wx:if="{{detailData.answer.includes(item[0])}}" class="status-icon correct">✓</text>
+                        <text wx:elif="{{optionStates[currentQuestion - 1][index] && !detailData.answer.includes(item[0])}}" class="status-icon wrong">×</text>
+                    </text>
                 </view>
             </block>
 
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '判断题'}}">
                 <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
+                    <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                        <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
+                        <text wx:elif="{{selectedOptions[currentQuestion - 1] === item[0] && item[0] !== detailData.answer}}" class="status-icon wrong">×</text>
+                    </text>
                 </view>
             </block>
 
@@ -51,10 +63,22 @@
                 <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted[currentQuestion - 1]? 'wrong' : '')}}" placeholder="请输入答案" value="{{answer}}" bindinput="onInputAnswer" />
             </block>
         </view>
-        <!-- 答错时显示查看详情按钮 -->
-        <view class="view-detail-btn" wx:if="{{isSubmitted[currentQuestion - 1] &&!questionStates[currentQuestion - 1]}}">
-            <button bindtap="showAnalysis">查看详情</button>
+
+        <!-- 正确答案显示 -->
+        <view class="correct-answer-section" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+            <view class="correct-answer">
+                <text>正确答案：{{detailData.answer}}</text>
+            </view>
         </view>
+
+        <!-- 答案解析 -->
+        <view class="analysis-section" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+            <view class="analysis-content">
+                <text class="analysis-title">解析：</text>
+                <text>{{detailData.analysis}}</text>
+            </view>
+        </view>
+
         <!-- 每道题的提交按钮 -->
         <view class="btn submit" bindtap="submitSingleAnswer" wx:if="{{!isSubmitted[currentQuestion - 1]}}">提交答案</view>
     </view>
@@ -75,26 +99,5 @@
     <view class="bottom-bar">
         <view class="btn prev" bindtap="prevQuestion" wx:if="{{canGoBack && currentQuestion > 1}}">上一题</view>
         <view class="btn next" bindtap="nextQuestion" wx:if="{{currentQuestion < totalQuestions}}">下一题</view>
-    </view>
-
-    <!-- 答案解析弹窗 -->
-    <view class="analysis-modal" wx:if="{{showAnalysis}}">
-        <view class="modal-content">
-            <view class="result-header">
-                <text class="{{questionStates[currentQuestion - 1]? 'correct' : 'wrong'}}">
-                    {{questionStates[currentQuestion - 1]? '回答正确' : '回答错误'}}
-                </text>
-            </view>
-            <view class="correct-answer">
-                <text>正确答案：{{detailData.answer}}</text>
-            </view>
-            <view class="analysis-content">
-                <text class="analysis-title">解析：</text>
-                <text>{{detailData.analysis}}</text>
-            </view>
-            <view class="modal-btns">
-                <view class="btn" bindtap="closeAnalysisAndContinue">继续答题</view>
-            </view>
-        </view>
     </view>
 </view>
