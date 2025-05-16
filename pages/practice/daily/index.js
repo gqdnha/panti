@@ -154,6 +154,10 @@ Page({
         }
     },
     selectOption: function (e) {
+        // 如果已经提交，不允许再选择
+        if (this.data.isSubmitted) {
+            return;
+        }
         const {
             index
         } = e.currentTarget.dataset;
@@ -182,6 +186,10 @@ Page({
     },
     // 多选题
     selectMultipleOption: function (e) {
+        // 如果已经提交，不允许再选择
+        if (this.data.isSubmitted) {
+            return;
+        }
         const {
             index
         } = e.currentTarget.dataset;
@@ -414,31 +422,6 @@ Page({
     },
     onTouchEnd: function (e) {
         // 在这里添加触摸结束事件的处理逻辑，如果暂时没有逻辑，可以先空着
-    },
-    showAnalysis: function () {
-        const {
-            currentQuestion,
-            allQuestions,
-            questionAnalysis,
-            correctAnswers
-        } = this.data;
-        const currentQuestionData = allQuestions[currentQuestion - 1];
-        const analysis = questionAnalysis[currentQuestionData.questionId];
-        const correctAnswer = correctAnswers[currentQuestionData.questionId]; // 使用questionId获取答案
-
-        this.setData({
-            showAnalysis: true,
-            currentQuestionData: {
-                ...currentQuestionData,
-                analysis: analysis,
-                correctAnswer: correctAnswer
-            }
-        });
-    },
-    closeAnalysisAndContinue: function () {
-        this.setData({
-            showAnalysis: false
-        });
     },
     // 自定义函数，用于判断数组是否包含某个元素
     isArrayAndIncludes: function (arr, item) {
