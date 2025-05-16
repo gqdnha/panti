@@ -214,7 +214,7 @@ Page({
 
         getWrongQuestionPercent(questionId).then(res => {
             if (res !== null && res !== undefined) {
-                const percent = parseFloat(res) * 100;
+                const percent = parseFloat(res);
                 this.setData({
                     wrongQuestionPercent: percent.toFixed(2)
                 });
