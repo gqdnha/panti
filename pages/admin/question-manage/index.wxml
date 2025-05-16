@@ -121,7 +121,7 @@
                 </picker>
             </view>
             <view class="modal-content">
-                <label>正确率：{{wrongQuestionPercent}}%</label>
+                <label>错误率：{{wrongQuestionPercent}}%</label>
             </view>
             <view class="form-item">
                 <label>题目内容</label>

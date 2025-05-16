@@ -30,8 +30,8 @@ Page({
         this.loadUserInfo();
         this.getUserInfo();
         this.getStudyStats();
-        this.getUserLearnTime();
         this.userFinash();
+        this.getUserLearnTime();
     },
     bindViewTap() {
         wx.navigateTo({
@@ -94,6 +94,7 @@ Page({
             // 更新tabBar显示
             this.getTabBar().updateTabBar();
         }
+        this.getUserLearnTime();
     },
     // 获取信息
     getStudyStats() {
