@@ -25,7 +25,8 @@ Page({
         startTime: null, // 记录开始时间
         answerSheetStates: [], // 记录每个题目的答案状态
         hasData: true, // 新增：是否有数据
-        isLoading: true // 新增：是否正在加载
+        isLoading: true, // 新增：是否正在加载
+        canSubmit: false // 新增：是否可以提交答案
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
@@ -132,8 +133,6 @@ Page({
         this.setData({
             selectedOptions: newSelectedOptions
         });
-        // 打印当前选中的选项首字
-        console.log(`第 ${currentQuestion} 题选中的选项首字：`, optionFirstChar);
     },
     // 多选题
     selectMultipleOption: function (e) {
@@ -179,79 +178,113 @@ Page({
         });
     },
     submitSingleAnswer: function () {
-        const { allQuestions, allAnswers, selectedOptions, currentQuestion } = this.data;
+        const { allQuestions, allAnswers, selectedOptions, questionStates, currentQuestion, startTime, isSubmitted } = this.data;
         const question = allQuestions[currentQuestion - 1];
+
+        // 基础检查
+        if (!question || !question.questionId) {
+            console.error('题目数据异常:', question);
+            return;
+        }
+
+        // 检查是否已提交
+        if (isSubmitted[currentQuestion - 1]) {
+            wx.showToast({
+                title: '该题目已提交',
+                icon: 'none'
+            });
+            return;
+        }
+
+        // 验证答案
         let userAnswerToSubmit = '';
 
-        // 检查是否选择了答案并准备提交的答案
+        // 单选题或判断题
         if (question.type === '单选题' || question.type === '判断题') {
-            if (!selectedOptions[currentQuestion - 1]) {
+            const selectedChar = selectedOptions[currentQuestion - 1];
+            if (!selectedChar) {
                 wx.showToast({
                     title: '请选择答案',
-                    icon: 'none',
-                    duration: 2000
+                    icon: 'none'
                 });
                 return;
             }
-            userAnswerToSubmit = selectedOptions[currentQuestion - 1];
-        } else if (question.type === '多选题') {
-            const selectedChars = selectedOptions[currentQuestion - 1];
+            userAnswerToSubmit = selectedChar;
+        }
+        // 多选题
+        else if (question.type === '多选题') {
+            const selectedChars = selectedOptions[currentQuestion - 1] || [];
             if (!selectedChars || selectedChars.length === 0) {
                 wx.showToast({
                     title: '请选择答案',
-                    icon: 'none',
-                    duration: 2000
+                    icon: 'none'
                 });
                 return;
             }
-            const sortedSelectedChars = selectedChars.slice().sort();
-            userAnswerToSubmit = sortedSelectedChars.join('');
-        } else if (question.type === '填空题') {
+            userAnswerToSubmit = selectedChars.sort().join('');
+        }
+        // 填空题
+        else if (question.type === '填空题') {
             const userAnswer = allAnswers[currentQuestion - 1];
             if (!userAnswer || userAnswer.trim() === '') {
                 wx.showToast({
                     title: '请输入答案',
-                    icon: 'none',
-                    duration: 2000
+                    icon: 'none'
                 });
                 return;
             }
             userAnswerToSubmit = userAnswer;
         }
 
-        // 设置提交状态
-        const newIsSubmitted = [...this.data.isSubmitted];
-        newIsSubmitted[currentQuestion - 1] = true;
-        this.setData({
-            isSubmitted: newIsSubmitted
-        });
+        // 再次确认是否有答案
+        if (!userAnswerToSubmit) {
+            wx.showToast({
+                title: '请选择答案',
+                icon: 'none'
+            });
+            return;
+        }
 
-        // 提交答案到后端
+        // 准备提交数据
         const data = [{
             questionId: question.questionId,
             answer: userAnswerToSubmit,
             type: this.data.type
         }];
 
+        // 提交答案
         apiJudgeTest(data)
             .then(response => {
-                console.log('后端返回结果：', response);
-                const result = response[0];
-                const isCorrect = result.rightOrWrong === '对';
-                const newQuestionStates = [...this.data.questionStates];
-                newQuestionStates[currentQuestion - 1] = isCorrect;
+                if (!response || !response[0]) {
+                    throw new Error('服务器响应异常');
+                }
+
+                // 更新状态
+                const newQuestionStates = [...questionStates];
+                const newIsSubmitted = [...isSubmitted];
+                newQuestionStates[currentQuestion - 1] = response[0].rightOrWrong === '对';
+                newIsSubmitted[currentQuestion - 1] = true;
+
+                // 更新题目状态
+                const newAllQuestions = [...allQuestions];
+                newAllQuestions[currentQuestion - 1].isFinished = true;
+
                 this.setData({
                     questionStates: newQuestionStates,
-                    detailData: result
+                    isSubmitted: newIsSubmitted,
+                    detailData: response[0],
+                    allQuestions: newAllQuestions
+                });
+
+                // 计算并上传学习时间
+                const endTime = new Date();
+                const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
+                addLearnTime(durationInMinutes).catch(error => {
+                    console.error('上传学习时间失败：', error);
                 });
             })
             .catch(error => {
                 console.error('提交答案失败：', error);
-                // 发生错误时重置提交状态
-                newIsSubmitted[currentQuestion - 1] = false;
-                this.setData({
-                    isSubmitted: newIsSubmitted
-                });
                 wx.showToast({
                     title: '提交答案失败，请重试',
                     icon: 'none',
@@ -310,5 +343,23 @@ Page({
             current: url,
             urls: [url]
         });
+    },
+    // 检查是否可以提交答案
+    checkCanSubmit: function() {
+        const { currentQuestion, allQuestions, selectedOptions, allAnswers } = this.data;
+        const question = allQuestions[currentQuestion - 1];
+        let canSubmit = false;
+
+        if (question.type === '单选题' || question.type === '判断题') {
+            canSubmit = !!selectedOptions[currentQuestion - 1];
+        } else if (question.type === '多选题') {
+            const selectedChars = selectedOptions[currentQuestion - 1];
+            canSubmit = selectedChars && selectedChars.length > 0;
+        } else if (question.type === '填空题') {
+            const userAnswer = allAnswers[currentQuestion - 1];
+            canSubmit = userAnswer && userAnswer.trim() !== '';
+        }
+
+        this.setData({ canSubmit });
     }
 });
