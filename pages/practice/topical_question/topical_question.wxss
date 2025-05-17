@@ -32,6 +32,7 @@
 }
 
 .question-container {
+    width: 80vw;
     background: #fff;
     border-radius: 20rpx;
     margin: 20rpx;

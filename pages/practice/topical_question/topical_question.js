@@ -160,8 +160,18 @@ Page({
         );
 
         const newSelectedOptions = new Array(newQuestionList.length).fill(null);
-        const newIsSubmitted = newQuestionList.map(question => question.isFinished);
+        // 如果是全部完成后显示所有题目，重置提交状态
+        const newIsSubmitted = this.data.isAllFinished ? 
+            new Array(newQuestionList.length).fill(false) : 
+            newQuestionList.map(question => question.isFinished);
         const newQuestionStates = new Array(newQuestionList.length).fill(null);
+
+        // 如果是全部完成后显示所有题目，清除detailData
+        if (this.data.isAllFinished) {
+            this.setData({
+                detailData: {}
+            });
+        }
 
         this.setData({
             questionList: newQuestionList,
@@ -336,10 +346,11 @@ Page({
             questionStates,
             currentQuestion,
             isAllFinished,
-            startTime
+            startTime,
+            isSubmitted
         } = this.data;
         const newQuestionStates = [...questionStates];
-        const newIsSubmitted = [...this.data.isSubmitted];
+        const newIsSubmitted = [...isSubmitted];
         const question = questionList[currentQuestion - 1];
 
         if (!question) {
@@ -348,6 +359,15 @@ Page({
         }
         if (!question.questionId) {
             console.error('当前题目缺少questionId:', question);
+            return;
+        }
+
+        // 检查当前题目是否已提交
+        if (isSubmitted[currentQuestion - 1]) {
+            wx.showToast({
+                title: '该题目已提交',
+                icon: 'none'
+            });
             return;
         }
 
