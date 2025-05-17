@@ -35,7 +35,14 @@ Page({
         timer: null,
         finishedQuestionIds: [],
         isAllFinished: false,
-        noData: false
+        noData: false,
+        showImagePreview: false,
+        currentPreviewImage: '',
+        scale: 1,
+        baseScale: 1,
+        transition: '',
+        startDistance: 0,
+        parsedImageList: [],
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);
@@ -159,8 +166,26 @@ Page({
             new Array(question.options ? question.options.length : 0).fill(false)
         );
 
+        // 解析每个题目的图片列表
+        const parsedImageList = newQuestionList.map(question => {
+            if (question.if_picture && question.image_list_json) {
+                try {
+                    // 确保 image_list_json 是字符串
+                    const imageListStr = typeof question.image_list_json === 'string' 
+                        ? question.image_list_json 
+                        : JSON.stringify(question.image_list_json);
+                    const imageList = JSON.parse(imageListStr);
+                    // 过滤掉没有 image_url 的项
+                    return imageList.filter(img => img && img.image_url && img.image_url !== 'null');
+                } catch (error) {
+                    console.error('解析图片列表失败:', error, question.image_list_json);
+                    return [];
+                }
+            }
+            return [];
+        });
+
         const newSelectedOptions = new Array(newQuestionList.length).fill(null);
-        // 如果是全部完成后显示所有题目，重置提交状态
         const newIsSubmitted = this.data.isAllFinished ? 
             new Array(newQuestionList.length).fill(false) : 
             newQuestionList.map(question => question.isFinished);
@@ -180,11 +205,11 @@ Page({
             questionStates: newQuestionStates,
             selectedOptions: newSelectedOptions,
             isSubmitted: newIsSubmitted,
-            optionStates: initialOptionStates
+            optionStates: initialOptionStates,
+            parsedImageList: parsedImageList
         }, () => {
             console.log('更新后的题目列表:', this.data.questionList);
-            console.log('当前题目总数:', this.data.totalQuestions);
-            console.log('当前题目:', this.data.currentQuestion);
+            console.log('解析后的图片列表:', this.data.parsedImageList);
         });
     },
     // 获取已完成id
@@ -527,5 +552,69 @@ Page({
         addLearnTime(durationInMinutes).then(res => {
             console.log('学习时间上传结果：', res);
         });
-    }
+    },
+    // 图片预览相关方法
+    previewImage: function(e) {
+        const url = e.currentTarget.dataset.url;
+        this.setData({
+            showImagePreview: true,
+            currentPreviewImage: url,
+            scale: 1,
+            transition: ''
+        });
+    },
+
+    closeImagePreview: function() {
+        this.setData({
+            showImagePreview: false,
+            currentPreviewImage: '',
+            scale: 1,
+            transition: ''
+        });
+    },
+
+    // 处理缩放开始
+    touchStart: function(e) {
+        if (e.touches.length === 2) {
+            const xMove = e.touches[1].clientX - e.touches[0].clientX;
+            const yMove = e.touches[1].clientY - e.touches[0].clientY;
+            const distance = Math.sqrt(xMove * xMove + yMove * yMove);
+            this.setData({
+                startDistance: distance,
+                baseScale: this.data.scale,
+                transition: ''
+            });
+        }
+    },
+
+    // 处理缩放过程
+    touchMove: function(e) {
+        if (e.touches.length === 2) {
+            const xMove = e.touches[1].clientX - e.touches[0].clientX;
+            const yMove = e.touches[1].clientY - e.touches[0].clientY;
+            const distance = Math.sqrt(xMove * xMove + yMove * yMove);
+            
+            let scale = this.data.baseScale * (distance / this.data.startDistance);
+            scale = Math.max(0.5, Math.min(4, scale));
+            
+            this.setData({ scale });
+        }
+    },
+
+    // 处理缩放结束
+    touchEnd: function() {
+        this.setData({
+            transition: 'transform 0.3s ease-in-out'
+        });
+        
+        if (this.data.scale < 1) {
+            this.setData({
+                scale: 1
+            });
+        }
+    },
+
+    stopPropagation: function(e) {
+        e.stopPropagation();
+    },
 });
