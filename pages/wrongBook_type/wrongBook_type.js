@@ -28,7 +28,8 @@ Page({
         isLoading: true, // 新增：是否正在加载
         canSubmit: false, // 新增：是否可以提交答案
         showImagePreview: false, // 新增：是否显示自定义图片预览弹窗
-        previewImageUrl: '' // 新增：预览图片的URL
+        previewImageUrl: '', // 新增：预览图片的URL
+        timer: null // 新增：计时器
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
@@ -38,10 +39,8 @@ Page({
         });
         console.log(type);
         this.getData();
-        // 假设这里接收学习时长，可根据实际情况修改
-        this.setData({
-            studyTime: 0 // 初始学习时长为0
-        });
+        // 启动计时器
+        this.startTimer();
     },
     // 请求接口
     getData() {
@@ -310,6 +309,11 @@ Page({
         return Array.isArray(arr) && arr.includes(item);
     },
     onUnload: function () {
+        // 清除计时器
+        if (this.data.timer) {
+            clearInterval(this.data.timer);
+        }
+        
         const { startTime } = this.data;
         const endTime = new Date();
         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
@@ -369,5 +373,23 @@ Page({
         }
 
         this.setData({ canSubmit });
+    },
+    // 启动计时器
+    startTimer() {
+        // 清除可能存在的旧计时器
+        if (this.data.timer) {
+            clearInterval(this.data.timer);
+        }
+        
+        // 创建新的计时器，每分钟更新一次
+        const timer = setInterval(() => {
+            const now = new Date();
+            const durationInMinutes = Math.floor((now - this.data.startTime) / (1000 * 60));
+            this.setData({
+                studyTime: durationInMinutes
+            });
+        }, 60000); // 60000毫秒 = 1分钟
+
+        this.setData({ timer });
     }
 });
