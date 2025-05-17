@@ -26,7 +26,9 @@ Page({
         answerSheetStates: [], // 记录每个题目的答案状态
         hasData: true, // 新增：是否有数据
         isLoading: true, // 新增：是否正在加载
-        canSubmit: false // 新增：是否可以提交答案
+        canSubmit: false, // 新增：是否可以提交答案
+        showImagePreview: false, // 新增：是否显示自定义图片预览弹窗
+        previewImageUrl: '' // 新增：预览图片的URL
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
@@ -336,13 +338,22 @@ Page({
             [`allQuestions[${currentQuestion}].options`]: options
         });
     },
-    // 图片预览功能
+    // 图片预览功能（自定义弹窗）
     previewImage(e) {
         const url = e.currentTarget.dataset.url;
-        wx.previewImage({
-            current: url,
-            urls: [url]
+        this.setData({
+            showImagePreview: true,
+            previewImageUrl: url
         });
+    },
+    closeImagePreview() {
+        this.setData({
+            showImagePreview: false,
+            previewImageUrl: ''
+        });
+    },
+    stopPropagation() {
+        // 阻止事件冒泡，防止点击图片时关闭弹窗
     },
     // 检查是否可以提交答案
     checkCanSubmit: function() {

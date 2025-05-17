@@ -29,6 +29,14 @@
             </block>
         </view>
 
+        <!-- 图片预览弹窗 -->
+        <view class="image-preview-modal {{showImagePreview ? 'show' : ''}}" wx:if="{{showImagePreview}}" bindtap="closeImagePreview">
+            <view class="modal-content" catchtap="stopPropagation">
+                <image src="{{previewImageUrl}}" mode="aspectFit" class="preview-image"></image>
+                <view class="close-btn" bindtap="closeImagePreview">×</view>
+            </view>
+        </view>
+
         <!-- 选项区域 -->
         <view class="options-container">
             <!-- 单选题 -->
