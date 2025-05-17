@@ -28,7 +28,7 @@
         </view>
         <view class="function-card" bindtap="navigateToPhoneManage">
             <image class="card-icon" src="/assets/icons/phone.png" mode="aspectFit"></image>
-            <view class="card-title">手机号管理</view>
+            <view class="card-title">人员管理</view>
             <view class="card-desc">管理用户手机号信息</view>
         </view>
 
