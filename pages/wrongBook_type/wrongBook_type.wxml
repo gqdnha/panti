@@ -16,8 +16,17 @@
         <view class="question-type">{{allQuestions[currentQuestion - 1].type}}</view>
         <view class="question-content">
             <text>{{currentQuestion}}.{{allQuestions[currentQuestion - 1].content}}</text>
-            <!-- 如果有图片 -->
-            <image wx:if="{{allQuestions[currentQuestion - 1].image}}" src="{{allQuestions[currentQuestion - 1].image}}" mode="aspectFit" class="question-image"></image>
+            <!-- 图片显示区域 -->
+            <block wx:if="{{allQuestions[currentQuestion-1].ifPicture}}">
+                <image 
+                    wx:if="{{allQuestions[currentQuestion-1].questionsImageList[0].imageUrl}}"
+                    src="https://gqdnha.cn:8090/static/{{allQuestions[currentQuestion-1].questionsImageList[0].imageUrl}}"
+                    mode="aspectFit"
+                    class="question-image"
+                    bindtap="previewImage"
+                    data-url="https://gqdnha.cn:8090/static/{{allQuestions[currentQuestion-1].questionsImageList[0].imageUrl}}"
+                />
+            </block>
         </view>
 
         <!-- 选项区域 -->

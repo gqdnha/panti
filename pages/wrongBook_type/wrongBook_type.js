@@ -179,14 +179,13 @@ Page({
         });
     },
     submitSingleAnswer: function () {
-        const { allQuestions, allAnswers, selectedOptions, questionStates, currentQuestion } = this.data;
+        const { allQuestions, allAnswers, selectedOptions, currentQuestion } = this.data;
         const question = allQuestions[currentQuestion - 1];
         let userAnswerToSubmit = '';
 
-        // 检查是否选择了答案
+        // 检查是否选择了答案并准备提交的答案
         if (question.type === '单选题' || question.type === '判断题') {
-            const selectedChar = selectedOptions[currentQuestion - 1];
-            if (selectedChar === undefined || selectedChar === null || selectedChar === '') {
+            if (!selectedOptions[currentQuestion - 1]) {
                 wx.showToast({
                     title: '请选择答案',
                     icon: 'none',
@@ -194,7 +193,7 @@ Page({
                 });
                 return;
             }
-            userAnswerToSubmit = selectedChar;
+            userAnswerToSubmit = selectedOptions[currentQuestion - 1];
         } else if (question.type === '多选题') {
             const selectedChars = selectedOptions[currentQuestion - 1];
             if (!selectedChars || selectedChars.length === 0) {
@@ -220,55 +219,45 @@ Page({
             userAnswerToSubmit = userAnswer;
         }
 
-        // 如果答案为空，不调用后端接口
-        if (!userAnswerToSubmit) {
-            wx.showToast({
-                title: '请选择或输入答案',
-                icon: 'none',
-                duration: 2000
-            });
-            return;
-        }
-
-        // 只有在有答案的情况下才继续执行
-        const newQuestionStates = [...questionStates];
+        // 设置提交状态
         const newIsSubmitted = [...this.data.isSubmitted];
         newIsSubmitted[currentQuestion - 1] = true;
-        
         this.setData({
             isSubmitted: newIsSubmitted
         });
-        
+
+        // 提交答案到后端
         const data = [{
             questionId: question.questionId,
             answer: userAnswerToSubmit,
             type: this.data.type
         }];
-        console.log('提交的答案数据:', data);
 
-        // 只有在有答案的情况下才调用接口
-        if (userAnswerToSubmit) {
-            apiJudgeTest(data).then(response => {
+        apiJudgeTest(data)
+            .then(response => {
                 console.log('后端返回结果：', response);
                 const result = response[0];
                 const isCorrect = result.rightOrWrong === '对';
+                const newQuestionStates = [...this.data.questionStates];
                 newQuestionStates[currentQuestion - 1] = isCorrect;
                 this.setData({
                     questionStates: newQuestionStates,
                     detailData: result
-                }, () => {
-                    console.log('questionStates 更新后:', this.data.questionStates);
                 });
             })
             .catch(error => {
-                console.error('提交答案到后端时出错：', error);
+                console.error('提交答案失败：', error);
                 // 发生错误时重置提交状态
                 newIsSubmitted[currentQuestion - 1] = false;
                 this.setData({
                     isSubmitted: newIsSubmitted
                 });
+                wx.showToast({
+                    title: '提交答案失败，请重试',
+                    icon: 'none',
+                    duration: 2000
+                });
             });
-        }
     },
 
     showAnalysis: function () {
@@ -312,6 +301,14 @@ Page({
         this.setData({
             isSubmitted: true,
             [`allQuestions[${currentQuestion}].options`]: options
+        });
+    },
+    // 图片预览功能
+    previewImage(e) {
+        const url = e.currentTarget.dataset.url;
+        wx.previewImage({
+            current: url,
+            urls: [url]
         });
     }
 });

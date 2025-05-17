@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/wrongBook_type/wrongBook_type",
+          "pathName": "pages/wrongBook_type/wrongBook_type",
+          "query": "type=%25E5%258D%2595%25E9%2580%2589%25E9%25A2%2598",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/admin/question-manage/index",
           "pathName": "pages/admin/question-manage/index",
           "query": "",
