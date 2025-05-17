@@ -24,7 +24,7 @@
         <view class="filter-item">
             <picker mode="selector" range="{{categories}}" value="{{currentCategoryIndex}}" bindchange="onFilterCategoryChange">
                 <view class="picker-view">
-                    <text class="picker-label">分类：</text>
+                    <text class="picker-label">题目分类：</text>
                     <text class="picker-value">{{categories[currentCategoryIndex] || '全部'}}</text>
                     <image class="picker-arrow" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
                 </view>
@@ -46,27 +46,33 @@
     <!-- 题目列表 -->
     <block wx:if="{{questionList && questionList.length > 0}}">
         <view class="question-list">
-            <table class="question-table">
-                <thead class="list-header">
-                    <tr class="table-header">
-                        <th class="header-item">序号</th>
-                        <th class="header-item">题目</th>
-                        <th class="header-item">类型</th>
-                        <th class="header-item">操作</th>
-                    </tr>
-                </thead>
-                <tbody class="list-content">
-                    <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
-                        <td class="question-id">{{item.question_id}}</td>
-                        <td class="question-title">{{item.content}}</td>
-                        <td class="question-type">{{item.type}}</td>
-                        <td class="item-actions">
-                            <view class="btn edit" bindtap="editQuestion" data-id="{{item.question_id}}">编辑</view>
-                            <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.question_id}}">删除</view>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <!-- 固定表头 -->
+            <view class="list-header">
+                <view class="header-item">序号</view>
+                <view class="header-item title">题目</view>
+                <view class="header-item">类型</view>
+                <view class="header-item">操作</view>
+            </view>
+            
+            <!-- 可滚动的内容区域 -->
+            <scroll-view 
+                scroll-y 
+                class="list-content" 
+                scroll-top="{{scrollTop}}"
+                enhanced="{{true}}"
+                show-scrollbar="{{true}}"
+                scroll-anchoring="{{true}}"
+            >
+                <view class="list-item" wx:for="{{questionList}}" wx:key="id">
+                    <view class="question-id">{{item.question_id}}</view>
+                    <view class="question-title">{{item.content}}</view>
+                    <view class="question-type">{{item.type}}</view>
+                    <view class="item-actions">
+                        <view class="btn edit" bindtap="editQuestion" data-id="{{item.question_id}}">编辑</view>
+                        <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.question_id}}">删除</view>
+                    </view>
+                </view>
+            </scroll-view>
         </view>
 
         <!-- 分页按钮 -->

@@ -6,7 +6,7 @@ Page({
         wrongQuestionPercent: '',
         questionList: [],
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 10,
         searchKeyword: '',
         isLoading: false,
         totalPages: 1,
@@ -43,6 +43,7 @@ Page({
         currentCategory: '', // 当前选中的分类
         currentTypeIndex: 0, // 当前选中的题目类型索引
         currentType: '', // 当前选中的题目类型
+        scrollTop: 0, // 添加scrollTop控制变量
     },
 
     onLoad(options) {
@@ -69,7 +70,8 @@ Page({
         getAllQuestion(data).then(res => {
             this.setData({
                 questionList: res.pageInfo.pageData,
-                totalPages: res.pageInfo.totalPage
+                totalPages: res.pageInfo.totalPage,
+                scrollTop: 0 // 重置滚动位置
             });
         }).catch(err => {
             console.error('加载题目列表失败:', err);
@@ -124,14 +126,19 @@ Page({
             pageNum: 1 // 重置到第一页
         }, () => {
             this.loadQuestions();
+            this.scrollToTop();
         });
     },
 
     onNextPage() {
         const { pageNum, totalPages } = this.data;
         if (pageNum < totalPages) {
-            this.setData({ pageNum: pageNum + 1 });
-            this.loadQuestions();
+            this.setData({ 
+                pageNum: pageNum + 1,
+                scrollTop: 0 // 重置滚动位置
+            }, () => {
+                this.loadQuestions();
+            });
         } else {
             wx.showToast({
                 title: '已经是最后一页了',
@@ -143,8 +150,12 @@ Page({
     onPreviousPage() {
         const { pageNum } = this.data;
         if (pageNum > 1) {
-            this.setData({ pageNum: pageNum - 1 });
-            this.loadQuestions();
+            this.setData({ 
+                pageNum: pageNum - 1,
+                scrollTop: 0 // 重置滚动位置
+            }, () => {
+                this.loadQuestions();
+            });
         } else {
             wx.showToast({
                 title: '已经是第一页了',
@@ -489,6 +500,7 @@ Page({
             pageNum: 1 // 重置页码
         }, () => {
             this.loadQuestions();
+            this.scrollToTop();
         });
     },
 
@@ -502,6 +514,25 @@ Page({
             pageNum: 1 // 重置页码
         }, () => {
             this.loadQuestions();
+            this.scrollToTop();
+        });
+    },
+
+    // 滚动到顶部的方法
+    scrollToTop() {
+        // 方法1：使用选择器
+        const query = wx.createSelectorQuery();
+        query.select('.list-content').node().exec((res) => {
+            const listContent = res[0];
+            if (listContent && listContent.node) {
+                listContent.node.scrollTop = 0;
+            } else {
+                // 方法2：使用页面滚动
+                wx.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 300
+                });
+            }
         });
     },
 });    

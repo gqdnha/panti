@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/admin/question-manage/index",
+          "pathName": "pages/admin/question-manage/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/practice/topical_question/topical_question",
           "pathName": "pages/practice/topical_question/topical_question",
           "query": "category=%25E7%258E%25AF%25E5%25A2%2583%25E4%25BF%259D%25E6%258A%25A4%25E6%25B3%2595%25E5%258F%258A%25E9%2585%258D%25E5%25A5%2597%25E5%258A%259E%25E6%25B3%2595&questionType=%25E5%258D%2595%25E9%2580%2589%25E9%25A2%2598",
