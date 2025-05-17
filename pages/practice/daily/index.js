@@ -34,8 +34,14 @@ Page({
         questionAnalysis: {}, // 存储每个题目的解析信息
         // 新增：存储每个题目的正确答案（改为对象，使用questionId作为键）
         correctAnswers: {},
-        hasShownExitWarning: false, // 是否已显示过退出警告
         cachedAnswers: [], // 缓存的用户答案
+        baseImageUrl: 'https://gqdnha.cn:8090/static/', // 添加图片基础URL
+        showImagePreview: false, // 控制图片预览弹窗
+        currentPreviewImage: '', // 当前预览的图片URL
+        scale: 1,
+        baseScale: 1,
+        transition: '',
+        startDistance: 0,
     },
     onLoad: function () {
         // 先加载缓存，根据缓存情况决定是否开始新倒计时
@@ -68,7 +74,9 @@ Page({
         apiGetDailyTest().then(res => {
             console.log('获取到的原始数据：', res);
 
+            // 处理每个题目的数据
             res.forEach((question, index) => {
+                // 处理选项
                 if (question.options && typeof question.options === 'string') {
                     try {
                         question.options = JSON.parse(question.options);
@@ -77,6 +85,27 @@ Page({
                         console.log('选项解析错误：', error);
                         question.options = [];
                     }
+                }
+
+                // 处理图片数据
+                if (question.ifPicture && question.questionsImageList) {
+                    try {
+                        // 如果questionsImageList是字符串，尝试解析它
+                        if (typeof question.questionsImageList === 'string') {
+                            question.questionsImageList = JSON.parse(question.questionsImageList);
+                        }
+                        // 确保每个图片URL都是完整的
+                        question.questionsImageList = question.questionsImageList.map(img => ({
+                            ...img,
+                            fullImageUrl: this.data.baseImageUrl + img.imageUrl
+                        }));
+                        console.log(`题目${index + 1}的图片列表：`, question.questionsImageList);
+                    } catch (error) {
+                        console.log('图片列表解析错误：', error);
+                        question.questionsImageList = [];
+                    }
+                } else {
+                    question.questionsImageList = [];
                 }
             });
 
@@ -91,7 +120,7 @@ Page({
                     questionStates: new Array(res.length).fill(null),
                     // 使用缓存的状态
                     selectedOptions: cachedData.selectedOptions || new Array(res.length).fill(null).map(() => []),
-                    optionStates: cachedData.optionStates || res.map(question => new Array(question.options.length).fill(false)),
+                    optionStates: cachedData.optionStates || res.map(question => new Array(question.options ? question.options.length : 0).fill(false)),
                     answerSheetStates: cachedData.answerSheetStates || new Array(res.length).fill(false),
                     allAnswers: cachedData.allAnswers || [],
                     currentQuestion: cachedData.currentQuestion || 1,
@@ -543,31 +572,8 @@ Page({
     },
     // 页面显示时触发
     onShow: function() {
-        // 如果用户返回到答题页面且答题未完成
-        if (!this.data.isAllSubmitted && this.data.hasShownExitWarning) {
-            // 重置警告标记
-            this.setData({
-                hasShownExitWarning: false
-            });
-            
-            // 显示确认弹窗
-            wx.showModal({
-                title: '提示',
-                content: '检测到您刚才退出了答题页面，是否要继续答题？点击"确定"继续答题，点击"取消"将提交已答题目。',
-                confirmText: '继续答题',
-                cancelText: '提交退出',
-                success: (res) => {
-                    if (res.confirm) {
-                        // 用户选择继续答题，重新开始倒计时
-                        this.restartCountdown();
-                    } else {
-                        // 用户选择退出，提交已答题目
-                        this.submitAllAnswersAndExit();
-                    }
-                }
-            });
-        } else if (!this.data.isAllSubmitted && this.data.startTime > 0) {
-            // 正常情况下重新开始倒计时
+        // 只在未完成答题且有开始时间的情况下重新开始倒计时
+        if (!this.data.isAllSubmitted && this.data.startTime > 0) {
             this.restartCountdown();
         }
     },
@@ -679,5 +685,74 @@ Page({
         if (!this.data.isAllSubmitted) {
             this.cacheCurrentAnswers();
         }
-    }
+    },
+    // 处理缩放开始
+    touchStart: function(e) {
+        if (e.touches.length === 2) {
+            const xMove = e.touches[1].clientX - e.touches[0].clientX;
+            const yMove = e.touches[1].clientY - e.touches[0].clientY;
+            const distance = Math.sqrt(xMove * xMove + yMove * yMove);
+            this.setData({
+                startDistance: distance,
+                baseScale: this.data.scale,
+                transition: ''
+            });
+        }
+    },
+
+    // 处理缩放过程
+    touchMove: function(e) {
+        if (e.touches.length === 2) {
+            const xMove = e.touches[1].clientX - e.touches[0].clientX;
+            const yMove = e.touches[1].clientY - e.touches[0].clientY;
+            const distance = Math.sqrt(xMove * xMove + yMove * yMove);
+            
+            // 计算缩放比例
+            let scale = this.data.baseScale * (distance / this.data.startDistance);
+            
+            // 限制缩放范围
+            scale = Math.max(0.5, Math.min(4, scale));
+            
+            this.setData({ scale });
+        }
+    },
+
+    // 处理缩放结束
+    touchEnd: function() {
+        this.setData({
+            transition: 'transform 0.3s ease-in-out'
+        });
+        
+        // 如果缩放比例小于1，自动恢复到1
+        if (this.data.scale < 1) {
+            this.setData({
+                scale: 1
+            });
+        }
+    },
+
+    // 修改图片预览打开函数
+    previewImage: function(e) {
+        const url = e.currentTarget.dataset.url;
+        this.setData({
+            showImagePreview: true,
+            currentPreviewImage: url,
+            scale: 1,
+            transition: ''
+        });
+    },
+
+    // 修改关闭预览函数
+    closeImagePreview: function() {
+        this.setData({
+            showImagePreview: false,
+            currentPreviewImage: '',
+            scale: 1,
+            transition: ''
+        });
+    },
+    stopPropagation: function(e) {
+        // 阻止事件冒泡
+        e.stopPropagation();
+    },
 })

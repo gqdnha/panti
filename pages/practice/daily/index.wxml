@@ -16,8 +16,20 @@
         <view class="question-type">{{allQuestions[currentQuestion - 1].type}}</view>
         <view class="question-content">
             <text>{{currentQuestion}}.{{allQuestions[currentQuestion - 1].content}}</text>
-            <!-- 如果有图片 -->
-            <image wx:if="{{allQuestions[currentQuestion - 1].image}}" src="{{allQuestions[currentQuestion - 1].image}}" mode="aspectFit" class="question-image"></image>
+            <!-- 图片显示区域 -->
+            <block wx:if="{{allQuestions[currentQuestion - 1].ifPicture}}">
+                <view class="question-images">
+                    <image 
+                        wx:for="{{allQuestions[currentQuestion - 1].questionsImageList}}" 
+                        wx:key="id"
+                        src="{{item.fullImageUrl}}"
+                        mode="widthFix"
+                        class="question-image"
+                        bindtap="previewImage"
+                        data-url="{{item.fullImageUrl}}"
+                    />
+                </view>
+            </block>
         </view>
 
         <!-- 选项区域 -->
@@ -102,5 +114,21 @@
                 <view class="btn" bindtap="closeAnswerSheetModal">关闭</view>
             </view>
         </view>
+    </view>
+</view>
+
+<!-- 图片预览弹窗 -->
+<view class="image-preview-modal {{showImagePreview ? 'show' : ''}}" bindtap="closeImagePreview">
+    <view class="modal-content" catchtap="stopPropagation">
+        <image 
+            class="preview-image" 
+            src="{{currentPreviewImage}}" 
+            mode="aspectFit"
+            bindtouchstart="touchStart"
+            bindtouchmove="touchMove"
+            bindtouchend="touchEnd"
+            style="transform: scale({{scale}}); transition: {{transition}};"
+        />
+        <view class="close-btn" bindtap="closeImagePreview">×</view>
     </view>
 </view>
