@@ -178,6 +178,7 @@
 
 /* 内容区域样式 */
 .list-content {
+    overflow: hidden;
     flex: 1;
     height: 100%;
 }
