@@ -22,7 +22,9 @@ Page({
         showAnalysis: false, // 控制答案解析弹窗的显示状态
         currentQuestionData: {}, // 存储当前题目的详细数据，用于弹窗显示
         hasData: true, // 新增：是否有数据
-        isLoading: true // 新增：是否正在加载
+        isLoading: true, // 新增：是否正在加载
+        showImagePreview: false,
+        previewImageUrl: '',
     },
     onLoad(options) {
         const type = decodeURIComponent(options.type);
@@ -304,5 +306,25 @@ Page({
             isSubmitted: true,
             [`allQuestions[${currentQuestion}].options`]: options
         });
-    }
+    },
+    // 预览图片
+    previewImage(e) {
+        const url = e.currentTarget.dataset.url;
+        console.log('预览图片地址：', url); // 添加日志
+        this.setData({
+            showImagePreview: true,
+            previewImageUrl: url
+        });
+    },
+    // 关闭图片预览
+    closeImagePreview() {
+        this.setData({
+            showImagePreview: false,
+            previewImageUrl: ''
+        });
+    },
+    // 防止冒泡
+    preventBubble() {
+        return;
+    },
 });

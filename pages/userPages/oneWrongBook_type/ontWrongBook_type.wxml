@@ -15,10 +15,18 @@
     <view wx:if="{{hasData && !isLoading}}" class="question-container">
         <view class="question-type">{{allQuestions[currentQuestion - 1].type}}</view>
         <view class="question-content">
-            <text>{{currentQuestion}}.{{allQuestions[currentQuestion - 1].content}}</text>
-            <!-- 如果有图片 -->
-            <image wx:if="{{allQuestions[currentQuestion - 1].image}}" src="{{allQuestions[currentQuestion - 1].image}}" mode="aspectFit" class="question-image"></image>
+            {{allQuestions[currentQuestion-1].content}}
         </view>
+
+        <!-- 题目图片 -->
+        <image 
+            wx:if="{{allQuestions[currentQuestion-1].ifPicture && allQuestions[currentQuestion-1].questionsImageList.length > 0}}"
+            src="https://gqdnha.cn:8090/static/{{allQuestions[currentQuestion-1].questionsImageList[0].imageUrl}}"
+            mode="aspectFit"
+            class="question-image"
+            bindtap="previewImage"
+            data-url="{{allQuestions[currentQuestion-1].questionsImageList[0].imageUrl}}"
+        />
 
         <!-- 选项区域 -->
         <view class="options-container">
@@ -97,4 +105,16 @@
             </view>
         </view>
     </view> -->
+
+    <!-- 图片预览弹窗 -->
+    <view class="image-preview-modal" wx:if="{{showImagePreview}}" bindtap="closeImagePreview">
+        <view class="modal-content" catchtap="preventBubble">
+            <image 
+                src="https://gqdnha.cn:8090/static/{{previewImageUrl}}" 
+                mode="aspectFit" 
+                class="preview-image"
+            />
+            <view class="close-btn" catchtap="closeImagePreview">×</view>
+        </view>
+    </view>
 </view>
