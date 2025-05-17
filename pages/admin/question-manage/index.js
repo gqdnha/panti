@@ -38,17 +38,30 @@ Page({
             analysis: '',
             eh: ''
         },
-        editQuestionTypeIndex: 0
+        editQuestionTypeIndex: 0,
+        currentCategoryIndex: 0, // 当前选中的分类索引
+        currentCategory: '', // 当前选中的分类
+        currentTypeIndex: 0, // 当前选中的题目类型索引
+        currentType: '', // 当前选中的题目类型
     },
 
     onLoad(options) {
+        // 添加"全部"选项到分类列表开头
+        const allCategories = ['全部', ...this.data.categories];
+        // 添加"全部"选项到题目类型列表开头
+        const allTypes = ['全部', ...this.data.questionTypes];
+        this.setData({
+            categories: allCategories,
+            questionTypes: allTypes
+        });
         this.loadQuestions();
     },
 
     loadQuestions() {
-        const { pageNum, pageSize, searchKeyword } = this.data;
+        const { pageNum, pageSize, searchKeyword, currentCategory, currentType } = this.data;
         const data = {
-            category: "",
+            category: currentCategory,
+            type: currentType,
             content: searchKeyword || "",
             pageNum: pageNum,
             pageSize: pageSize
@@ -98,9 +111,20 @@ Page({
         });
     },
 
+    clearSearch() {
+        this.setData({
+            searchKeyword: ''
+        }, () => {
+            this.onSearch(); // 清空后立即搜索
+        });
+    },
+
     onSearch() {
-        this.setData({ pageNum: 1 });
-        this.loadQuestions();
+        this.setData({
+            pageNum: 1 // 重置到第一页
+        }, () => {
+            this.loadQuestions();
+        });
     },
 
     onNextPage() {
@@ -454,5 +478,30 @@ Page({
         deletePicApi(pid).then(res => {
             console.log(res);
         } )
-    }
+    },
+    // 分类筛选改变事件
+    onFilterCategoryChange(e) {
+        const index = e.detail.value;
+        const category = this.data.categories[index];
+        this.setData({
+            currentCategoryIndex: index,
+            currentCategory: category === '全部' ? '' : category,
+            pageNum: 1 // 重置页码
+        }, () => {
+            this.loadQuestions();
+        });
+    },
+
+    // 题目类型筛选改变事件
+    onFilterTypeChange(e) {
+        const index = e.detail.value;
+        const type = this.data.questionTypes[index];
+        this.setData({
+            currentTypeIndex: index,
+            currentType: type === '全部' ? '' : type,
+            pageNum: 1 // 重置页码
+        }, () => {
+            this.loadQuestions();
+        });
+    },
 });    

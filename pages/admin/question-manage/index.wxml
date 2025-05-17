@@ -1,38 +1,86 @@
 <view class="container">
     <!-- 搜索框 -->
-    <!-- <view class="search-box">
-        <input type="text" placeholder="请输入搜索关键词" bindinput="onSearchInput" value="{{searchKeyword}}"/>
-        <button bindtap="onSearch">搜索</button>
-    </view> -->
-    <!-- 题目列表 -->
-    <view class="question-list">
-        <table class="question-table">
-            <thead class="list-header">
-                <tr class="table-header">
-                    <th class="header-item">序号</th>
-                    <th class="header-item">题目</th>
-                    <th class="header-item">类型</th>
-                    <th class="header-item">操作</th>
-                </tr>
-            </thead>
-            <tbody class="list-content">
-                <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
-                    <td class="question-id">{{item.question_id}}</td>
-                    <td class="question-title">{{item.content}}</td>
-                    <td class="question-type">{{item.type}}</td>
-                    <td class="item-actions">
-                        <view class="btn edit" bindtap="editQuestion" data-id="{{item.question_id}}">编辑</view>
-                        <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.question_id}}">删除</view>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <view class="search-box">
+        <view class="search-input-wrapper">
+            <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
+            <input 
+                class="search-input" 
+                type="text" 
+                placeholder="请输入题目关键词" 
+                value="{{searchKeyword}}"
+                bindinput="onSearchInput"
+                bindconfirm="onSearch"
+            />
+            <view class="search-clear" bindtap="clearSearch" wx:if="{{searchKeyword}}">
+                <image class="clear-icon" src="/assets/icons/clear.png" mode="aspectFit"></image>
+            </view>
+        </view>
+        <button class="search-button" bindtap="onSearch">搜索</button>
     </view>
 
-    <!-- 分页按钮 -->
-    <view class="pagination">
-        <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
-        <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
+    <!-- 分类选择器容器 -->
+    <view class="filters-container">
+        <!-- 分类选择器 -->
+        <view class="filter-item">
+            <picker mode="selector" range="{{categories}}" value="{{currentCategoryIndex}}" bindchange="onFilterCategoryChange">
+                <view class="picker-view">
+                    <text class="picker-label">分类：</text>
+                    <text class="picker-value">{{categories[currentCategoryIndex] || '全部'}}</text>
+                    <image class="picker-arrow" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
+                </view>
+            </picker>
+        </view>
+
+        <!-- 题目类型选择器 -->
+        <view class="filter-item">
+            <picker mode="selector" range="{{questionTypes}}" value="{{currentTypeIndex}}" bindchange="onFilterTypeChange">
+                <view class="picker-view">
+                    <text class="picker-label">类型：</text>
+                    <text class="picker-value">{{questionTypes[currentTypeIndex] || '全部'}}</text>
+                    <image class="picker-arrow" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
+                </view>
+            </picker>
+        </view>
+    </view>
+
+    <!-- 题目列表 -->
+    <block wx:if="{{questionList && questionList.length > 0}}">
+        <view class="question-list">
+            <table class="question-table">
+                <thead class="list-header">
+                    <tr class="table-header">
+                        <th class="header-item">序号</th>
+                        <th class="header-item">题目</th>
+                        <th class="header-item">类型</th>
+                        <th class="header-item">操作</th>
+                    </tr>
+                </thead>
+                <tbody class="list-content">
+                    <tr class="list-item" wx:for="{{questionList}}" wx:key="id">
+                        <td class="question-id">{{item.question_id}}</td>
+                        <td class="question-title">{{item.content}}</td>
+                        <td class="question-type">{{item.type}}</td>
+                        <td class="item-actions">
+                            <view class="btn edit" bindtap="editQuestion" data-id="{{item.question_id}}">编辑</view>
+                            <view class="btn delete" bindtap="deleteQuestion" data-id="{{item.question_id}}">删除</view>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </view>
+
+        <!-- 分页按钮 -->
+        <view class="pagination">
+            <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
+            <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
+        </view>
+    </block>
+
+    <!-- 空状态显示 -->
+    <view class="empty-state" wx:else>
+        <image class="empty-icon" src="/assets/icons/empty.png" mode="aspectFit"></image>
+        <text class="empty-text">暂无题目</text>
+        <text class="empty-subtext">当前筛选条件下没有找到相关题目</text>
     </view>
 
     <!-- 添加题目按钮 -->
