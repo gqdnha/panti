@@ -108,9 +108,11 @@ Page({
             } else {
                 // 没有缓存或题目数量不匹配，使用初始状态
                 const initialSelectedOptions = new Array(res.length).fill(null).map(() => []);
-                const initialOptionStates = res.map(question =>
-                    new Array(question.options.length).fill(false)
-                );
+                const initialOptionStates = res.map(question => {
+                    // 确保 options 存在，如果不存在则默认为空数组
+                    const options = Array.isArray(question.options) ? question.options : [];
+                    return new Array(options.length).fill(false);
+                });
 
                 this.setData({
                     allQuestions: res,
