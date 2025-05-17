@@ -281,9 +281,6 @@ Page({
                 // 计算并上传学习时间
                 const endTime = new Date();
                 const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
-                addLearnTime(durationInMinutes).catch(error => {
-                    console.error('上传学习时间失败：', error);
-                });
             })
             .catch(error => {
                 console.error('提交答案失败：', error);

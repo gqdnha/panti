@@ -1,7 +1,6 @@
 import {
     get20Mistake
 } from "../../api/get20Mistake";
-import {addLearnTime} from '../../api/addLearnTime'
 
 Page({
     data: {
@@ -153,8 +152,5 @@ Page({
         const endTime = new Date();
         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
         console.log(`做题总时间（分钟）：${durationInMinutes}`);
-        addLearnTime(durationInMinutes).then(res => {
-            console.log(res);
-        })
     }
 });

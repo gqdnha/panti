@@ -462,17 +462,6 @@ Page({
                 questionList: newQuestionList
             });
 
-            // 计算做题时间（分钟）
-            const endTime = new Date();
-            const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
-
-            // 上传学习时间
-            addLearnTime(durationInMinutes).then(timeRes => {
-                console.log('学习时间上传结果：', timeRes);
-            }).catch(error => {
-                console.error('上传学习时间失败：', error);
-            });
-
             // 检查是否所有题目都已完成
             const allCompleted = newIsSubmitted.every(submitted => submitted);
             if (allCompleted && !isAllFinished) {

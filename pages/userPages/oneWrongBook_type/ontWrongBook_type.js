@@ -1,7 +1,6 @@
 import {
     getOneWrongQuestion,
 } from "../../../api/getWrongQuestion";
-// import {addLearnTime} from '../../api/addLearnTime'
 // import {apiJudgeTest} from '../../api/judgeTest'
 Page({
     data: {
@@ -282,13 +281,6 @@ Page({
         return Array.isArray(arr) && arr.includes(item);
     },
     onUnload: function () {
-        // const { startTime } = this.data;
-        // const endTime = new Date();
-        // const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
-        // console.log(`做题总时间（分钟）：${durationInMinutes}`);
-        /* addLearnTime(durationInMinutes).then(res => {
-            console.log(res);
-        }) */
     },
     submitAnswer() {
         if (this.data.isSubmitted) return;
