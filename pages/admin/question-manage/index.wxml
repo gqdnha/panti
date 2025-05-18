@@ -84,7 +84,7 @@
 
     <!-- 空状态显示 -->
     <view class="empty-state" wx:else>
-        <image class="empty-icon" src="/assets/icons/empty.png" mode="aspectFit"></image>
+        <image class="empty-icon" src="/assets/icons/nodata.png" mode="aspectFit"></image>
         <text class="empty-text">暂无题目</text>
         <text class="empty-subtext">当前筛选条件下没有找到相关题目</text>
     </view>

@@ -9,7 +9,7 @@
     </view>
 
     <!-- 题目列表 -->
-    <view class="question-list">
+    <view class="question-list" wx:if="{{lawList.length > 0}}">
         <table class="question-table">
             <thead class="list-header">
                 <tr class="table-header">
@@ -32,8 +32,15 @@
         </table>
     </view>
 
+    <!-- 空数据提示 -->
+    <view class="empty-tip" wx:else>
+        <image class="empty-icon" src="/assets/icons/nodata.png" mode="aspectFit"></image>
+        <text>当前分类暂无数据</text>
+
+    </view>
+
     <!-- 分页按钮 -->
-    <view class="pagination">
+    <view class="pagination" wx:if="{{lawList.length > 0}}">
         <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
         <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
     </view>

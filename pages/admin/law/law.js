@@ -41,6 +41,19 @@ Page({
         console.log(data);
         getLawsData(data).then(res => {
             console.log(res);
+            if (!res.pageInfo || !res.pageInfo.pageData || res.pageInfo.pageData.length === 0) {
+                this.setData({
+                    lawList: [],
+                    totalPages: 1,
+                    pageNum: 1
+                });
+                wx.showToast({
+                    title: '当前分类暂无数据',
+                    icon: 'none',
+                    duration: 2000
+                });
+                return;
+            }
             this.setData({
                 lawList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage
