@@ -124,7 +124,11 @@ Page({
                     answerSheetStates: cachedData.answerSheetStates || new Array(res.length).fill(false),
                     allAnswers: cachedData.allAnswers || [],
                     currentQuestion: cachedData.currentQuestion || 1,
-                    // 不在这里设置 startTime，因为之前已经设置过了
+                    // 重置提交状态
+                    isSubmitted: false,
+                    isAllSubmitted: false,
+                    questionAnalysis: {},
+                    correctAnswers: {}
                 }, () => {
                     console.log('恢复缓存状态完成');
                     // 显示恢复提示
