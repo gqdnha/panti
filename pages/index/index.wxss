@@ -58,28 +58,39 @@ page {
     align-items: center;
     width: 180rpx;
     height: 180rpx;
-    /* background-color: #88bbee; */
-    /* background: linear-gradient(to bottom, #a6d2ff , #6ea4e4); */
-    /* background: linear-gradient(135deg, #59ddf5,#a6d2ff , #2c99e2); */
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     border-radius: 30rpx;
-
+    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
+    transition: all 0.3s ease;
 }
+
+.study-item:active {
+    transform: scale(0.95);
+    background: rgba(255, 255, 255, 0.25);
+}
+
 .studyName {
-    font-size: 26rpx;
-    /* color: #fff; */
+    font-size: 24rpx;
     color: #4a546b;
     text-align: center;
+    margin-top: 8rpx;
+    font-weight: 500;
 }
-.studyValue {
-    margin-top: 5rpx;
-    font-size: 40rpx;
-    /* color: #fff; */
-    color: #4a546b;
 
+.studyValue {
+    font-size: 36rpx;
+    color: #2c3e50;
     text-align: center;
+    font-weight: 600;
+    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+}
+
+.total-count {
+    color: #999999;
+    font-weight: 500;
+    font-size: 28rpx;
 }
 
 /* 功能模块 */
