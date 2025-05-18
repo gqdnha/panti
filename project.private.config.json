@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/resources/detail/index",
+          "pathName": "pages/resources/detail/index",
+          "query": "category=%25E6%25B3%2595%25E5%25BE%258B",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/wrongBook_type/wrongBook_type",
           "pathName": "pages/wrongBook_type/wrongBook_type",
           "query": "type=%25E5%258D%2595%25E9%2580%2589%25E9%25A2%2598",
