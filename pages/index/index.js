@@ -23,14 +23,15 @@ Page({
             totalQuestions: 0,
             correctRate: '',
             totalTime: 0
-        }
+        },
+        lastCheckDate: ''
     },
     onLoad() {
         this.setCurrentDate();
         this.loadUserInfo();
         this.getUserInfo();
         this.getStudyStats();
-        this.userFinash();
+        this.checkAndResetDailyStatus();
         this.getUserLearnTime();
     },
     bindViewTap() {
@@ -86,7 +87,7 @@ Page({
     onShow() {
         this.getUserInfo();
         this.getStudyStats();
-        this.userFinash();
+        this.checkAndResetDailyStatus();
         if (typeof this.getTabBar === 'function' && this.getTabBar()) {
             this.getTabBar().setData({
                 selected: 0
@@ -272,5 +273,21 @@ Page({
                 'userInfo.name': name
             });
         }
+    },
+    // 检查并重置每日状态
+    checkAndResetDailyStatus() {
+        const today = new Date().toDateString();
+        const lastCheckDate = wx.getStorageSync('lastCheckDate');
+        
+        // 如果是新的一天，重置完成状态
+        if (lastCheckDate !== today) {
+            this.setData({
+                ifFinash: 0
+            });
+            wx.setStorageSync('lastCheckDate', today);
+        }
+        
+        // 重新获取完成状态
+        this.userFinash();
     },
 })
