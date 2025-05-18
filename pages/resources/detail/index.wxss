@@ -1,14 +1,20 @@
 .container {
-    padding: 20rpx;
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     background-color: #f5f5f5;
 }
 
+/* 顶部标题栏 */
 .header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     background-color: #fff;
     padding: 30rpx;
-    border-radius: 10rpx;
-    margin-bottom: 20rpx;
+    z-index: 100;
+    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
 }
 
 .type {
@@ -18,45 +24,47 @@
 
 /* 列表区域 */
 .content {
-    width: 90vw;
-    /* background-color: #fff; */
-    padding: 30rpx;
-    border-radius: 10rpx;
-    min-height: 60vh;
+    margin-top: 100rpx; /* 为顶部标题栏留出空间 */
+    margin-bottom: 120rpx; /* 为底部按钮留出空间 */
+    height: calc(100vh - 220rpx); /* 减去顶部和底部的高度 */
+    overflow-y: auto;
+    background-color: #f5f5f5;
+    padding: 20rpx;
 }
 
 /* 列表 */
 .law-list {
     display: flex;
     flex-direction: column;
-    
 }
 
 /* 列表块 */
 .law-list-item {
-    margin-top: 5rpx;
+    margin-bottom: 20rpx;
     height: 150rpx;
     background-color: #fff;
     display: flex;
     flex-direction: row;
     align-items: center;
     border-radius: 20rpx;
+    padding: 0 20rpx;
 }
+
 .law-list-item image {
     width: 120rpx;
     height: 120rpx;
 }
+
 .detil {
     display: flex;
     flex-direction: column;
     align-items: start;
-}
-
-.detil {
     margin-left: 20rpx;
 }
+
 .regulation_name {
     margin-bottom: 10rpx;
+    font-size: 28rpx;
 }
 
 .regulation_type {
@@ -64,54 +72,49 @@
     font-size: 25rpx;
     margin-top: 5rpx;
 }
-.loading-tip {
-    text-align: center;
-    padding: 10px;
-    color: #999;
-}
 
+/* 分页按钮 */
 .pagination {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    padding: 20rpx;
     display: flex;
     justify-content: center;
-    margin-top: 20px;
+    box-shadow: 0 -2rpx 10rpx rgba(0, 0, 0, 0.1);
 }
 
 .pagination button {
-    margin: 0 10px;
-}    
-.container {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
+    margin: 0 20rpx;
+    padding: 20rpx 40rpx;
+    border-radius: 8rpx;
+    font-size: 28rpx;
+    background-color: #0066cc;
+    color: #fff;
+    border: none;
 }
 
-.content {
-    flex: 1;
+.pagination button[disabled] {
+    background-color: #ccc;
+    color: #fff;
 }
 
-.pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 30rpx;
-}
-
-.pagination button {
-    margin: 0 10px;
-}
-
-.loading-tip {
+/* 加载状态 */
+.loading {
     text-align: center;
-    padding: 10px;
-    color: #999;
+    padding: 40rpx 0;
+    color: #666;
 }
 
+/* 无数据状态 */
 .no-data {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 100rpx 0;
+    height: 100%;
     color: #999;
 }
 
@@ -125,10 +128,4 @@
 .no-data-text {
     font-size: 28rpx;
     color: #999;
-}
-
-.loading {
-    text-align: center;
-    padding: 40rpx 0;
-    color: #666;
 }

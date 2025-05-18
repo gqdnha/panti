@@ -26,37 +26,36 @@ Page({
         });
         this.getLawsData();
     },
+
     getLawsData() {
         if (this.data.isLoading) return;
         this.setData({ isLoading: true });
+        
         const regulationType = this.data.regulationType;
-        const {
-            pageNum,
-            pageSize
-        } = this.data;
+        const { pageNum, pageSize } = this.data;
         const fromData = {
             regulationType,
             pageNum,
             pageSize
         };
+        
         console.log(regulationType);
         getLawsData(fromData).then(res => {
             console.log(res);
             const totalSize = res.pageInfo.totalSize;
             const totalPages = Math.ceil(totalSize / pageSize);
             const newData = res.pageInfo.pageData || [];
-            const updatedLawList = this.data.lawList.concat(newData);
             
             this.setData({
                 totalSize: totalSize,
                 totalPages: totalPages,
-                lawList: updatedLawList,
+                lawList: newData, // 直接使用新数据，不进行拼接
                 isLoading: false,
-                hasData: updatedLawList.length > 0,
+                hasData: newData.length > 0,
                 isFirstLoad: false
             });
 
-            if (this.data.pageNum === 1 && updatedLawList.length === 0) {
+            if (this.data.pageNum === 1 && newData.length === 0) {
                 wx.showToast({
                     title: '该分类下暂无数据',
                     icon: 'none',
@@ -80,6 +79,7 @@ Page({
             }
         });
     },
+
     openFile(e) {
         const index = e.currentTarget.dataset.index;
         const fileInfo = this.data.lawList[index];
@@ -122,11 +122,16 @@ Page({
             },
         });
     },
+
     onNextPage() {
         const { pageNum, totalPages } = this.data;
         if (pageNum < totalPages) {
-            this.setData({ pageNum: pageNum + 1 });
-            this.getLawsData();
+            this.setData({ 
+                pageNum: pageNum + 1,
+                lawList: [] // 清空当前列表
+            }, () => {
+                this.getLawsData();
+            });
         } else {
             wx.showToast({
                 title: '已经是最后一页了',
@@ -138,8 +143,12 @@ Page({
     onPreviousPage() {
         const { pageNum } = this.data;
         if (pageNum > 1) {
-            this.setData({ pageNum: pageNum - 1 });
-            this.getLawsData();
+            this.setData({ 
+                pageNum: pageNum - 1,
+                lawList: [] // 清空当前列表
+            }, () => {
+                this.getLawsData();
+            });
         } else {
             wx.showToast({
                 title: '已经是第一页了',
