@@ -20,7 +20,9 @@ Page({
         lawList: [],
         pageNum: 1,
         totalPages: 1,
-        pageSize: 10
+        pageSize: 10,
+        // 当前选中的分类
+        currentType: '法律'
     },
 
     onLoad(options) {
@@ -29,11 +31,12 @@ Page({
 
     // 加载法律列表
     loadLaws() {
-        const { pageNum, pageSize } = this.data;
+        const { pageNum, pageSize, currentType } = this.data;
         const data = {
             regulationName: "",
             pageNum: pageNum,
-            pageSize: pageSize
+            pageSize: pageSize,
+            regulationType: currentType // 添加分类参数
         };
         console.log(data);
         getLawsData(data).then(res => {
@@ -268,5 +271,18 @@ Page({
                 icon: 'none'
             });
         }
+    },
+
+    // 切换分类
+    onTypeChange(e) {
+        const index = e.detail.value;
+        const type = this.data.regulationTypes[index];
+        this.setData({
+            regulationTypeIndex: index,
+            currentType: type,
+            pageNum: 1 // 切换分类时重置页码
+        }, () => {
+            this.loadLaws(); // 重新加载数据
+        });
     }
 });
