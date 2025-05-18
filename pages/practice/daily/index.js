@@ -122,7 +122,7 @@ Page({
                     selectedOptions: cachedData.selectedOptions || new Array(res.length).fill(null).map(() => []),
                     optionStates: cachedData.optionStates || res.map(question => new Array(question.options ? question.options.length : 0).fill(false)),
                     answerSheetStates: cachedData.answerSheetStates || new Array(res.length).fill(false),
-                    allAnswers: cachedData.allAnswers || [],
+                    allAnswers: cachedData.allAnswers || new Array(res.length).fill(''), // 确保填空题答案被正确恢复
                     currentQuestion: cachedData.currentQuestion || 1,
                     // 重置提交状态
                     isSubmitted: false,
@@ -289,12 +289,21 @@ Page({
         const answerSheetStates = [...this.data.answerSheetStates];
         answerSheetStates[currentQuestion - 1] = true;
         
+        // 立即更新状态并保存到缓存
         this.setData({
             allAnswers: newAllAnswers,
             answerSheetStates: answerSheetStates
         }, () => {
-            // 更新缓存
-            this.cacheCurrentAnswers();
+            // 立即保存到缓存
+            try {
+                const cacheData = wx.getStorageSync('dailyTestAnswers') || {};
+                cacheData.allAnswers = newAllAnswers;
+                cacheData.answerSheetStates = answerSheetStates;
+                wx.setStorageSync('dailyTestAnswers', cacheData);
+                console.log('填空题答案已保存到缓存');
+            } catch (error) {
+                console.log('保存填空题答案失败：', error);
+            }
         });
     },
     // 开始倒计时
@@ -538,8 +547,8 @@ Page({
                 selectedOptions: this.data.selectedOptions,
                 optionStates: this.data.optionStates,
                 answerSheetStates: this.data.answerSheetStates,
-                allAnswers: this.data.allAnswers,
-                startTime: this.data.startTime, // 确保缓存开始时间
+                allAnswers: this.data.allAnswers, // 确保填空题答案被缓存
+                startTime: this.data.startTime,
                 totalQuestions: this.data.totalQuestions,
                 timestamp: new Date().getTime()
             };

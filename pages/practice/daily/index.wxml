@@ -63,7 +63,10 @@
 
             <!-- 填空题 -->
             <block class="testCard" wx:if="{{allQuestions[currentQuestion - 1].type === '填空题'}}">
-                <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted? 'wrong' : '')}}" placeholder="请输入答案" value="{{answer}}" bindinput="onInputAnswer" />
+                <view class="fill-blank-container">
+                    <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted? 'wrong' : '')}}" placeholder="请输入答案" value="{{allAnswers[currentQuestion - 1]}}" bindinput="onInputAnswer" />
+                    <text class="mark {{questionStates[currentQuestion - 1] ? 'correct' : 'wrong'}}" wx:if="{{isSubmitted && allAnswers[currentQuestion - 1]}}">{{questionStates[currentQuestion - 1] ? '√' : '×'}}</text>
+                </view>
             </block>
         </view>
 

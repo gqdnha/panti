@@ -180,25 +180,43 @@
 }
 
 /* 填空题样式 */
+.fill-blank-container {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    position: relative;
+}
+
 .fill-blank-input {
-    width: 80%;
+    flex: 1;
     padding: 20rpx;
     border: 2rpx solid #e0e0e0;
     border-radius: 8rpx;
-    font-size: 30rpx;
-    margin-top: 20rpx;
+    margin-right: 20rpx;
 }
 
 .fill-blank-input.correct {
     border-color: #52c41a;
     box-shadow: 0 0 5rpx rgba(82, 196, 26, 0.3);
-    transition: all 0.3s ease;
 }
 
 .fill-blank-input.wrong {
     border-color: #f5222d;
     box-shadow: 0 0 5rpx rgba(245, 34, 45, 0.3);
-    transition: all 0.3s ease;
+}
+
+.fill-blank-container .mark {
+    font-size: 40rpx;
+    font-weight: bold;
+    margin-left: 20rpx;
+}
+
+.fill-blank-container .mark.correct {
+    color: #52c41a;
+}
+
+.fill-blank-container .mark.wrong {
+    color: #f5222d;
 }
 
 /* 底部操作栏样式 */
