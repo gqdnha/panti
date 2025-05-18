@@ -39,7 +39,7 @@
         </view>
         <view class="study-item">
             <!-- <image class="module-icon" src="/assets/icons/错题本.png"></image> -->
-            <text class="studyValue">{{studyStats.totalQuestions}}</text>
+            <text class="studyValue">{{studyStats.totalQuestions}}/{{allCount}}</text>
             <text class="studyName">已答题</text>
         </view>
         <view class="study-item">

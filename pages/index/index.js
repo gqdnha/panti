@@ -1,8 +1,9 @@
 import {getUserInfo} from '../../api/getUserInfo'
 import {getDailyFinesh} from '../../api/getDeilyFinash'
-
+import {getAllCount} from '../../api/getAllCount'
 Page({
     data: {
+        allCount:0,
         ifFinash:0,
         motto: 'Hello World',
         userInfo: {
@@ -33,10 +34,21 @@ Page({
         this.getStudyStats();
         this.checkAndResetDailyStatus();
         this.getUserLearnTime();
+        this.getAllCount()
+
     },
     bindViewTap() {
         wx.navigateTo({
             url: '../logs/logs'
+        })
+    },
+    // 获取总题目数
+    getAllCount(){
+        getAllCount().then(res => {
+            console.log("总题数",res);
+            this.setData({
+                allCount:res
+            })
         })
     },
     // 获取用户完成情况
