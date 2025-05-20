@@ -1,10 +1,19 @@
-import {getUserInfo} from '../../api/getUserInfo'
-import {getDailyFinesh} from '../../api/getDeilyFinash'
-import {getAllCount} from '../../api/getAllCount'
+import {
+    getUserInfo
+} from '../../api/getUserInfo'
+import {
+    getDailyFinesh
+} from '../../api/getDeilyFinash'
+import {
+    getAllCount
+} from '../../api/getAllCount'
+import {
+    getLearnTime
+} from '../../api/getLearnTime'
 Page({
     data: {
-        allCount:0,
-        ifFinash:0,
+        allCount: 0,
+        ifFinash: 0,
         motto: 'Hello World',
         userInfo: {
             name: ''
@@ -43,11 +52,11 @@ Page({
         })
     },
     // 获取总题目数
-    getAllCount(){
+    getAllCount() {
         getAllCount().then(res => {
-            console.log("总题数",res);
+            console.log("总题数", res);
             this.setData({
-                allCount:res
+                allCount: res
             })
         })
     },
@@ -56,7 +65,7 @@ Page({
         getDailyFinesh().then(res => {
             console.log(res);
             this.setData({
-                ifFinash:res
+                ifFinash: res
             })
         })
     },
@@ -95,7 +104,7 @@ Page({
             }
         })
     },
-    
+
     onShow() {
         this.getUserInfo();
         this.getStudyStats();
@@ -120,7 +129,7 @@ Page({
                     totalTime: 120
                 }
             });
-        })  
+        })
     },
 
     navigateToCategory(e) {
@@ -206,7 +215,9 @@ Page({
             this.showLoginTip();
             return;
         }
-        const { ifFinash } = this.data;
+        const {
+            ifFinash
+        } = this.data;
         if (ifFinash === 100) {
             wx.showModal({
                 title: '提示',
@@ -265,12 +276,14 @@ Page({
     },
     // 获取用户学习时间
     getUserLearnTime() {
-        const learnTime = wx.getStorageSync('learnTime');
-        if (learnTime) {
+        // const learnTime = wx.getStorageSync('learnTime');
+        getLearnTime().then(res => {
+            console.log(res);
             this.setData({
-                'studyTime': learnTime
+                'studyTime': res
             });
-        }
+        })
+        
     },
     // 获取用户信息
     getUserInfo() {
@@ -290,7 +303,7 @@ Page({
     checkAndResetDailyStatus() {
         const today = new Date().toDateString();
         const lastCheckDate = wx.getStorageSync('lastCheckDate');
-        
+
         // 如果是新的一天，重置完成状态
         if (lastCheckDate !== today) {
             this.setData({
@@ -298,7 +311,7 @@ Page({
             });
             wx.setStorageSync('lastCheckDate', today);
         }
-        
+
         // 重新获取完成状态
         this.userFinash();
     },

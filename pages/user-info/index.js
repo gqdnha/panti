@@ -1,7 +1,7 @@
 // import { getUserId } from '../../api/getUserId';
 import { getUserInfo } from '../../api/getUserInfo'
 import { setupTabBar } from '../../utils/tabBar';
-
+import {getLearnTime} from '../../api/getLearnTime'
 Page({
 
     /**
@@ -25,12 +25,13 @@ Page({
         this.getUserLearnTime()
     },
     getUserLearnTime() {
-        const learnTime = wx.getStorageSync('learnTime');
-        if (learnTime) {
+        // const learnTime = wx.getStorageSync('learnTime');
+        getLearnTime().then(res => {
+            console.log(res);
             this.setData({
-                'studyTime': learnTime
+                'studyTime': res
             });
-        }
+        })
     },
 
     /**
