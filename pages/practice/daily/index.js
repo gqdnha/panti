@@ -2,7 +2,7 @@ import {
     apiGetDailyTest
 } from "../../../api/getDailyTest";
 import {
-    apiJudgeTest
+    apiDailyJudgeTest
 } from "../../../api/judgeTest"
 import {
     dailyQuestionCount
@@ -10,7 +10,7 @@ import {
 import {
     addLearnTime
 } from '../../../api/addLearnTime'
-
+import {getDailyTestAnswer} from '../../../api/getDailyTestAnswer'
 Page({
     data: {
         // 页面数据
@@ -405,7 +405,7 @@ Page({
         })
 
         // 调用后端接口
-        apiJudgeTest(allUserAnswers).then(response => {
+        apiDailyJudgeTest(allUserAnswers).then(response => {
             console.log('后端返回结果：', response);
 
             // 根据后端返回结果设置题目状态和解析
@@ -678,7 +678,7 @@ Page({
         addLearnTime(minutes);
 
         if (allUserAnswers.length > 0) {
-            apiJudgeTest(allUserAnswers).then(response => {
+            apiDailyJudgeTest(allUserAnswers).then(response => {
                 console.log('部分答案提交成功', response);
             }).catch(error => {
                 console.error('部分答案提交失败', error);

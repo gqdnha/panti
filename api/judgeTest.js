@@ -11,4 +11,13 @@ export const apiJudgeTest = (data) => {
         data
     });
 };
+
+export const apiDailyJudgeTest = (data) => {
+    const userId = getUserId();
+    return request({
+        url: `/dailyQuestion/judgeQuestion?userId=${userId}`,
+        method: 'POST',
+        data
+    });
+};
     
