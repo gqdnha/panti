@@ -61,16 +61,19 @@
 
                 <!-- 多选题 -->
                 <block wx:if="{{questionList[currentQuestion - 1].type === '多选题'}}">
-                    <view wx:for="{{questionList[currentQuestion - 1].options}}" 
-                          wx:key="index" 
-                          class="option-item {{optionStates[currentQuestion - 1][index] ? (questionStates[currentQuestion - 1] ? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' : 'selected')) : ''}}"
-                          bindtap="selectMultipleOption" 
+                    <view wx:for="{{questionList[currentQuestion - 1].options}}"
+                          wx:key="index"
+                          class="option-item {{optionStates[currentQuestion - 1][index] ? (questionStates[currentQuestion - 1] ? 'selected correct' : (isSubmitted[currentQuestion - 1] ? 'selected wrong' : 'selected')) : ''}}"
+                          bindtap="selectMultipleOption"
                           data-index="{{index}}">
                         <text class="option-content">{{item}}</text>
-                            <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
-                                <text wx:if="{{detailData.answer.includes(item[0])}}" class="status-icon correct">✓</text>
-                                <text wx:elif="{{optionStates[currentQuestion - 1][index] && !detailData.answer.includes(item[0])}}" class="status-icon wrong">×</text>
-                            </text>
+                        <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                          <!-- 只对被选中的选项显示符号 -->
+                          <block wx:if="{{optionStates[currentQuestion - 1][index]}}">
+                            <text wx:if="{{questionStates[currentQuestion - 1]}}" class="status-icon correct">✓</text>
+                            <text wx:else class="status-icon wrong">×</text>
+                          </block>
+                        </text>
                     </view>
                 </block>
 

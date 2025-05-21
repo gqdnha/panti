@@ -448,6 +448,10 @@ Page({
         console.log('提交到后端的数据：', data);
         apiJudgeTest(data).then(res => {
             console.log('后端返回结果：', res);
+            // 强制将answer处理为大写字母字符串
+            if (res[0].answer) {
+                res[0].answer = String(res[0].answer).replace(/[^A-Z]/ig, '').toUpperCase();
+            }
             newQuestionStates[currentQuestion - 1] = res[0].rightOrWrong === '对';
             newIsSubmitted[currentQuestion - 1] = true;
 
