@@ -543,7 +543,8 @@ Page({
         }
 
         addLearnTime(durationInMinutes).then(res => {
-            console.log('学习时间上传结果：', res);
+            console.log('学习时间上传结果：', durationInMinutes);
+            console.log('学习时间上传结果：', typeof durationInMinutes);
         });
     },
     // 图片预览相关方法

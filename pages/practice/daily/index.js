@@ -422,6 +422,7 @@ Page({
         addLearnTime(minutes).then(res => {
             console.log('传时间', minutes);
         })
+        console.log(minutes);
 
         // 调用后端接口
         apiDailyJudgeTest(allUserAnswers).then(response => {

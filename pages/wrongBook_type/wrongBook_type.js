@@ -319,7 +319,7 @@ Page({
         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
         console.log(`做题总时间（分钟）：${durationInMinutes}`);
         addLearnTime(durationInMinutes).then(res => {
-            console.log(res);
+            console.log(durationInMinutes);
         })
     },
     submitAnswer() {
