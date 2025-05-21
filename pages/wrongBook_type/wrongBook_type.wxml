@@ -59,8 +59,11 @@
                       data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                     <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
-                        <text wx:if="{{detailData.answer.includes(item[0])}}" class="status-icon correct">✓</text>
-                        <text wx:elif="{{optionStates[currentQuestion - 1][index] && !detailData.answer.includes(item[0])}}" class="status-icon wrong">×</text>
+                        <!-- 只对被选中的选项显示符号 -->
+                        <block wx:if="{{optionStates[currentQuestion - 1][index]}}">
+                            <text wx:if="{{questionStates[currentQuestion - 1]}}" class="status-icon correct">✓</text>
+                            <text wx:else class="status-icon wrong">×</text>
+                        </block>
                     </text>
                 </view>
             </block>
