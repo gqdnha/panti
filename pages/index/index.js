@@ -46,6 +46,20 @@ Page({
         this.getAllCount()
 
     },
+    onShow() {
+        this.getAllCount()
+        this.getUserInfo();
+        this.getStudyStats();
+        this.checkAndResetDailyStatus();
+        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+            this.getTabBar().setData({
+                selected: 0
+            });
+            // 更新tabBar显示
+            this.getTabBar().updateTabBar();
+        }
+        this.getUserLearnTime();
+    },
     bindViewTap() {
         wx.navigateTo({
             url: '../logs/logs'
@@ -58,6 +72,8 @@ Page({
             this.setData({
                 allCount: res
             })
+            console.log("总题数111", this.data.allCount);
+
         })
     },
     // 获取用户完成情况
@@ -105,19 +121,7 @@ Page({
         })
     },
 
-    onShow() {
-        this.getUserInfo();
-        this.getStudyStats();
-        this.checkAndResetDailyStatus();
-        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-            this.getTabBar().setData({
-                selected: 0
-            });
-            // 更新tabBar显示
-            this.getTabBar().updateTabBar();
-        }
-        this.getUserLearnTime();
-    },
+    
     // 获取信息
     getStudyStats() {
         getUserInfo().then(res => {
