@@ -43,11 +43,11 @@ Page({
         this.getStudyStats();
         this.checkAndResetDailyStatus();
         this.getUserLearnTime();
-        this.getAllCount()
+        this.getAllCountfn()
 
     },
     onShow() {
-        this.getAllCount()
+        this.getAllCountfn()
         this.getUserInfo();
         this.getStudyStats();
         this.checkAndResetDailyStatus();
@@ -66,7 +66,7 @@ Page({
         })
     },
     // 获取总题目数
-    getAllCount() {
+    getAllCountfn() {
         getAllCount().then(res => {
             console.log("总题数", res);
             this.setData({
