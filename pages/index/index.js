@@ -215,7 +215,7 @@ Page({
             this.showLoginTip();
             return;
         }
-        const {
+        /* const {
             ifFinash
         } = this.data;
         if (ifFinash === 100) {
@@ -232,7 +232,7 @@ Page({
                 }
             });
             return;
-        }
+        } */
         wx.navigateTo({
             url: '/pages/practice/daily/index'
         });

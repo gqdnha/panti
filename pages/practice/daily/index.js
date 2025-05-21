@@ -11,6 +11,9 @@ import {
     addLearnTime
 } from '../../../api/addLearnTime'
 import {getDailyTestAnswer} from '../../../api/getDailyTestAnswer'
+import {
+    getDailyFinesh
+} from '../../../api/getDeilyFinash'
 Page({
     data: {
         // 页面数据
@@ -42,11 +45,26 @@ Page({
         baseScale: 1,
         transition: '',
         startDistance: 0,
+        ifFinash:0
     },
     onLoad: function () {
         // 先加载缓存，根据缓存情况决定是否开始新倒计时
         this.checkCacheAndStartTimer()
+        // 获取新数据
         this.getData()
+        // 检查今天是否已经提交过答案
+        this.checkTodaySubmission()
+        // 获取用户完成情况
+        this.userFinash()
+    },
+    // 用户是否完成
+    userFinash() {
+        getDailyFinesh().then(res => {
+            console.log(res);
+            this.setData({
+                ifFinash: res
+            })
+        })
     },
     // 检查缓存并启动相应的倒计时
     checkCacheAndStartTimer: function() {
@@ -428,6 +446,22 @@ Page({
                 }
             });
 
+            // 缓存用户的答题数据
+            try {
+                const answerData = {
+                    selectedOptions: this.data.selectedOptions,
+                    optionStates: this.data.optionStates,
+                    allAnswers: this.data.allAnswers,
+                    questionStates: newQuestionStates,
+                    questionAnalysis: newQuestionAnalysis,
+                    correctAnswers: newCorrectAnswers,
+                    timestamp: new Date().getTime()
+                };
+                wx.setStorageSync('dailyTestAnswerData', answerData);
+            } catch (error) {
+                console.error('缓存答题数据失败：', error);
+            }
+
             this.setData({
                 isAllSubmitted: true,
                 questionStates: newQuestionStates,
@@ -435,7 +469,7 @@ Page({
                 questionAnalysis: newQuestionAnalysis,
                 correctAnswers: newCorrectAnswers
             }, () => {
-                // 提交成功后清除缓存
+                // 提交成功后清除答题进度缓存
                 this.clearCachedAnswers();
             });
         })
@@ -561,8 +595,21 @@ Page({
     // 清除缓存的答案
     clearCachedAnswers: function() {
         try {
-            wx.removeStorageSync('dailyTestAnswers');
-            console.log('缓存已清除');
+            // 只清除答题进度缓存，保留答题数据缓存
+            const cachedData = wx.getStorageSync('dailyTestAnswers');
+            if (cachedData) {
+                delete cachedData.cachedAnswers;
+                delete cachedData.currentQuestion;
+                delete cachedData.selectedOptions;
+                delete cachedData.optionStates;
+                delete cachedData.answerSheetStates;
+                delete cachedData.allAnswers;
+                delete cachedData.startTime;
+                delete cachedData.totalQuestions;
+                delete cachedData.timestamp;
+                wx.setStorageSync('dailyTestAnswers', cachedData);
+            }
+            console.log('答题进度缓存已清除');
         } catch (error) {
             console.log('清除缓存失败：', error);
         }
@@ -589,6 +636,8 @@ Page({
         if (!this.data.isAllSubmitted && this.data.startTime > 0) {
             this.restartCountdown();
         }
+        // 检查今天是否已经提交过答案
+        this.checkTodaySubmission();
     },
     // 重新开始倒计时
     restartCountdown: function() {
@@ -698,6 +747,23 @@ Page({
         if (!this.data.isAllSubmitted) {
             this.cacheCurrentAnswers();
         }
+        // 如果已经提交，确保答题数据被缓存
+        else if (this.data.isSubmitted) {
+            try {
+                const answerData = {
+                    selectedOptions: this.data.selectedOptions,
+                    optionStates: this.data.optionStates,
+                    allAnswers: this.data.allAnswers,
+                    questionStates: this.data.questionStates,
+                    questionAnalysis: this.data.questionAnalysis,
+                    correctAnswers: this.data.correctAnswers,
+                    timestamp: new Date().getTime()
+                };
+                wx.setStorageSync('dailyTestAnswerData', answerData);
+            } catch (error) {
+                console.error('缓存答题数据失败：', error);
+            }
+        }
     },
     // 处理缩放开始
     touchStart: function(e) {
@@ -767,5 +833,61 @@ Page({
     stopPropagation: function(e) {
         // 阻止事件冒泡
         e.stopPropagation();
+    },
+    // 新增：获取答案信息的方法
+    getAnswerInfo: function() {
+        getDailyTestAnswer().then(res => {
+            console.log('获取到的答案信息：', res);
+            // 更新答案信息到页面数据
+            const newQuestionAnalysis = {};
+            const newCorrectAnswers = {};
+            
+            res.forEach(item => {
+                newQuestionAnalysis[item.questionId] = item.analysis || '';
+                newCorrectAnswers[item.questionId] = item.answer;
+            });
+
+            this.setData({
+                questionAnalysis: newQuestionAnalysis,
+                correctAnswers: newCorrectAnswers
+            });
+        }).catch(error => {
+            console.error('获取答案信息失败：', error);
+        });
+    },
+    // 新增：检查今天是否已经提交过答案
+    checkTodaySubmission: function() {
+        try {
+            const today = new Date().toDateString();
+            const lastSubmissionDate = wx.getStorageSync('lastDailyTestSubmission');
+            
+            if (lastSubmissionDate === today) {
+                // 今天已经提交过答案，获取答案信息
+                this.getAnswerInfo();
+                
+                // 恢复缓存的答题数据
+                const cachedAnswerData = wx.getStorageSync('dailyTestAnswerData');
+                if (cachedAnswerData) {
+                    this.setData({
+                        selectedOptions: cachedAnswerData.selectedOptions,
+                        optionStates: cachedAnswerData.optionStates,
+                        allAnswers: cachedAnswerData.allAnswers,
+                        questionStates: cachedAnswerData.questionStates,
+                        questionAnalysis: cachedAnswerData.questionAnalysis,
+                        correctAnswers: cachedAnswerData.correctAnswers,
+                        isSubmitted: true,
+                        isAllSubmitted: true
+                    });
+                } else {
+                    // 如果没有缓存数据，只设置提交状态
+                    this.setData({
+                        isSubmitted: true,
+                        isAllSubmitted: true
+                    });
+                }
+            }
+        } catch (error) {
+            console.error('检查提交状态失败：', error);
+        }
     },
 })
