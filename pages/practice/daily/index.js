@@ -60,11 +60,18 @@ Page({
     // 用户是否完成
     userFinash() {
         getDailyFinesh().then(res => {
-            console.log(res);
+            console.log('获取完成状态：', res);
             this.setData({
                 ifFinash: res
-            })
-        })
+            }, () => {
+                // 如果已完成，检查并恢复答题数据
+                if (res === 100) {
+                    this.checkTodaySubmission();
+                }
+            });
+        }).catch(error => {
+            console.error('获取完成状态失败：', error);
+        });
     },
     // 检查缓存并启动相应的倒计时
     checkCacheAndStartTimer: function() {
@@ -467,7 +474,8 @@ Page({
                 questionStates: newQuestionStates,
                 isSubmitted: true,
                 questionAnalysis: newQuestionAnalysis,
-                correctAnswers: newCorrectAnswers
+                correctAnswers: newCorrectAnswers,
+                ifFinash: 100 // 设置完成状态
             }, () => {
                 // 提交成功后清除答题进度缓存
                 this.clearCachedAnswers();
@@ -636,8 +644,8 @@ Page({
         if (!this.data.isAllSubmitted && this.data.startTime > 0) {
             this.restartCountdown();
         }
-        // 检查今天是否已经提交过答案
-        this.checkTodaySubmission();
+        // 重新获取用户完成情况
+        this.userFinash();
     },
     // 重新开始倒计时
     restartCountdown: function() {
@@ -857,37 +865,31 @@ Page({
     },
     // 新增：检查今天是否已经提交过答案
     checkTodaySubmission: function() {
-        try {
-            const today = new Date().toDateString();
-            const lastSubmissionDate = wx.getStorageSync('lastDailyTestSubmission');
+        // 如果 ifFinash 为 100，说明今天已经提交过答案
+        if (this.data.ifFinash === 100) {
+            // 获取答案信息
+            this.getAnswerInfo();
             
-            if (lastSubmissionDate === today) {
-                // 今天已经提交过答案，获取答案信息
-                this.getAnswerInfo();
-                
-                // 恢复缓存的答题数据
-                const cachedAnswerData = wx.getStorageSync('dailyTestAnswerData');
-                if (cachedAnswerData) {
-                    this.setData({
-                        selectedOptions: cachedAnswerData.selectedOptions,
-                        optionStates: cachedAnswerData.optionStates,
-                        allAnswers: cachedAnswerData.allAnswers,
-                        questionStates: cachedAnswerData.questionStates,
-                        questionAnalysis: cachedAnswerData.questionAnalysis,
-                        correctAnswers: cachedAnswerData.correctAnswers,
-                        isSubmitted: true,
-                        isAllSubmitted: true
-                    });
-                } else {
-                    // 如果没有缓存数据，只设置提交状态
-                    this.setData({
-                        isSubmitted: true,
-                        isAllSubmitted: true
-                    });
-                }
+            // 恢复缓存的答题数据
+            const cachedAnswerData = wx.getStorageSync('dailyTestAnswerData');
+            if (cachedAnswerData) {
+                this.setData({
+                    selectedOptions: cachedAnswerData.selectedOptions,
+                    optionStates: cachedAnswerData.optionStates,
+                    allAnswers: cachedAnswerData.allAnswers,
+                    questionStates: cachedAnswerData.questionStates,
+                    questionAnalysis: cachedAnswerData.questionAnalysis,
+                    correctAnswers: cachedAnswerData.correctAnswers,
+                    isSubmitted: true,
+                    isAllSubmitted: true
+                });
+            } else {
+                // 如果没有缓存数据，只设置提交状态
+                this.setData({
+                    isSubmitted: true,
+                    isAllSubmitted: true
+                });
             }
-        } catch (error) {
-            console.error('检查提交状态失败：', error);
         }
     },
 })
