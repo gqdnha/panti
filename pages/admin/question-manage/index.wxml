@@ -120,31 +120,31 @@
                 <label>题目内容</label>
                 <!-- 添加图片 -->
                 <!-- <button bind:tap="addImg">添加图片</button> -->
-                <textarea data-field="content" bindinput="onNewQuestionInput" value="{{newQuestion.content}}"></textarea>
+                <textarea data-field="content" bindinput="onNewQuestionInput" value="{{newQuestion.content}}" maxlength="500"></textarea>
             </view>
             <view class="form-item" wx:if="{{newQuestion.type === '单选题' || newQuestion.type === '多选题'}}">
                 <label>选项</label>
-                <view class="option-item">A. <input type="text" data-field="option1" bindinput="onNewQuestionInput" value="{{newQuestion.option1}}" /></view>
-                <view class="option-item">B. <input type="text" data-field="option2" bindinput="onNewQuestionInput" value="{{newQuestion.option2}}" /></view>
-                <view class="option-item">C. <input type="text" data-field="option3" bindinput="onNewQuestionInput" value="{{newQuestion.option3}}" /></view>
-                <view class="option-item">D. <input type="text" data-field="option4" bindinput="onNewQuestionInput" value="{{newQuestion.option4}}" /></view>
+                <view class="option-item">A. <input type="text" data-field="option1" bindinput="onNewQuestionInput" value="{{newQuestion.option1}}" maxlength="500" /></view>
+                <view class="option-item">B. <input type="text" data-field="option2" bindinput="onNewQuestionInput" value="{{newQuestion.option2}}" maxlength="500" /></view>
+                <view class="option-item">C. <input type="text" data-field="option3" bindinput="onNewQuestionInput" value="{{newQuestion.option3}}" maxlength="500" /></view>
+                <view class="option-item">D. <input type="text" data-field="option4" bindinput="onNewQuestionInput" value="{{newQuestion.option4}}" maxlength="500" /></view>
             </view>
             <view class="form-item" wx:if="{{newQuestion.type === '判断题'}}">
                 <label>选项</label>
-                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onNewQuestionInput" value="{{newQuestion.optionT}}" /></view>
-                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onNewQuestionInput" value="{{newQuestion.optionF}}" /></view>
+                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onNewQuestionInput" value="{{newQuestion.optionT}}" maxlength="500" /></view>
+                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onNewQuestionInput" value="{{newQuestion.optionF}}" maxlength="500" /></view>
             </view>
             <view class="form-item" wx:if="{{newQuestion.type === '单选题' || newQuestion.type === '多选题' || newQuestion.type === '判断题'}}">
                 <label>答案（选项）</label>
-                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}" />
+                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}" maxlength="500" />
             </view>
             <view class="form-item" wx:if="{{newQuestion.type === '填空题'}}">
                 <label>答案</label>
-                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}" />
+                <input type="text" data-field="answer" bindinput="onNewQuestionInput" value="{{newQuestion.answer}}" maxlength="500" />
             </view>
             <view class="form-item">
                 <label>解析</label>
-                <textarea data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}"></textarea>
+                <textarea data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}" maxlength="500"></textarea>
             </view>
         </view>
         <view class="modal-footer">
@@ -183,27 +183,27 @@
                     <button bind:tap="addImg">添加图片</button>
                     <button bind:tap="deletImg">删除图片</button>
                 </view>
-                <textarea data-field="content" bindinput="onEditQuestionInput" value="{{editQuestion.content}}"></textarea>
+                <textarea data-field="content" bindinput="onEditQuestionInput" value="{{editQuestion.content}}" maxlength="500"></textarea>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题'}}">
                 <label>选项</label>
-                <view class="option-item">A. <input type="text" data-field="option1" bindinput="onEditQuestionInput" value="{{editQuestion.option1}}" /></view>
-                <view class="option-item">B. <input type="text" data-field="option2" bindinput="onEditQuestionInput" value="{{editQuestion.option2}}" /></view>
-                <view class="option-item">C. <input type="text" data-field="option3" bindinput="onEditQuestionInput" value="{{editQuestion.option3}}" /></view>
-                <view class="option-item">D. <input type="text" data-field="option4" bindinput="onEditQuestionInput" value="{{editQuestion.option4}}" /></view>
+                <view class="option-item">A. <input type="text" data-field="option1" bindinput="onEditQuestionInput" value="{{editQuestion.option1}}" maxlength="500" /></view>
+                <view class="option-item">B. <input type="text" data-field="option2" bindinput="onEditQuestionInput" value="{{editQuestion.option2}}" maxlength="500" /></view>
+                <view class="option-item">C. <input type="text" data-field="option3" bindinput="onEditQuestionInput" value="{{editQuestion.option3}}" maxlength="500" /></view>
+                <view class="option-item">D. <input type="text" data-field="option4" bindinput="onEditQuestionInput" value="{{editQuestion.option4}}" maxlength="500" /></view>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '判断题'}}">
                 <label>选项</label>
-                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onEditQuestionInput" value="{{editQuestion.optionT}}" /></view>
-                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onEditQuestionInput" value="{{editQuestion.optionF}}" /></view>
+                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onEditQuestionInput" value="{{editQuestion.optionT}}" maxlength="500" /></view>
+                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onEditQuestionInput" value="{{editQuestion.optionF}}" maxlength="500" /></view>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题' || editQuestion.type === '判断题'}}">
                 <label>答案（选项）</label>
-                <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" />
+                <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" maxlength="500" />
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '填空题'}}">
                 <label>答案</label>
-                <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" />
+                <input type="text" data-field="answer" bindinput="onEditQuestionInput" value="{{editQuestion.answer}}" maxlength="500" />
             </view>
             <!-- <view class="form-item">
                 <label>难易</label>
@@ -211,7 +211,7 @@
             </view> -->
             <view class="form-item">
                 <label>解析</label>
-                <textarea data-field="analysis" bindinput="onEditQuestionInput" value="{{editQuestion.analysis}}"></textarea>
+                <textarea data-field="analysis" bindinput="onEditQuestionInput" value="{{editQuestion.analysis}}" maxlength="500"></textarea>
             </view>
         </view>
         <view class="modal-footer">
