@@ -45,7 +45,8 @@ Page({
         baseScale: 1,
         transition: '',
         startDistance: 0,
-        ifFinash:0
+        ifFinash:0,
+        scrollTop: 0 // 添加scrollTop控制变量
     },
     onLoad: function () {
         // 先检查今天是否已经提交过答案
@@ -188,6 +189,23 @@ Page({
             }
         });
     },
+    // 添加滚动到顶部的方法
+    scrollToTop() {
+        // 方法1：使用选择器
+        const query = wx.createSelectorQuery();
+        query.select('.question-container').node().exec((res) => {
+            const questionContainer = res[0];
+            if (questionContainer && questionContainer.node) {
+                questionContainer.node.scrollTop = 0;
+            } else {
+                // 方法2：使用页面滚动
+                wx.pageScrollTo({
+                    scrollTop: 0,
+                    duration: 300
+                });
+            }
+        });
+    },
     nextQuestion: function () {
         const {
             currentQuestion,
@@ -196,7 +214,8 @@ Page({
         } = this.data;
         if (currentQuestion < totalQuestions) {
             this.setData({
-                currentQuestion: currentQuestion + 1
+                currentQuestion: currentQuestion + 1,
+                scrollTop: 0 // 重置滚动位置
             });
         }
     },
@@ -207,7 +226,8 @@ Page({
         } = this.data;
         if (currentQuestion > 1) {
             this.setData({
-                currentQuestion: currentQuestion - 1
+                currentQuestion: currentQuestion - 1,
+                scrollTop: 0 // 重置滚动位置
             });
         }
     },
@@ -527,7 +547,8 @@ Page({
             index
         } = e.currentTarget.dataset;
         this.setData({
-            currentQuestion: index
+            currentQuestion: index,
+            scrollTop: 0 // 重置滚动位置
         });
         this.closeAnswerSheetModal();
     },

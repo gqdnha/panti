@@ -12,7 +12,14 @@
     </view>
 
     <!-- 题目内容 -->
-    <view class="question-container">
+    <scroll-view 
+        scroll-y 
+        class="question-container" 
+        scroll-top="{{scrollTop}}"
+        enhanced="{{true}}"
+        show-scrollbar="{{true}}"
+        scroll-anchoring="{{true}}"
+    >
         <view class="question-type">{{allQuestions[currentQuestion - 1].type}}</view>
         <view class="question-content">
             <text>{{currentQuestion}}.{{allQuestions[currentQuestion - 1].content}}</text>
@@ -86,7 +93,7 @@
                 <text>{{questionAnalysis[allQuestions[currentQuestion - 1].questionId]}}</text>
             </view>
         </view>
-    </view>
+    </scroll-view>
 
     <!-- 新增：答题卡按钮 -->
     <view class="answer-sheet-btn" bindtap="showAnswerSheet">答题卡</view>
