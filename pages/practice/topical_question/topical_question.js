@@ -11,6 +11,11 @@ import {
 import {
     getFinashQuestionId
 } from '../../../api/getFinashQuestionId'
+import {
+    judgeTopicalTest,
+    getFinashAnswer,
+    deleteAnswerHistory
+} from '../../../api/topical.js'
 Page({
     data: {
         currentQuestion: 1,
@@ -79,6 +84,18 @@ Page({
         console.log('接收到的类别:', type);
         console.log(this.data.type); */
         this.loadQuestions()
+        // 获取完成情况
+        this.getFinashAnswer()
+    },
+    // 获取已完成
+    getFinashAnswer() {
+        const data = {
+            category: this.data.category,
+            type: this.data.type
+        };
+        getFinashAnswer(data).then(res => {
+            console.log(res);
+        })
     },
 
     // 加载题目
@@ -443,10 +460,11 @@ Page({
         const data = [{
             questionId: questionId,
             answer: userAnswerToSubmit,
-            type: this.data.type
+            type: this.data.type,
+            category: this.data.category
         }];
         console.log('提交到后端的数据：', data);
-        apiJudgeTest(data).then(res => {
+        judgeTopicalTest(data).then(res => {
             console.log('后端返回结果：', res);
             // 强制将answer处理为大写字母字符串
             if (res[0].answer) {
