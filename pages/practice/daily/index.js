@@ -50,6 +50,10 @@ Page({
     onLoad: function () {
         // 先检查今天是否已经提交过答案
         this.checkTodaySubmission();
+        // 获取题目数据
+        this.getData();
+        // 检查缓存并启动倒计时
+        this.checkCacheAndStartTimer();
     },
     // 用户是否完成
     userFinash() {
@@ -363,13 +367,6 @@ Page({
         } = this.data;
         const allUserAnswers = [];
 
-        console.log('提交答案前的状态：', {
-            allQuestions,
-            selectedOptions,
-            optionStates,
-            answerSheetStates
-        });
-
         // 检查是否所有题目都已作答
         const allAnswered = answerSheetStates.every(state => state === true);
         if (!allAnswered) {
@@ -413,16 +410,13 @@ Page({
             }
         });
 
-        console.log('提交的答案：', allUserAnswers);
-
         // 计算使用的时间
         const endTime = new Date().getTime();
         const usedTime = endTime - startTime;
         const minutes = Math.floor(usedTime / (1000 * 60));
         addLearnTime(minutes).then(res => {
             console.log('传时间', minutes);
-        })
-        console.log(minutes);
+        });
 
         // 调用后端接口
         apiDailyJudgeTest(allUserAnswers).then(response => {
@@ -460,6 +454,7 @@ Page({
                     timestamp: new Date().getTime()
                 };
                 wx.setStorageSync('dailyTestAnswerData', answerData);
+                console.log('答题数据已缓存');
             } catch (error) {
                 console.error('缓存答题数据失败：', error);
             }
@@ -472,31 +467,22 @@ Page({
                 correctAnswers: newCorrectAnswers,
                 ifFinash: 100 // 设置完成状态
             }, () => {
-                // 提交成功后清除答题进度缓存
+                // 提交成功后清除答题进度缓存，但保留答题数据缓存
                 this.clearCachedAnswers();
             });
         })
         .catch(error => {
             console.error('提交答案到后端时出错：', error);
-            // 如果后端出错，可以使用本地判断作为备选方案
-            const newQuestionStates = [...questionStates];
-            allQuestions.forEach((question, index) => {
-                // 本地判断逻辑...
-            });
-            this.setData({
-                isAllSubmitted: true,
-                questionStates: newQuestionStates,
-                isSubmitted: true
-            }, () => {
-                // 清除缓存
-                this.clearCachedAnswers();
+            wx.showToast({
+                title: '提交失败，请重试',
+                icon: 'none'
             });
         });
 
         const totalCount = this.data.totalQuestions;
         dailyQuestionCount(totalCount).then(res => {
             console.log(res, '请求成功');
-        })
+        });
     },
     onTouchStart: function (e) {
         // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
@@ -870,23 +856,17 @@ Page({
                 ifFinash: res
             }, () => {
                 if (res === 100) {
-                    // 如果已完成，先获取题目数据
+                    // 如果已完成，获取题目和答案信息
                     apiGetDailyTest().then(questions => {
-                        console.log('获取到的题目数据：', questions);
-                        
                         // 处理题目数据
                         questions.forEach((question, index) => {
-                            // 处理选项
                             if (question.options && typeof question.options === 'string') {
                                 try {
                                     question.options = JSON.parse(question.options);
                                 } catch (error) {
-                                    console.log('选项解析错误：', error);
                                     question.options = [];
                                 }
                             }
-
-                            // 处理图片数据
                             if (question.ifPicture && question.questionsImageList) {
                                 try {
                                     if (typeof question.questionsImageList === 'string') {
@@ -897,7 +877,6 @@ Page({
                                         fullImageUrl: this.data.baseImageUrl + img.imageUrl
                                     }));
                                 } catch (error) {
-                                    console.log('图片列表解析错误：', error);
                                     question.questionsImageList = [];
                                 }
                             } else {
@@ -905,52 +884,54 @@ Page({
                             }
                         });
 
-                        // 设置题目数据
-                        this.setData({
-                            allQuestions: questions,
-                            totalQuestions: questions.length
-                        }, () => {
-                            // 获取答案信息
-                            this.getAnswerInfo();
-                            
-                            // 恢复缓存的答题数据
-                            const cachedAnswerData = wx.getStorageSync('dailyTestAnswerData');
-                            if (cachedAnswerData) {
-                                // 创建答题卡状态数组
-                                const answerSheetStates = new Array(questions.length).fill(true); // 所有题目都已作答
-                                const questionStatuses = answerSheetStates.map((state, index) => ({
-                                    index: index + 1,
-                                    isAnswered: true,
-                                    highlightClass: cachedAnswerData.questionStates[index] ? 'correct' : 'wrong'
-                                }));
+                        // 获取缓存的答题数据
+                        const cachedAnswerData = wx.getStorageSync('dailyTestAnswerData');
+                        if (cachedAnswerData) {
+                            // 创建答题卡状态数组
+                            const answerSheetStates = new Array(questions.length).fill(true);
+                            const questionStatuses = answerSheetStates.map((state, index) => ({
+                                index: index + 1,
+                                isAnswered: true,
+                                highlightClass: cachedAnswerData.questionStates[index] ? 'correct' : 'wrong'
+                            }));
 
-                                this.setData({
-                                    selectedOptions: cachedAnswerData.selectedOptions,
-                                    optionStates: cachedAnswerData.optionStates,
-                                    allAnswers: cachedAnswerData.allAnswers,
-                                    questionStates: cachedAnswerData.questionStates,
-                                    questionAnalysis: cachedAnswerData.questionAnalysis,
-                                    correctAnswers: cachedAnswerData.correctAnswers,
-                                    isSubmitted: true,
-                                    isAllSubmitted: true,
-                                    answerSheetStates: answerSheetStates,
-                                    questionStatuses: questionStatuses
-                                });
-                            }
-                        });
-                    }).catch(error => {
-                        console.error('获取题目数据失败：', error);
+                            this.setData({
+                                allQuestions: questions,
+                                totalQuestions: questions.length,
+                                selectedOptions: cachedAnswerData.selectedOptions,
+                                optionStates: cachedAnswerData.optionStates,
+                                allAnswers: cachedAnswerData.allAnswers,
+                                questionStates: cachedAnswerData.questionStates,
+                                questionAnalysis: cachedAnswerData.questionAnalysis,
+                                correctAnswers: cachedAnswerData.correctAnswers,
+                                isSubmitted: true,
+                                isAllSubmitted: true,
+                                answerSheetStates: answerSheetStates,
+                                questionStatuses: questionStatuses
+                            });
+                        } else {
+                            // 如果没有缓存的答题数据，只显示题目
+                            this.setData({
+                                allQuestions: questions,
+                                totalQuestions: questions.length
+                            });
+                        }
                     });
                 } else {
-                    // 如果未完成，清除所有缓存并重新开始
-                    this.clearAllCache();
-                    // 开始新的答题
-                    this.startNewTest();
+                    // 如果未完成，检查是否有未完成的答题进度
+                    const cachedData = wx.getStorageSync('dailyTestAnswers');
+                    if (cachedData) {
+                        // 有未完成的答题进度，恢复数据
+                        this.getData();
+                        this.checkCacheAndStartTimer();
+                    } else {
+                        // 没有未完成的答题进度，开始新的答题
+                        this.startNewTest();
+                    }
                 }
             });
         }).catch(error => {
             console.error('获取完成状态失败：', error);
-            // 发生错误时，清除缓存并重新开始
             this.clearAllCache();
             this.startNewTest();
         });
