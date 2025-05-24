@@ -1,16 +1,21 @@
 import {
     getAllQuestion
 } from '../../../api/admin'
-import {
+/* import {
     apiJudgeTest
-} from '../../../api/judgeTest'
+} from '../../../api/judgeTest' */
 import {
     addLearnTime
 } from '../../../api/addLearnTime'
 
-import {
+/* import {
     getFinashQuestionId
-} from '../../../api/getFinashQuestionId'
+} from '../../../api/getFinashQuestionId' */
+import {
+    judgeTopicalTest,
+    getFinashQuestionId,
+    deleteAnswerHistory,
+} from '../../../api/topical'
 Page({
     data: {
         currentQuestion: 1,
@@ -99,7 +104,7 @@ Page({
 
         getAllQuestion(data).then(res => {
             console.log('获取到的题目数据:', res);
-            
+
             // 检查是否有数据
             if (!res.pageInfo.pageData || res.pageInfo.pageData.length === 0) {
                 this.setData({
@@ -171,9 +176,9 @@ Page({
             if (question.if_picture && question.image_list_json) {
                 try {
                     // 确保 image_list_json 是字符串
-                    const imageListStr = typeof question.image_list_json === 'string' 
-                        ? question.image_list_json 
-                        : JSON.stringify(question.image_list_json);
+                    const imageListStr = typeof question.image_list_json === 'string' ?
+                        question.image_list_json :
+                        JSON.stringify(question.image_list_json);
                     const imageList = JSON.parse(imageListStr);
                     // 过滤掉没有 image_url 的项
                     return imageList.filter(img => img && img.image_url && img.image_url !== 'null');
@@ -186,8 +191,8 @@ Page({
         });
 
         const newSelectedOptions = new Array(newQuestionList.length).fill(null);
-        const newIsSubmitted = this.data.isAllFinished ? 
-            new Array(newQuestionList.length).fill(false) : 
+        const newIsSubmitted = this.data.isAllFinished ?
+            new Array(newQuestionList.length).fill(false) :
             newQuestionList.map(question => question.isFinished);
         const newQuestionStates = new Array(newQuestionList.length).fill(null);
 
@@ -446,7 +451,7 @@ Page({
             type: this.data.type
         }];
         console.log('提交到后端的数据：', data);
-        apiJudgeTest(data).then(res => {
+        judgeTopicalTest(data).then(res => {
             console.log('后端返回结果：', res);
             // 强制将answer处理为大写字母字符串
             if (res[0].answer) {
@@ -548,7 +553,7 @@ Page({
         });
     },
     // 图片预览相关方法
-    previewImage: function(e) {
+    previewImage: function (e) {
         const url = e.currentTarget.dataset.url;
         this.setData({
             showImagePreview: true,
@@ -558,7 +563,7 @@ Page({
         });
     },
 
-    closeImagePreview: function() {
+    closeImagePreview: function () {
         this.setData({
             showImagePreview: false,
             currentPreviewImage: '',
@@ -568,7 +573,7 @@ Page({
     },
 
     // 处理缩放开始
-    touchStart: function(e) {
+    touchStart: function (e) {
         if (e.touches.length === 2) {
             const xMove = e.touches[1].clientX - e.touches[0].clientX;
             const yMove = e.touches[1].clientY - e.touches[0].clientY;
@@ -582,25 +587,27 @@ Page({
     },
 
     // 处理缩放过程
-    touchMove: function(e) {
+    touchMove: function (e) {
         if (e.touches.length === 2) {
             const xMove = e.touches[1].clientX - e.touches[0].clientX;
             const yMove = e.touches[1].clientY - e.touches[0].clientY;
             const distance = Math.sqrt(xMove * xMove + yMove * yMove);
-            
+
             let scale = this.data.baseScale * (distance / this.data.startDistance);
             scale = Math.max(0.5, Math.min(4, scale));
-            
-            this.setData({ scale });
+
+            this.setData({
+                scale
+            });
         }
     },
 
     // 处理缩放结束
-    touchEnd: function() {
+    touchEnd: function () {
         this.setData({
             transition: 'transform 0.3s ease-in-out'
         });
-        
+
         if (this.data.scale < 1) {
             this.setData({
                 scale: 1
@@ -608,7 +615,7 @@ Page({
         }
     },
 
-    stopPropagation: function(e) {
+    stopPropagation: function (e) {
         e.stopPropagation();
     },
 });
