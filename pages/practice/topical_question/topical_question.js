@@ -13,7 +13,7 @@ import {
 } from '../../../api/getFinashQuestionId' */
 import {
     judgeTopicalTest,
-    getFinashQuestionId,
+    getFinashAnswer,
     deleteAnswerHistory,
 } from '../../../api/topical'
 Page({
@@ -69,7 +69,7 @@ Page({
         });
 
         // 先获取已完成的题目ID
-        this.getFinashQuestionId();
+        // this.getFinashQuestionId();
 
         // 启动定时器，每分钟更新一次学习时长
         this.data.timer = setInterval(() => {
@@ -84,6 +84,19 @@ Page({
         console.log('接收到的类别:', type);
         console.log(this.data.type); */
         this.loadQuestions()
+        this.getFinashAnswer()
+    },
+
+    // 获取已完成题目
+    getFinashAnswer() {
+        const data = {
+            type: this.data.type,
+            category: this.data.category
+        }
+        getFinashAnswer(data).then(res => {
+            
+            console.log(res);
+        })
     },
 
     // 加载题目
@@ -218,40 +231,40 @@ Page({
         });
     },
     // 获取已完成id
-    getFinashQuestionId() {
-        const data = {
-            type: this.data.type,
-            category: this.data.category
-        }
-        console.log('获取已完成题目ID参数：', data);
-        return getFinashQuestionId(data).then(res => {
-            console.log('已完成的题目ID：', res);
-            // 确保res是数组
-            const finishedIds = Array.isArray(res) ? res : [];
+    // getFinashQuestionId() {
+    //     const data = {
+    //         type: this.data.type,
+    //         category: this.data.category
+    //     }
+    //     console.log('获取已完成题目ID参数：', data);
+    //     return getFinashAnswer(data).then(res => {
+    //         console.log('已完成的题目ID：', res);
+    //         // 确保res是数组
+    //         const finishedIds = Array.isArray(res) ? res : [];
 
-            // 先获取所有题目数量
-            getAllQuestion({
-                category: this.data.category,
-                pageNum: 1,
-                pageSize: 100,
-                type: this.data.type
-            }).then(allRes => {
-                const totalQuestions = allRes.pageInfo.totalSize;
-                console.log('总题目数：', totalQuestions, '已完成题目数：', finishedIds.length);
+    //         // 先获取所有题目数量
+    //         getAllQuestion({
+    //             category: this.data.category,
+    //             pageNum: 1,
+    //             pageSize: 100,
+    //             type: this.data.type
+    //         }).then(allRes => {
+    //             const totalQuestions = allRes.pageInfo.totalSize;
+    //             console.log('总题目数：', totalQuestions, '已完成题目数：', finishedIds.length);
 
-                // 如果已完成题目数等于总题目数，说明全部完成
-                const isAllFinished = finishedIds.length === totalQuestions;
+    //             // 如果已完成题目数等于总题目数，说明全部完成
+    //             const isAllFinished = finishedIds.length === totalQuestions;
 
-                this.setData({
-                    finishedQuestionIds: finishedIds,
-                    isAllFinished: isAllFinished
-                }, () => {
-                    // 获取到已完成题目ID后重新加载题目
-                    this.loadQuestions();
-                });
-            });
-        });
-    },
+    //             this.setData({
+    //                 finishedQuestionIds: finishedIds,
+    //                 isAllFinished: isAllFinished
+    //             }, () => {
+    //                 // 获取到已完成题目ID后重新加载题目
+    //                 this.loadQuestions();
+    //             });
+    //         });
+    //     });
+    // },
     nextQuestion: function () {
         const {
             currentQuestion,

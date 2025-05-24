@@ -11,7 +11,7 @@ export const judgeTopicalTest = (data) => {
     });
 };
 // 获取答题记录
-export const getFinashQuestionId = (data) => {
+export const getFinashAnswer= (data) => {
     console.log("123",data);
     const userId =getUserId()
     const type = data.type
