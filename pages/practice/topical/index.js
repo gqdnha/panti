@@ -31,12 +31,12 @@ Page({
             },
             {
                 id: 6,
-                imgUrl:'/assets/topical/固废污染防治执法.png',
+                imgUrl:'/assets/topical/土壤污染防治执法.png',
                 category: '土壤污染防治执法'
             },
             {
                 id: 7,
-                imgUrl:'/assets/topical/固废污染防治执法.png',
+                imgUrl:'/assets/topical/噪声污染执法.png',
                 category: '噪声污染执法'
             },
             {
