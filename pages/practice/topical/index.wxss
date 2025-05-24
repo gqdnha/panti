@@ -104,7 +104,7 @@ page {
     background-size: contain;
     background-repeat: no-repeat;
     margin-top: 16rpx;
-    /* filter: brightness(0) invert(1); */
+    filter: brightness(0) invert(1);
     opacity: 0.9;
     margin-bottom: 20rpx;
 }

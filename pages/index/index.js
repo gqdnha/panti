@@ -280,14 +280,15 @@ Page({
     },
     // 获取用户学习时间
     getUserLearnTime() {
-        // const learnTime = wx.getStorageSync('learnTime');
         getLearnTime().then(res => {
             console.log(res);
+            const hours = Math.floor(res / 60);
+            const minutes = res % 60;
+            const formattedTime = `${hours}小时${minutes}分钟`;
             this.setData({
-                'studyTime': res
+                'studyTime': formattedTime
             });
         })
-        
     },
     // 获取用户信息
     getUserInfo() {
