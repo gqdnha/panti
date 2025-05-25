@@ -6,7 +6,8 @@ page {
 }
 
 .container {
-    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
+    /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%); */
+    background: linear-gradient(135deg, #1E4B92 0%, #d8fdf7 100%);
     min-height: 100vh;
     /* background-color: #f5f6fa; */
     padding: 0;
