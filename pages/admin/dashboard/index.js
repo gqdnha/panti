@@ -164,6 +164,12 @@ Page({
             url: '/pages/canMistake20/canMistake20'
         })
     },
+    // 可视化
+    navigateapartEchatrs() {
+        wx.navigateTo({
+            url: '/pages/admin/apartmentEcharts/apartmentEcharts'
+        })
+    },
 
     navigateToPhoneManage() {
         if (!this.checkPermission()) return;

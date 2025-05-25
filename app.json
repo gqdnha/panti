@@ -26,7 +26,8 @@
     "pages/userPages/oneWrongBook/ontWrongBook",
     "pages/userPages/oneWrongBook_type/ontWrongBook_type",
     "pages/setting/setting",
-    "pages/admin/phone-manage/index"
+    "pages/admin/phone-manage/index",
+    "pages/admin/apartmentEcharts/apartmentEcharts"
   ],
   "window": {
     "backgroundTextStyle": "light",

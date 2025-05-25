@@ -1,0 +1,6 @@
+<view class="container">
+  <view class="echarts">
+    <ec-canvas id="myChart" canvas-id="myChart" ec="{{ec}}"></ec-canvas>
+  </view>    
+    <button bindtap="change">改变</button> //相当于模拟动态改变echarts数据
+</view>

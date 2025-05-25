@@ -49,6 +49,11 @@
             <view class="card-title">易错20题</view>
             <view class="card-desc">查看易错20题</view>
         </view>
+        <view class="function-card" bindtap="navigateapartEchatrs">
+            <image class="card-icon" src="/assets/icons/顺序练习.png" mode="aspectFit"></image>
+            <view class="card-title">可视化</view>
+            <view class="card-desc">查看各部门及人员数据</view>
+        </view>
 
         
     </view>
