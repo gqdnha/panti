@@ -710,8 +710,10 @@ button::after {
 
 /* 分类选择器容器 */
 .filters-container {
+    width: 96vw;
     display: flex;
-    gap: 16rpx;
+    flex: 2fr 2fr 0.4fr;
+    gap: 10rpx;
     padding: 0 20rpx;
     margin-bottom: 5rpx;
     margin-top: 12rpx;
@@ -724,14 +726,6 @@ button::after {
     box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
     overflow: hidden;
     border: 1rpx solid #f0f0f0;
-}
-
-.filter-item:first-child {
-    flex: 1.8;
-}
-
-.filter-item:last-child {
-    flex: 1.2;
 }
 
 .picker-view {

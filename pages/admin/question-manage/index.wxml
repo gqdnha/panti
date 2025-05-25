@@ -24,8 +24,18 @@
         <view class="filter-item">
             <picker mode="selector" range="{{categories}}" value="{{currentCategoryIndex}}" bindchange="onFilterCategoryChange">
                 <view class="picker-view">
-                    <text class="picker-label">题目分类：</text>
+                    <text class="picker-label">题目：</text>
                     <text class="picker-value">{{categories[currentCategoryIndex] || '全部'}}</text>
+                    <image class="picker-arrow" src="/assets/icons/arrow_down.png" mode="aspectFit"></image>
+                </view>
+            </picker>
+        </view>
+        <!-- 法律分类选择器 -->
+        <view class="filter-item">
+            <picker mode="selector" range="{{regulations}}" value="{{currentRegulationIndex}}" bindchange="onFilterRegulationChange">
+                <view class="picker-view">
+                    <text class="picker-label">法律：</text>
+                    <text class="picker-value">{{regulations[currentRegulationIndex] || '全部'}}</text>
                     <image class="picker-arrow" src="/assets/icons/arrow_down.png" mode="aspectFit"></image>
                 </view>
             </picker>
@@ -42,16 +52,7 @@
             </picker>
         </view>
 
-        <!-- 法律分类选择器 -->
-        <view class="filter-item">
-            <picker mode="selector" range="{{regulations}}" value="{{currentRegulationIndex}}" bindchange="onFilterRegulationChange">
-                <view class="picker-view">
-                    <text class="picker-label">法律分类：</text>
-                    <text class="picker-value">{{regulations[currentRegulationIndex] || '全部'}}</text>
-                    <image class="picker-arrow" src="/assets/icons/arrow_down.png" mode="aspectFit"></image>
-                </view>
-            </picker>
-        </view>
+        
     </view>
 
     <!-- 题目列表 -->
