@@ -48,6 +48,7 @@ Page({
         transition: '',
         startDistance: 0,
         parsedImageList: [],
+        showAnswerCard: false,
     },
     onLoad(options) {
         const category = decodeURIComponent(options.category);
@@ -739,5 +740,28 @@ Page({
 
     stopPropagation: function(e) {
         e.stopPropagation();
+    },
+
+    // 显示答题卡
+    showAnswerCard() {
+        this.setData({
+            showAnswerCard: true
+        });
+    },
+
+    // 关闭答题卡
+    closeAnswerCard() {
+        this.setData({
+            showAnswerCard: false
+        });
+    },
+
+    // 跳转到指定题目
+    jumpToQuestion(e) {
+        const index = e.currentTarget.dataset.index;
+        this.setData({
+            currentQuestion: index,
+            showAnswerCard: false
+        });
     },
 });

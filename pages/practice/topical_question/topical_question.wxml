@@ -18,6 +18,10 @@
             <view class="progress-track">
                 <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view>
             </view>
+            <!-- 答题卡按钮 -->
+            <view class="answer-card-btn" bindtap="showAnswerCard">
+                <text>答题卡</text>
+            </view>
         </view>
 
         <!-- 可滚动的内容区域 -->
@@ -151,6 +155,41 @@
                     style="transform: scale({{scale}}); transition: {{transition}};"
                 />
                 <view class="close-btn" bindtap="closeImagePreview">×</view>
+            </view>
+        </view>
+
+        <!-- 答题卡弹窗 -->
+        <view class="answer-card-modal" wx:if="{{showAnswerCard}}">
+            <view class="modal-content" catchtap="stopPropagation">
+                <view class="modal-header">
+                    <text class="modal-title">答题卡</text>
+                    <view class="close-btn" bindtap="closeAnswerCard">×</view>
+                </view>
+                <view class="answer-card-grid">
+                    <view 
+                        wx:for="{{totalQuestions}}" 
+                        wx:key="index"
+                        class="answer-card-item {{isSubmitted[index] ? (questionStates[index] ? 'correct' : 'wrong') : 'unanswered'}}"
+                        bindtap="jumpToQuestion"
+                        data-index="{{index + 1}}"
+                    >
+                        {{index + 1}}
+                    </view>
+                </view>
+                <view class="answer-card-legend">
+                    <view class="legend-item">
+                        <view class="legend-color correct"></view>
+                        <text>正确</text>
+                    </view>
+                    <view class="legend-item">
+                        <view class="legend-color wrong"></view>
+                        <text>错误</text>
+                    </view>
+                    <view class="legend-item">
+                        <view class="legend-color unanswered"></view>
+                        <text>未答</text>
+                    </view>
+                </view>
             </view>
         </view>
     </view>

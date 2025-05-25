@@ -461,3 +461,132 @@
     border-radius: 8rpx 0 0 8rpx;
     z-index: 1001;
 }
+
+/* 答题卡按钮样式 */
+.answer-card-btn {
+    position: absolute;
+    right: 20rpx;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: #0066cc;
+    color: #fff;
+    padding: 10rpx 20rpx;
+    border-radius: 8rpx;
+    font-size: 28rpx;
+}
+
+/* 答题卡弹窗样式 */
+.answer-card-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.answer-card-modal .modal-content {
+    width: 80%;
+    background-color: #fff;
+    border-radius: 20rpx;
+    padding: 30rpx;
+}
+
+.answer-card-modal .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30rpx;
+}
+
+.answer-card-modal .modal-title {
+    font-size: 32rpx;
+    font-weight: bold;
+    color: #333;
+}
+
+.answer-card-modal .close-btn {
+    font-size: 40rpx;
+    color: #999;
+    padding: 10rpx;
+}
+
+.answer-card-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 20rpx;
+    margin-bottom: 30rpx;
+}
+
+.answer-card-item {
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 8rpx;
+    font-size: 28rpx;
+    color: #666;
+}
+
+.answer-card-item.correct {
+    background-color: rgba(82, 196, 26, 0.1);
+    color: #52c41a;
+    border: 2rpx solid #52c41a;
+}
+
+.answer-card-item.wrong {
+    background-color: rgba(245, 34, 45, 0.1);
+    color: #f5222d;
+    border: 2rpx solid #f5222d;
+}
+
+.answer-card-item.unanswered {
+    background-color: #f5f5f5;
+    color: #999;
+    border: 2rpx solid #e0e0e0;
+}
+
+.answer-card-legend {
+    display: flex;
+    justify-content: center;
+    gap: 40rpx;
+    padding-top: 20rpx;
+    border-top: 2rpx solid #f0f0f0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10rpx;
+}
+
+.legend-color {
+    width: 24rpx;
+    height: 24rpx;
+    border-radius: 4rpx;
+}
+
+.legend-color.correct {
+    background-color: rgba(82, 196, 26, 0.1);
+    border: 2rpx solid #52c41a;
+}
+
+.legend-color.wrong {
+    background-color: rgba(245, 34, 45, 0.1);
+    border: 2rpx solid #f5222d;
+}
+
+.legend-color.unanswered {
+    background-color: #f5f5f5;
+    border: 2rpx solid #e0e0e0;
+}
+
+.legend-item text {
+    font-size: 24rpx;
+    color: #666;
+}
