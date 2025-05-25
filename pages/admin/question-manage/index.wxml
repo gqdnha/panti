@@ -26,7 +26,7 @@
                 <view class="picker-view">
                     <text class="picker-label">题目分类：</text>
                     <text class="picker-value">{{categories[currentCategoryIndex] || '全部'}}</text>
-                    <image class="picker-arrow" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
+                    <image class="picker-arrow" src="/assets/icons/arrow_down.png" mode="aspectFit"></image>
                 </view>
             </picker>
         </view>
@@ -37,7 +37,7 @@
                 <view class="picker-view">
                     <text class="picker-label">类型：</text>
                     <text class="picker-value">{{questionTypes[currentTypeIndex] || '全部'}}</text>
-                    <image class="picker-arrow" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
+                    <image class="picker-arrow" src="/assets/icons/arrow_down.png" mode="aspectFit"></image>
                 </view>
             </picker>
         </view>
@@ -48,7 +48,7 @@
                 <view class="picker-view">
                     <text class="picker-label">法律分类：</text>
                     <text class="picker-value">{{regulations[currentRegulationIndex] || '全部'}}</text>
-                    <image class="picker-arrow" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
+                    <image class="picker-arrow" src="/assets/icons/arrow_down.png" mode="aspectFit"></image>
                 </view>
             </picker>
         </view>
