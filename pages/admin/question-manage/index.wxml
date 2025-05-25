@@ -15,7 +15,7 @@
                 <image class="clear-icon" src="/assets/icons/clear.png" mode="aspectFit"></image>
             </view>
         </view>
-        <button class="search-button" bindtap="onSearch">搜索</button>
+        <button class="search-button" bindtap="onSearch" style="width: 202rpx; display: flex; box-sizing: border-box; left: 0rpx; top: 0rpx">搜索</button>
     </view>
 
     <!-- 分类选择器容器 -->
@@ -75,7 +75,7 @@
                 scroll-anchoring="{{true}}"
             >
                 <view class="list-item" wx:for="{{questionList}}" wx:key="id">
-                    <view class="question-id">{{item.question_id}}</view>
+                    <view class="question-id">{{(pageNum - 1) * pageSize + index + 1}}</view>
                     <view class="question-title">{{item.content}}</view>
                     <view class="question-type">{{item.type}}</view>
                     <view class="item-actions">

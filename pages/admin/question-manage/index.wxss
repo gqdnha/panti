@@ -16,7 +16,7 @@
     margin: 0 20rpx;
     border-radius: 16rpx;
     display: flex;
-    gap: 16rpx;
+    /* gap: 16rpx; */
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 }
 
@@ -73,9 +73,8 @@
 }
 
 .search-button {
-    width: 140rpx;
+    width: 100rpx;
     height: 72rpx;
-    background: linear-gradient(135deg, #4a90e2, #357abd);
     color: #fff;
     font-size: 26rpx;
     border-radius: 36rpx;
@@ -85,6 +84,7 @@
     transition: all 0.3s ease;
     box-shadow: 0 4rpx 12rpx rgba(74, 144, 226, 0.15);
     font-weight: 500;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
 }
 
 .search-button:active {
@@ -324,7 +324,7 @@
     display: flex;
     justify-content: center;
     gap: 24rpx;
-    margin: 30rpx 0;
+    margin: 30rpx  10rpx;
     padding: 0 20rpx;
 }
 
