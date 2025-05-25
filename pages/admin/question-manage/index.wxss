@@ -74,6 +74,7 @@
 
 .search-button {
     width: 100rpx;
+    box-sizing: border-box;
     height: 72rpx;
     color: #fff;
     font-size: 26rpx;
