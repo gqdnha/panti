@@ -44,7 +44,7 @@ Page({
         series: [
           {
             name: 'price',
-            type: 'line',
+            type: 'bar',
             data: data, // 动态修改的数据
             markPoint: {
               data: [
