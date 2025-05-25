@@ -375,7 +375,8 @@ Page({
         const type = this.data.questionTypes[index];
         this.setData({
             newQuestionTypeIndex: index,
-            'newQuestion.type': type
+            'newQuestion.type': type,
+            'newQuestion.answer': '' // 重置答案
         });
     },
 
@@ -410,7 +411,38 @@ Page({
     },
 
     onNewQuestionInput(e) {
-        this.onInputChange(e, 'newQuestion');
+        const { field } = e.currentTarget.dataset;
+        let value = e.detail.value;
+        
+        // 如果是答案字段，进行特殊处理
+        if (field === 'answer') {
+            const type = this.data.newQuestion.type;
+            
+            if (type === '多选题') {
+                // 转换为大写
+                value = value.toUpperCase();
+                // 只保留ABCD
+                value = value.split('').filter(char => ['A', 'B', 'C', 'D'].includes(char)).join('');
+                // 去重
+                value = [...new Set(value.split(''))].join('');
+                // 按ABCD顺序排序
+                value = value.split('').sort().join('');
+            } else if (type === '判断题') {
+                // 转换为大写
+                value = value.toUpperCase();
+                // 只保留T或F
+                value = value === 'T' || value === 'F' ? value : '';
+            } else if (type === '单选题') {
+                // 转换为大写
+                value = value.toUpperCase();
+                // 只保留ABCD中的一个
+                value = ['A', 'B', 'C', 'D'].includes(value) ? value : '';
+            }
+        }
+        
+        this.setData({
+            [`newQuestion.${field}`]: value
+        });
     },
 
     validateQuestion(question) {
@@ -496,7 +528,8 @@ Page({
         const type = this.data.questionTypes[index];
         this.setData({
             editQuestionTypeIndex: index,
-            'editQuestion.type': type
+            'editQuestion.type': type,
+            'editQuestion.answer': '' // 重置答案
         });
     },
 
@@ -520,7 +553,38 @@ Page({
     },
 
     onEditQuestionInput(e) {
-        this.onInputChange(e, 'editQuestion');
+        const { field } = e.currentTarget.dataset;
+        let value = e.detail.value;
+        
+        // 如果是答案字段，进行特殊处理
+        if (field === 'answer') {
+            const type = this.data.editQuestion.type;
+            
+            if (type === '多选题') {
+                // 转换为大写
+                value = value.toUpperCase();
+                // 只保留ABCD
+                value = value.split('').filter(char => ['A', 'B', 'C', 'D'].includes(char)).join('');
+                // 去重
+                value = [...new Set(value.split(''))].join('');
+                // 按ABCD顺序排序
+                value = value.split('').sort().join('');
+            } else if (type === '判断题') {
+                // 转换为大写
+                value = value.toUpperCase();
+                // 只保留T或F
+                value = value === 'T' || value === 'F' ? value : '';
+            } else if (type === '单选题') {
+                // 转换为大写
+                value = value.toUpperCase();
+                // 只保留ABCD中的一个
+                value = ['A', 'B', 'C', 'D'].includes(value) ? value : '';
+            }
+        }
+        
+        this.setData({
+            [`editQuestion.${field}`]: value
+        });
     },
 
     onSubmitEditQuestion() {
