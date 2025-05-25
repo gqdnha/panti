@@ -46,7 +46,8 @@
     left: 0;
     right: 0;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 20rpx;
     padding: 20rpx;
     background-color: #fff;
     border-radius: 10rpx;
@@ -58,6 +59,7 @@
     border-radius: 8rpx;
     font-size: 30rpx;
     text-align: center;
+    min-width: 200rpx;
 }
 
 .prev {
@@ -75,7 +77,6 @@
 .next {
     background-color: #f8f9fa;
     color: #666;
-    margin: auto;
 }
 
 /* 进度条样式 */

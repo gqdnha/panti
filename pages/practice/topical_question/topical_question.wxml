@@ -113,6 +113,7 @@
 
         <!-- 底部操作栏 -->
         <view class="bottom-bar">
+            <view class="btn prev" bindtap="prevQuestion" wx:if="{{currentQuestion > 1}}">上一题</view>
             <view class="btn next" bindtap="nextQuestion" wx:if="{{currentQuestion < totalQuestions}}">下一题</view>
         </view>
 
