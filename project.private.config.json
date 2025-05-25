@@ -9,6 +9,13 @@
     "miniprogram": {
       "list": [
         {
+          "name": "pages/practice/daily/index",
+          "pathName": "pages/practice/daily/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
           "name": "pages/resources/detail/index",
           "pathName": "pages/resources/detail/index",
           "query": "category=%25E6%25B3%2595%25E5%25BE%258B",

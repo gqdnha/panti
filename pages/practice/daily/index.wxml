@@ -9,7 +9,6 @@
         <view class="progress-track">
             <view class="progress-fill" style="width: {{(currentQuestion/totalQuestions)*100}}%"></view>
         </view>
-        <!-- 新增：答题卡按钮 -->
         <view class="answer-sheet-btn" bindtap="showAnswerSheet">答题卡</view>
     </view>
 
@@ -96,6 +95,9 @@
             </view>
         </view>
     </scroll-view>
+
+    <!-- 新增：答题卡按钮 -->
+    <view class="answer-sheet-btn" bindtap="showAnswerSheet">答题卡</view>
 
     <!-- 底部操作栏 -->
     <view class="bottom-bar">
