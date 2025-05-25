@@ -52,10 +52,10 @@
                 <block wx:if="{{questionList[currentQuestion - 1].type === '单选题'}}">
                     <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" wx:for="{{questionList[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                         <text class="option-content">{{item}}</text>
-                            <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
-                                <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
-                                <text wx:elif="{{selectedOptions[currentQuestion - 1] === item[0] && item[0] !== detailData.answer}}" class="status-icon wrong">×</text>
-                            </text>
+                        <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                            <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
+                            <text wx:elif="{{selectedOptions[currentQuestion - 1] === item[0] && item[0] !== detailData.answer}}" class="status-icon wrong">×</text>
+                        </text>
                     </view>
                 </block>
 
@@ -68,23 +68,20 @@
                           data-index="{{index}}">
                         <text class="option-content">{{item}}</text>
                         <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
-                          <!-- 只对被选中的选项显示符号 -->
-                          <block wx:if="{{optionStates[currentQuestion - 1][index]}}">
-                            <text wx:if="{{questionStates[currentQuestion - 1]}}" class="status-icon correct">✓</text>
-                            <text wx:else class="status-icon wrong">×</text>
-                          </block>
+                            <text wx:if="{{detailData.answer.includes(item[0])}}" class="status-icon correct">✓</text>
+                            <text wx:elif="{{selectedOptions[currentQuestion - 1].includes(item[0]) && !detailData.answer.includes(item[0])}}" class="status-icon wrong">×</text>
                         </text>
                     </view>
                 </block>
 
-                    <!-- 判断题 -->
+                <!-- 判断题 -->
                 <block wx:if="{{questionList[currentQuestion - 1].type === '判断题'}}">
                     <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" wx:for="{{questionList[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
                         <text class="option-content">{{item}}</text>
-                            <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
-                                <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
-                                <text wx:elif="{{selectedOptions[currentQuestion - 1] === item[0] && item[0] !== detailData.answer}}" class="status-icon wrong">×</text>
-                            </text>
+                        <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                            <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
+                            <text wx:elif="{{selectedOptions[currentQuestion - 1] === item[0] && item[0] !== detailData.answer}}" class="status-icon wrong">×</text>
+                        </text>
                     </view>
                 </block>
 
@@ -94,19 +91,19 @@
                 </block>
             </view>
 
-                <!-- 正确答案显示 -->
-                <view class="correct-answer-section" wx:if="{{isSubmitted[currentQuestion - 1]}}">
-                    <view class="correct-answer">
-                        <text>正确答案：{{detailData.answer}}</text>
-                    </view>
+            <!-- 正确答案显示 -->
+            <view class="correct-answer-section" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                <view class="correct-answer">
+                    <text>正确答案：{{detailData.answer}}</text>
                 </view>
+            </view>
 
-                <!-- 答案解析 -->
-                <view class="analysis-section" wx:if="{{isSubmitted[currentQuestion - 1]}}">
-                    <view class="analysis-content">
-                        <text class="analysis-title">解析：</text>
-                        <text>{{detailData.analysis}}</text>
-                    </view>
+            <!-- 答案解析 -->
+            <view class="analysis-section" wx:if="{{isSubmitted[currentQuestion - 1]}}">
+                <view class="analysis-content">
+                    <text class="analysis-title">解析：</text>
+                    <text>{{detailData.analysis}}</text>
+                </view>
             </view>
 
             <!-- 每道题的提交按钮 -->

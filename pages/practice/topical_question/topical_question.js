@@ -80,22 +80,94 @@ Page({
             });
         }, 60000);
 
-        /* console.log('接收到的类别:', this.data.category);
-        console.log('接收到的类别:', type);
-        console.log(this.data.type); */
-        this.loadQuestions()
-        // 获取完成情况
-        this.getFinashAnswer()
+        this.loadQuestions();
     },
     // 获取已完成
     getFinashAnswer() {
         const data = {
             category: this.data.category,
-            type: this.data.type
+            type: this.data.type,
         };
         getFinashAnswer(data).then(res => {
-            console.log('已完成题目：',res);
-        })
+            console.log('已完成题目：', res);
+            if (res && res.length > 0) {
+                // 将已完成的题目数据合并到题目列表中
+                const newQuestionList = this.data.questionList.map(question => {
+                    const completedQuestion = res.find(cq => cq.questionId === question.questionId);
+                    if (completedQuestion) {
+                        console.log('找到已完成的题目：', completedQuestion);
+                        return {
+                            ...question,
+                            isSubmitted: true,
+                            isFinished: true,
+                            userAnswer: completedQuestion.oldAnswer,
+                            rightOrWrong: completedQuestion.rightOrWrong,
+                            analysis: completedQuestion.analysis,
+                            answer: completedQuestion.answer
+                        };
+                    }
+                    return question;
+                });
+                
+                console.log('更新后的题目列表：', newQuestionList);
+                
+                // 更新题目列表和状态
+                const newIsSubmitted = newQuestionList.map(q => q.isSubmitted || false);
+                const newQuestionStates = newQuestionList.map(q => q.rightOrWrong === '对');
+                const newSelectedOptions = newQuestionList.map(q => q.userAnswer || null);
+                
+                // 设置当前题目的detailData
+                const currentQuestion = newQuestionList[this.data.currentQuestion - 1];
+                if (currentQuestion && currentQuestion.isSubmitted) {
+                    const detailData = {
+                        answer: currentQuestion.answer,
+                        analysis: currentQuestion.analysis,
+                        rightOrWrong: currentQuestion.rightOrWrong,
+                        oldAnswer: currentQuestion.userAnswer
+                    };
+                    console.log('设置当前题目的detailData:', detailData);
+                    
+                    // 先设置detailData
+                    this.setData({
+                        detailData: detailData
+                    }, () => {
+                        // 然后设置其他数据
+                        this.setData({
+                            questionList: newQuestionList,
+                            isSubmitted: newIsSubmitted,
+                            questionStates: newQuestionStates,
+                            selectedOptions: newSelectedOptions
+                        }, () => {
+                            console.log('数据更新完成：', {
+                                currentQuestion: this.data.currentQuestion,
+                                currentQuestionData: this.data.questionList[this.data.currentQuestion - 1],
+                                isSubmitted: this.data.isSubmitted[this.data.currentQuestion - 1],
+                                questionStates: this.data.questionStates[this.data.currentQuestion - 1],
+                                selectedOptions: this.data.selectedOptions[this.data.currentQuestion - 1],
+                                detailData: this.data.detailData
+                            });
+                        });
+                    });
+                } else {
+                    // 如果当前题目未完成，只更新其他数据
+                    this.setData({
+                        questionList: newQuestionList,
+                        isSubmitted: newIsSubmitted,
+                        questionStates: newQuestionStates,
+                        selectedOptions: newSelectedOptions
+                    }, () => {
+                        console.log('数据更新完成：', {
+                            currentQuestion: this.data.currentQuestion,
+                            currentQuestionData: this.data.questionList[this.data.currentQuestion - 1],
+                            isSubmitted: this.data.isSubmitted[this.data.currentQuestion - 1],
+                            questionStates: this.data.questionStates[this.data.currentQuestion - 1],
+                            selectedOptions: this.data.selectedOptions[this.data.currentQuestion - 1],
+                            detailData: this.data.detailData
+                        });
+                    });
+                }
+            }
+        });
     },
 
     // 加载题目
@@ -148,6 +220,8 @@ Page({
             // 如果全部完成，显示所有题目
             if (isAllFinished) {
                 this.setQuestionList(newQuestionList);
+                // 获取已完成题目的详情
+                this.getFinashAnswer();
                 return;
             }
 
@@ -166,6 +240,8 @@ Page({
             }
 
             this.setQuestionList(newQuestionList);
+            // 获取已完成题目的详情
+            this.getFinashAnswer();
         }).catch(err => {
             console.error('加载题目列表失败:', err);
             this.setData({
@@ -267,12 +343,27 @@ Page({
     nextQuestion: function () {
         const {
             currentQuestion,
-            totalQuestions
+            totalQuestions,
+            questionList
         } = this.data;
 
         console.log('当前题目:', currentQuestion, '总题目数:', totalQuestions);
 
         if (currentQuestion < totalQuestions) {
+            const nextQuestion = questionList[currentQuestion];
+            if (nextQuestion && nextQuestion.isSubmitted) {
+                const detailData = {
+                    answer: nextQuestion.answer,
+                    analysis: nextQuestion.analysis,
+                    rightOrWrong: nextQuestion.rightOrWrong,
+                    oldAnswer: nextQuestion.userAnswer
+                };
+                console.log('切换到下一题，设置detailData:', detailData);
+                this.setData({
+                    detailData: detailData
+                });
+            }
+            
             this.setData({
                 currentQuestion: currentQuestion + 1
             }, () => {
@@ -287,12 +378,27 @@ Page({
     },
     prevQuestion: function () {
         const {
-            currentQuestion
+            currentQuestion,
+            questionList
         } = this.data;
 
         console.log('当前题目:', currentQuestion);
 
         if (currentQuestion > 1) {
+            const prevQuestion = questionList[currentQuestion - 2];
+            if (prevQuestion && prevQuestion.isSubmitted) {
+                const detailData = {
+                    answer: prevQuestion.answer,
+                    analysis: prevQuestion.analysis,
+                    rightOrWrong: prevQuestion.rightOrWrong,
+                    oldAnswer: prevQuestion.userAnswer
+                };
+                console.log('切换到上一题，设置detailData:', detailData);
+                this.setData({
+                    detailData: detailData
+                });
+            }
+            
             this.setData({
                 currentQuestion: currentQuestion - 1
             }, () => {
@@ -476,6 +582,11 @@ Page({
             // 更新题目的完成状态
             const newQuestionList = [...questionList];
             newQuestionList[currentQuestion - 1].isFinished = true;
+            newQuestionList[currentQuestion - 1].isSubmitted = true;
+            newQuestionList[currentQuestion - 1].userAnswer = userAnswerToSubmit;
+            newQuestionList[currentQuestion - 1].rightOrWrong = res[0].rightOrWrong;
+            newQuestionList[currentQuestion - 1].analysis = res[0].analysis;
+            newQuestionList[currentQuestion - 1].answer = res[0].answer;
 
             this.setData({
                 questionStates: newQuestionStates,
