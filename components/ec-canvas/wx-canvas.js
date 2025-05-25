@@ -23,14 +23,18 @@ export default class WxCanvas {
   }
 
   // canvasToTempFilePath(opt) {
-  //     if (!opt.canvasId) {
-  //         opt.canvasId = this.canvasId;
-  //     }
-  //     return wx.canvasToTempFilePath(opt, this);
+  //   if (!opt.canvasId) {
+  //     opt.canvasId = this.canvasId;
+  //   }
+  //   return wx.canvasToTempFilePath(opt, this);
   // }
 
   setChart(chart) {
     this.chart = chart;
+  }
+
+  addEventListener() {
+    // noop
   }
 
   attachEvent() {
@@ -54,7 +58,7 @@ export default class WxCanvas {
 
   _initStyle(ctx) {
     ctx.createRadialGradient = () => {
-      return ctx.createCircularGradient.apply(ctx, arguments);
+      return ctx.createCircularGradient(arguments);
     };
   }
 
@@ -73,15 +77,35 @@ export default class WxCanvas {
       wxName: 'touchEnd',
       ecName: 'click'
     }];
-
     eventNames.forEach(name => {
       this.event[name.wxName] = e => {
         const touch = e.touches[0];
         this.chart.getZr().handler.dispatch(name.ecName, {
           zrX: name.wxName === 'tap' ? touch.clientX : touch.x,
-          zrY: name.wxName === 'tap' ? touch.clientY : touch.y
+          zrY: name.wxName === 'tap' ? touch.clientY : touch.y,
+          preventDefault: () => {},
+          stopImmediatePropagation: () => {},
+          stopPropagation: () => {}
         });
       };
     });
   }
-} 
+
+  set width(w) {
+    if (this.canvasNode) this.canvasNode.width = w
+  }
+  set height(h) {
+    if (this.canvasNode) this.canvasNode.height = h
+  }
+
+  get width() {
+    if (this.canvasNode)
+      return this.canvasNode.width
+    return 0
+  }
+  get height() {
+    if (this.canvasNode)
+      return this.canvasNode.height
+    return 0
+  }
+}
