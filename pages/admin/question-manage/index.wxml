@@ -41,6 +41,17 @@
                 </view>
             </picker>
         </view>
+
+        <!-- 法律分类选择器 -->
+        <view class="filter-item">
+            <picker mode="selector" range="{{regulations}}" value="{{currentRegulationIndex}}" bindchange="onFilterRegulationChange">
+                <view class="picker-view">
+                    <text class="picker-label">法律分类：</text>
+                    <text class="picker-value">{{regulations[currentRegulationIndex] || '全部'}}</text>
+                    <image class="picker-arrow" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
+                </view>
+            </picker>
+        </view>
     </view>
 
     <!-- 题目列表 -->
@@ -117,6 +128,15 @@
             </view>
             
             <view class="form-item">
+                <label>法律分类</label>
+                <picker mode="selector" range="{{regulations}}" value="{{newRegulationIndex}}" bindchange="onRegulationChange">
+                    <view class="picker-view">
+                        {{regulations[newRegulationIndex] || '请选择法律分类'}}
+                    </view>
+                </picker>
+            </view>
+            
+            <view class="form-item">
                 <label>题目内容</label>
                 <!-- 添加图片 -->
                 <!-- <button bind:tap="addImg">添加图片</button> -->
@@ -171,6 +191,14 @@
                 <picker mode="selector" range="{{categories}}" value="{{editCategoryIndex}}" bindchange="onEditCategoryChange">
                     <view class="picker-view">
                         {{categories[editCategoryIndex]}}
+                    </view>
+                </picker>
+            </view>
+            <view class="form-item">
+                <label>法律分类</label>
+                <picker mode="selector" range="{{regulations}}" value="{{editRegulationIndex}}" bindchange="onEditRegulationChange">
+                    <view class="picker-view">
+                        {{regulations[editRegulationIndex] || '请选择法律分类'}}
                     </view>
                 </picker>
             </view>

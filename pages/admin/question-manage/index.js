@@ -1,4 +1,5 @@
-import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent,uploadImageApi , deletePicApi } from '../../../api/admin';
+// import { log } from 'echarts/types/src/util/log.js';
+import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent,uploadImageApi , deletePicApi, getQuestionRegulation } from '../../../api/admin';
 
 Page({
     data: {
@@ -22,11 +23,15 @@ Page({
             optionF: '',
             answer: '',
             category: '',
-            analysis: ''
+            analysis: '',
+            regulation: ''
         },
         questionTypes: ['单选题', '多选题', '填空题', '判断题'],
         newQuestionTypeIndex: 0,
+        newCategoryIndex: 0,
+        newRegulationIndex: 0,
         categories: ['环境保护法及配套办法', '环评与排污许可执法', '大气污染防治执法','水污染防治执法','固废污染防治执法','土壤污染防治执法','噪声污染执法','执法监测','行政执法规定','行刑衔接与损害赔偿','其他'], // 可根据实际情况修改
+        regulations: [],
         isEditModalVisible: false,
         editQuestion: {
             id: '',
@@ -36,13 +41,18 @@ Page({
             answer: '',
             category: '',
             analysis: '',
-            eh: ''
+            eh: '',
+            regulation: ''
         },
         editQuestionTypeIndex: 0,
+        editCategoryIndex: 0,
+        editRegulationIndex: 0,
         currentCategoryIndex: 0, // 当前选中的分类索引
         currentCategory: '', // 当前选中的分类
         currentTypeIndex: 0, // 当前选中的题目类型索引
         currentType: '', // 当前选中的题目类型
+        currentRegulationIndex: 0, // 当前选中的法律分类索引
+        currentRegulation: '', // 当前选中的法律分类
         scrollTop: 0, // 添加scrollTop控制变量
     },
 
@@ -57,12 +67,66 @@ Page({
         });
         this.loadQuestions();
     },
+    // 根据题目分类获取法律分类
+    getQuestionRegulation(category) {
+        console.log('开始获取法律分类，当前分类:', category);
+        if (!category || category === '全部') {
+            console.log('分类为空或全部，清空法律分类');
+            this.setData({
+                regulations: []
+            });
+            return;
+        }
+        
+        getQuestionRegulation(category).then(res => {
+            console.log('获取到的法律分类数据:', res);
+            if (res && res.length > 0) {
+                console.log('设置法律分类数据到state');
+                // 确保res是数组
+                const regulations = Array.isArray(res) ? res : [res];
+                this.setData({
+                    regulations: regulations,
+                    newRegulationIndex: 0,
+                    editRegulationIndex: 0
+                }, () => {
+                    console.log('当前regulations数据:', this.data.regulations);
+                    // 强制更新视图
+                    this.setData({
+                        regulations: this.data.regulations
+                    });
+                });
+            } else {
+                console.log('没有获取到法律分类数据');
+                this.setData({
+                    regulations: [],
+                    newRegulationIndex: 0,
+                    editRegulationIndex: 0
+                });
+                wx.showToast({
+                    title: '暂无相关法律分类',
+                    icon: 'none'
+                });
+            }
+        }).catch(err => {
+            console.error('获取法律分类失败:', err);
+            this.setData({
+                regulations: [],
+                newRegulationIndex: 0,
+                editRegulationIndex: 0
+            });
+            wx.showToast({
+                title: '获取法律分类失败',
+                icon: 'none'
+            });
+        });
+    },
 
     loadQuestions() {
-        const { pageNum, pageSize, searchKeyword, currentCategory, currentType } = this.data;
+        const { pageNum, pageSize, searchKeyword, currentCategory, currentType, currentRegulation } = this.data;
         const data = {
             category: currentCategory,
             type: currentType,
+            regulation: currentRegulation,
             content: searchKeyword || "",
             pageNum: pageNum,
             pageSize: pageSize
@@ -183,6 +247,7 @@ Page({
         getQuestionDetail(questionId).then((res) => {
             const typeIndex = this.data.questionTypes.indexOf(res.type);
             const categoryIndex = this.data.categories.indexOf(res.category);
+            
             // 处理选项数据，将其解析为数组
             let optionsArray = [];
             if (res.options && typeof res.options ==='string') {
@@ -194,6 +259,7 @@ Page({
                     res.options = [];
                 }
             }
+            
             // 单选题和多选题的选项处理
             if (res.type === '单选题' || res.type === '多选题') {
                 let option1 = '', option2 = '', option3 = '', option4 = '';
@@ -208,6 +274,7 @@ Page({
                 res.option3 = option3;
                 res.option4 = option4;
             }
+            
             // 判断题的选项处理
             if (res.type === '判断题') {
                 let optionT = '', optionF = '';
@@ -218,6 +285,7 @@ Page({
                 res.optionT = optionT;
                 res.optionF = optionF;
             }
+            
             this.setData({
                 isEditModalVisible: true,
                 editQuestion: {
@@ -234,11 +302,18 @@ Page({
                     option3: res.option3,
                     option4: res.option4,
                     optionT: res.optionT,
-                    optionF: res.optionF
+                    optionF: res.optionF,
+                    regulation: res.regulation || ''
                 },
                 editQuestionTypeIndex: typeIndex,
-                editCategoryIndex: categoryIndex
-            })
+                editCategoryIndex: categoryIndex,
+                editRegulationIndex: 0
+            }, () => {
+                // 获取对应的法律分类
+                if (res.category) {
+                    this.getQuestionRegulation(res.category);
+                }
+            });
         }).catch((err) => {
             console.error('获取题目详情失败:', err);
             wx.showToast({
@@ -281,10 +356,13 @@ Page({
                 optionF: '',
                 answer: '',
                 category: '',
-                analysis: ''
+                analysis: '',
+                regulation: ''
             },
             newQuestionTypeIndex: 0,
-            newCategoryIndex: 0
+            newCategoryIndex: 0,
+            newRegulationIndex: 0,
+            regulations: [] // 重置法律分类列表
         }, () => {
             this.onQuestionTypeChange({ detail: { value: 0 } });
             this.onCategoryChange({ detail: { value: 0 } });
@@ -309,9 +387,19 @@ Page({
     onCategoryChange(e) {
         const index = e.detail.value;
         const category = this.data.categories[index];
+        console.log('选择分类:', category);
+        
         this.setData({
             newCategoryIndex: index,
-            'newQuestion.category': category
+            'newQuestion.category': category,
+            newRegulationIndex: 0,
+            'newQuestion.regulation': '',
+            regulations: [] // 清空法律分类列表
+        }, () => {
+            console.log('分类已更新，准备获取法律分类');
+            if (category && category !== '全部') {
+                this.getQuestionRegulation(category);
+            }
         });
     },
 
@@ -374,6 +462,15 @@ Page({
             return;
         }
 
+        // 检查是否选择了法律分类
+        if (this.data.regulations.length > 0 && !newQuestion.regulation) {
+            wx.showToast({
+                title: '请选择法律分类',
+                icon: 'none'
+            });
+            return;
+        }
+
         const { option1, option2, option3, option4, optionT, optionF, ...cleanedNewQuestion } = newQuestion;
         console.log('提交的新题目数据:', cleanedNewQuestion);
 
@@ -411,9 +508,19 @@ Page({
     onEditCategoryChange(e) {
         const index = e.detail.value;
         const category = this.data.categories[index];
+        console.log('编辑选择分类:', category);
+        
         this.setData({
             editCategoryIndex: index,
-            'editQuestion.category': category
+            'editQuestion.category': category,
+            editRegulationIndex: 0,
+            'editQuestion.regulation': '',
+            regulations: [] // 清空法律分类列表
+        }, () => {
+            console.log('编辑分类已更新，准备获取法律分类');
+            if (category && category !== '全部') {
+                this.getQuestionRegulation(category);
+            }
         });
     },
 
@@ -430,6 +537,15 @@ Page({
         }
 
         if (!this.validateQuestion(editQuestion)) {
+            return;
+        }
+
+        // 检查是否选择了法律分类
+        if (this.data.regulations.length > 0 && !editQuestion.regulation) {
+            wx.showToast({
+                title: '请选择法律分类',
+                icon: 'none'
+            });
             return;
         }
 
@@ -494,6 +610,7 @@ Page({
     onFilterCategoryChange(e) {
         const index = e.detail.value;
         const category = this.data.categories[index];
+        
         this.setData({
             currentCategoryIndex: index,
             currentCategory: category === '全部' ? '' : category,
@@ -501,6 +618,8 @@ Page({
         }, () => {
             this.loadQuestions();
             this.scrollToTop();
+            // 当筛选分类改变时，也获取对应的法律分类
+            this.getQuestionRegulation(category);
         });
     },
 
@@ -511,6 +630,21 @@ Page({
         this.setData({
             currentTypeIndex: index,
             currentType: type === '全部' ? '' : type,
+            pageNum: 1 // 重置页码
+        }, () => {
+            this.loadQuestions();
+            this.scrollToTop();
+        });
+    },
+
+    // 法律分类筛选改变事件
+    onFilterRegulationChange(e) {
+        const index = e.detail.value;
+        const regulation = this.data.regulations[index];
+        
+        this.setData({
+            currentRegulationIndex: index,
+            currentRegulation: regulation === '全部' ? '' : regulation,
             pageNum: 1 // 重置页码
         }, () => {
             this.loadQuestions();
@@ -533,6 +667,28 @@ Page({
                     duration: 300
                 });
             }
+        });
+    },
+
+    // 添加法律分类选择处理函数
+    onRegulationChange(e) {
+        const index = e.detail.value;
+        const regulation = this.data.regulations[index];
+        console.log('选择法律分类:', regulation);
+        this.setData({
+            newRegulationIndex: index,
+            'newQuestion.regulation': regulation
+        });
+    },
+
+    // 编辑法律分类选择处理函数
+    onEditRegulationChange(e) {
+        const index = e.detail.value;
+        const regulation = this.data.regulations[index];
+        console.log('编辑选择法律分类:', regulation);
+        this.setData({
+            editRegulationIndex: index,
+            'editQuestion.regulation': regulation
         });
     },
 });    

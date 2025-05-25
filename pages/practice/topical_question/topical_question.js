@@ -94,7 +94,7 @@ Page({
             type: this.data.type
         };
         getFinashAnswer(data).then(res => {
-            console.log(res);
+            console.log('已完成题目：',res);
         })
     },
 

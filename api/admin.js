@@ -196,5 +196,15 @@ export const getAllQuestion = (data) => {
         method: 'POST',
         data
     });
-};
+}; 
+// 题目管理中分类
+export const getQuestionRegulation = (category) => {
+    console.log(category);
+    category = category
+    const userId = getUserId()
+    return request({
+        url: `/question/getRegulationByCategory?userId=${userId}&category=${category}`,
+        method: 'GET',
+    });
+}; 
 
