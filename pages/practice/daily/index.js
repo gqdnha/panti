@@ -49,12 +49,15 @@ Page({
         scrollTop: 0 // 添加scrollTop控制变量
     },
     onLoad: function () {
+        
         // 先检查今天是否已经提交过答案
         this.checkTodaySubmission();
         // 获取题目数据
         this.getData();
         // 检查缓存并启动倒计时
         this.checkCacheAndStartTimer();
+        // 获取已完成题目数据
+        this.getAnswerInfo()
     },
     // 用户是否完成
     userFinash() {
