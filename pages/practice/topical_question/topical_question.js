@@ -9,9 +9,6 @@ import {
 } from '../../../api/addLearnTime'
 
 import {
-    getFinashQuestionId
-} from '../../../api/getFinashQuestionId'
-import {
     judgeTopicalTest,
     getFinashAnswer,
     deleteAnswerHistory
@@ -69,9 +66,6 @@ Page({
             isAllFinished: false
         });
 
-        // 先获取已完成的题目ID
-        this.getFinashQuestionId();
-
         // 启动定时器，每分钟更新一次学习时长
         this.data.timer = setInterval(() => {
             const now = new Date();
@@ -94,6 +88,7 @@ Page({
             if (res && res.length > 0) {
                 // 将已完成的题目数据合并到题目列表中
                 const newQuestionList = this.data.questionList.map(question => {
+                    // 使用 questionId 进行匹配
                     const completedQuestion = res.find(cq => cq.questionId === question.questionId);
                     if (completedQuestion) {
                         console.log('找到已完成的题目：', completedQuestion);
@@ -304,41 +299,6 @@ Page({
         }, () => {
             console.log('更新后的题目列表:', this.data.questionList);
             console.log('解析后的图片列表:', this.data.parsedImageList);
-        });
-    },
-    // 获取已完成id
-    getFinashQuestionId() {
-        const data = {
-            type: this.data.type,
-            category: this.data.category
-        }
-        console.log('获取已完成题目ID参数：', data);
-        return getFinashQuestionId(data).then(res => {
-            console.log('已完成的题目ID：', res);
-            // 确保res是数组
-            const finishedIds = Array.isArray(res) ? res : [];
-
-            // 先获取所有题目数量
-            getAllQuestion({
-                category: this.data.category,
-                pageNum: 1,
-                pageSize: 100,
-                type: this.data.type
-            }).then(allRes => {
-                const totalQuestions = allRes.pageInfo.totalSize;
-                console.log('总题目数：', totalQuestions, '已完成题目数：', finishedIds.length);
-
-                // 如果已完成题目数等于总题目数，说明全部完成
-                const isAllFinished = finishedIds.length === totalQuestions;
-
-                this.setData({
-                    finishedQuestionIds: finishedIds,
-                    isAllFinished: isAllFinished
-                }, () => {
-                    // 获取到已完成题目ID后重新加载题目
-                    this.loadQuestions();
-                });
-            });
         });
     },
     nextQuestion: function () {
@@ -604,11 +564,39 @@ Page({
                 }, () => {
                     wx.showModal({
                         title: '提示',
-                        content: '所有题目已完成',
-                        showCancel: false,
-                        success: () => {
-                            // 重新加载所有题目
-                            this.loadQuestions();
+                        content: '所有题目已完成，是否重新开始？',
+                        success: (res) => {
+                            if (res.confirm) {
+                                // 删除答题历史
+                                const data = {
+                                    type: this.data.type,
+                                    category: this.data.category
+                                };
+                                console.log(data);
+                                deleteAnswerHistory(data).then(() => {
+                                    // 重置所有状态
+                                    this.setData({
+                                        currentQuestion: 1,
+                                        questionList: [],
+                                        selectedOptions: [],
+                                        isSubmitted: [],
+                                        questionStates: [],
+                                        optionStates: [],
+                                        finishedQuestionIds: [],
+                                        isAllFinished: false,
+                                        detailData: {}
+                                    }, () => {
+                                        // 重新加载题目
+                                        this.loadQuestions();
+                                    });
+                                }).catch(error => {
+                                    console.error('删除答题历史失败：', error);
+                                    wx.showToast({
+                                        title: '重置失败，请重试',
+                                        icon: 'none'
+                                    });
+                                });
+                            }
                         }
                     });
                 });
