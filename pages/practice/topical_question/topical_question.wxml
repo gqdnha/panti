@@ -54,7 +54,11 @@
             <view class="options-container">
                 <!-- 单选题 -->
                 <block wx:if="{{questionList[currentQuestion - 1].type === '单选题'}}">
-                    <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" wx:for="{{questionList[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                    <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" 
+                          wx:for="{{questionList[currentQuestion - 1].options}}" 
+                          wx:key="index" 
+                          bindtap="{{!isSubmitted[currentQuestion - 1] ? 'selectOption' : ''}}" 
+                          data-index="{{index}}">
                         <text class="option-content">{{item}}</text>
                         <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
                             <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
@@ -68,7 +72,7 @@
                     <view wx:for="{{questionList[currentQuestion - 1].options}}"
                           wx:key="index"
                           class="option-item {{optionStates[currentQuestion - 1][index] ? (questionStates[currentQuestion - 1] ? 'selected correct' : (isSubmitted[currentQuestion - 1] ? 'selected wrong' : 'selected')) : ''}}"
-                          bindtap="selectMultipleOption"
+                          bindtap="{{!isSubmitted[currentQuestion - 1] ? 'selectMultipleOption' : ''}}"
                           data-index="{{index}}">
                         <text class="option-content">{{item}}</text>
                         <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
@@ -80,7 +84,11 @@
 
                 <!-- 判断题 -->
                 <block wx:if="{{questionList[currentQuestion - 1].type === '判断题'}}">
-                    <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" wx:for="{{questionList[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                    <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted[currentQuestion - 1]? 'selected wrong' :'selected')) : ''}}" 
+                          wx:for="{{questionList[currentQuestion - 1].options}}" 
+                          wx:key="index" 
+                          bindtap="{{!isSubmitted[currentQuestion - 1] ? 'selectOption' : ''}}" 
+                          data-index="{{index}}">
                         <text class="option-content">{{item}}</text>
                         <text class="option-status" wx:if="{{isSubmitted[currentQuestion - 1]}}">
                             <text wx:if="{{item[0] === detailData.answer}}" class="status-icon correct">✓</text>
@@ -91,7 +99,11 @@
 
                 <!-- 填空题 -->
                 <block class="testCard" wx:if="{{questionList[currentQuestion - 1].type === '填空题'}}">
-                    <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted[currentQuestion - 1]? 'wrong' : '')}}" placeholder="请输入答案" value="{{answer}}" bindinput="onInputAnswer" />
+                    <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted[currentQuestion - 1]? 'wrong' : '')}}" 
+                           placeholder="请输入答案" 
+                           value="{{answer}}" 
+                           bindinput="{{!isSubmitted[currentQuestion - 1] ? 'onInputAnswer' : ''}}" 
+                           disabled="{{isSubmitted[currentQuestion - 1]}}" />
                 </block>
             </view>
 
