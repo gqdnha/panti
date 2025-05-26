@@ -16,6 +16,7 @@ page {
     justify-content: start;
     /* background: linear-gradient(150deg,  #c7fff7,  #357abd    ); */
     /* background: linear-gradient(to bottom, #e6f7ff, #ffffff); */
+
 }
 
 /* 顶部用户信息 */

@@ -85,6 +85,7 @@ export const addLawsApi = (regulationType, data) => {
 };
 // 新建题目
 export const addNewQuestion = (data) => {
+    console.log(data);
     const userId =getUserId()
     return request({
         url: `/mange/newQuestion?userId=${userId}`,

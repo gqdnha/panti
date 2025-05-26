@@ -130,9 +130,9 @@
             
             <view class="form-item">
                 <label>法律分类</label>
-                <picker mode="selector" range="{{modalRegulations}}" value="{{newRegulationIndex}}" bindchange="onRegulationChange">
-                    <view class="picker-view">
-                        {{modalRegulations[newRegulationIndex] || '请选择法律分类'}}
+                <picker mode="selector" range="{{regulations}}" value="{{newRegulationIndex}}" bindchange="onRegulationChange">
+                    <view class="picker-view text-ellipsis">
+                        {{regulations.length > 0 ? regulations[newRegulationIndex] : '无'}}
                     </view>
                 </picker>
             </view>
@@ -197,9 +197,9 @@
             </view>
             <view class="form-item">
                 <label>法律分类</label>
-                <picker mode="selector" range="{{modalRegulations}}" value="{{editRegulationIndex}}" bindchange="onEditRegulationChange">
-                    <view class="picker-view">
-                        {{modalRegulations[editRegulationIndex] || '请选择法律分类'}}
+                <picker mode="selector" range="{{filterRegulations}}" value="{{editRegulationIndex}}" bindchange="onEditRegulationChange">
+                    <view class="picker-view text-ellipsis">
+                        {{filterRegulations.length > 0 ? filterRegulations[editRegulationIndex] : '无'}}
                     </view>
                 </picker>
             </view>
