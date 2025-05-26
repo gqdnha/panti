@@ -723,7 +723,29 @@ Page({
             this.loadQuestions();
             this.scrollToTop();
             // 当筛选分类改变时，也获取对应的法律分类
-            this.getQuestionRegulation(category);
+            if (category && category !== '全部') {
+                getQuestionRegulation(category).then(regulationRes => {
+                    if (regulationRes && regulationRes.length > 0) {
+                        const regulations = Array.isArray(regulationRes) ? regulationRes : [regulationRes];
+                        this.setData({
+                            filterRegulations: ['全部', ...regulations]
+                        });
+                    } else {
+                        this.setData({
+                            filterRegulations: ['全部']
+                        });
+                    }
+                }).catch(err => {
+                    console.error('获取法律分类失败:', err);
+                    this.setData({
+                        filterRegulations: ['全部']
+                    });
+                });
+            } else {
+                this.setData({
+                    filterRegulations: ['全部']
+                });
+            }
         });
     },
 
