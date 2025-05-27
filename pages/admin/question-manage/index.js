@@ -146,6 +146,27 @@ Page({
                 totalPages: res.pageInfo.totalPage,
                 scrollTop: 0 // 重置滚动位置
             });
+
+            // 如果当前有选中的分类，重新获取法律分类
+            if (currentCategory && currentCategory !== '全部') {
+                getQuestionRegulation(currentCategory).then(regulationRes => {
+                    if (regulationRes && regulationRes.length > 0) {
+                        const regulations = Array.isArray(regulationRes) ? regulationRes : [regulationRes];
+                        this.setData({
+                            filterRegulations: ['全部', ...regulations]
+                        });
+                    } else {
+                        this.setData({
+                            filterRegulations: ['全部']
+                        });
+                    }
+                }).catch(err => {
+                    console.error('获取法律分类失败:', err);
+                    this.setData({
+                        filterRegulations: ['全部']
+                    });
+                });
+            }
         }).catch(err => {
             console.error('加载题目列表失败:', err);
             wx.showToast({
