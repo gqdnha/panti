@@ -338,7 +338,8 @@ Page({
                             this.setData({
                                 regulations: regulations,
                                 filterRegulations: regulations, // 编辑模式下不添加"全部"选项
-                                editRegulationIndex: regulationIndex
+                                editRegulationIndex: regulationIndex,
+                                'editQuestion.regulation': regulations[regulationIndex] || ''
                             });
                         } else {
                             this.setData({
