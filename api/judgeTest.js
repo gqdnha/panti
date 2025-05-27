@@ -6,6 +6,7 @@ import {getUserId} from './getUserId'
 export const apiJudgeTest = (data) => {
     const userId = getUserId();
     return request({
+        // url: `/dailyQuestion/judgeQuestion?userId=${userId}`,
         url: `/dailyQuestion/judgeQuestion?userId=${userId}`,
         method: 'POST',
         data

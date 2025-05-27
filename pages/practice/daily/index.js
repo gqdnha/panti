@@ -19,7 +19,11 @@ Page({
         // 页面数据
         currentQuestion: 1, //题目序号
         totalQuestions: 0, //总数
-        remainingTime: '20:00', //倒计时
+        remainingTime: '20:00', //倒计时显示
+        startTime: 0, // 开始时间戳
+        totalTime: 20 * 60, // 总时间（秒）
+        timer: null, // 定时器
+        isTimeUp: false, // 是否时间到
         allAnswers: [], // 所有题目答案
         isSubmitted: false,
         isAllSubmitted: false,
@@ -33,7 +37,6 @@ Page({
         showAnswerSheetModal: false, // 控制答题卡弹窗的显示状态
         questionStatuses: [], // 存储题目作答情况数据
         optionStates: [], // 存储每个题目的选项状态
-        startTime: 0, // 新增：记录开始时间
         questionAnalysis: {}, // 存储每个题目的解析信息
         // 新增：存储每个题目的正确答案（改为对象，使用questionId作为键）
         correctAnswers: {},
@@ -54,8 +57,8 @@ Page({
         this.checkTodaySubmission();
         // 获取题目数据
         this.getData();
-        // 检查缓存并启动倒计时
-        this.checkCacheAndStartTimer();
+        // 恢复计时状态
+        this.restoreTimer();
         // 获取已完成题目数据
         this.getAnswerInfo()
         
@@ -394,15 +397,14 @@ Page({
             clearInterval(this.data.timer);
         }
     },
-    submitAllAnswers: function () {
+    submitAllAnswers: function() {
         const {
             allQuestions,
             allAnswers,
             selectedOptions,
             questionStates,
             answerSheetStates,
-            optionStates,
-            startTime
+            optionStates
         } = this.data;
         const allUserAnswers = [];
 
@@ -416,6 +418,7 @@ Page({
             return;
         }
 
+        // 收集所有答案
         allQuestions.forEach((question, index) => {
             const userAnswer = allAnswers[index];
             const questionId = question.questionId;
@@ -450,93 +453,113 @@ Page({
         });
 
         // 计算使用的时间
-        const endTime = new Date().getTime();
-        const usedTime = endTime - startTime;
-        const minutes = Math.floor(usedTime / (1000 * 60));
-        addLearnTime(minutes).then(res => {
-            console.log('传时间', minutes);
+        const minutes = this.calculateUsedTime();
+
+        // 显示加载提示
+        wx.showLoading({
+            title: '正在提交...',
+            mask: true
         });
 
-        // 调用后端接口
-        apiDailyJudgeTest(allUserAnswers).then(response => {
-            console.log('后端返回结果：', response);
+        // 提交学习时间
+        this.submitLearningTime(minutes)
+            .then(() => {
+                // 调用后端接口提交答案
+                return apiDailyJudgeTest(allUserAnswers);
+            })
+            .then(response => {
+                console.log('答案提交成功，返回结果：', response);
 
-            // 根据后端返回结果设置题目状态和解析
-            const newQuestionStates = [];
-            const newQuestionAnalysis = {};
-            const newCorrectAnswers = {};
-            const newOptionStates = this.data.allQuestions.map(question => 
-                new Array(question.options ? question.options.length : 0).fill(false)
-            );
-            
-            // 创建questionId到索引的映射
-            const questionIdToIndex = {};
-            this.data.allQuestions.forEach((question, index) => {
-                questionIdToIndex[question.questionId] = index;
-            });
+                // 根据后端返回结果设置题目状态和解析
+                const newQuestionStates = [];
+                const newQuestionAnalysis = {};
+                const newCorrectAnswers = {};
+                const newOptionStates = this.data.allQuestions.map(question => 
+                    new Array(question.options ? question.options.length : 0).fill(false)
+                );
+                
+                // 创建questionId到索引的映射
+                const questionIdToIndex = {};
+                this.data.allQuestions.forEach((question, index) => {
+                    questionIdToIndex[question.questionId] = index;
+                });
 
-            response.forEach((result) => {
-                const index = questionIdToIndex[result.questionId];
-                if (index !== undefined) {
-                    newQuestionStates[index] = result.rightOrWrong === '对';
-                    newQuestionAnalysis[result.questionId] = result.analysis || '';
-                    newCorrectAnswers[result.questionId] = result.answer;
+                response.forEach((result) => {
+                    const index = questionIdToIndex[result.questionId];
+                    if (index !== undefined) {
+                        newQuestionStates[index] = result.rightOrWrong === '对';
+                        newQuestionAnalysis[result.questionId] = result.analysis || '';
+                        newCorrectAnswers[result.questionId] = result.answer;
 
-                    // 标记正确答案
-                    const question = this.data.allQuestions[index];
-                    if (question && question.options) {
-                        const correctAnswer = result.answer;
-                        
                         // 标记正确答案
-                        question.options.forEach((option, optIndex) => {
-                            if (option[0] === correctAnswer) {
-                                newOptionStates[index][optIndex] = true;
-                            }
-                        });
-
-                        // 如果是多选题，需要处理多个正确答案
-                        if (question.type === '多选题' && correctAnswer) {
-                            const correctAnswers = correctAnswer.split('');
+                        const question = this.data.allQuestions[index];
+                        if (question && question.options) {
+                            const correctAnswer = result.answer;
+                            
+                            // 标记正确答案
                             question.options.forEach((option, optIndex) => {
-                                if (correctAnswers.includes(option[0])) {
+                                if (option[0] === correctAnswer) {
                                     newOptionStates[index][optIndex] = true;
                                 }
                             });
+
+                            // 如果是多选题，需要处理多个正确答案
+                            if (question.type === '多选题' && correctAnswer) {
+                                const correctAnswers = correctAnswer.split('');
+                                question.options.forEach((option, optIndex) => {
+                                    if (correctAnswers.includes(option[0])) {
+                                        newOptionStates[index][optIndex] = true;
+                                    }
+                                });
+                            }
                         }
                     }
-                }
-            });
+                });
 
-            // 更新答题卡状态
-            const questionStatuses = answerSheetStates.map((state, index) => ({
-                index: index + 1,
-                isAnswered: state,
-                highlightClass: newQuestionStates[index] ? 'correct' : 'wrong'
-            }));
+                // 更新答题卡状态
+                const questionStatuses = answerSheetStates.map((state, index) => ({
+                    index: index + 1,
+                    isAnswered: state,
+                    highlightClass: newQuestionStates[index] ? 'correct' : 'wrong'
+                }));
 
-            this.setData({
-                isAllSubmitted: true,
-                questionStates: newQuestionStates,
-                isSubmitted: true,
-                questionAnalysis: newQuestionAnalysis,
-                correctAnswers: newCorrectAnswers,
-                optionStates: newOptionStates,
-                questionStatuses: questionStatuses,
-                ifFinash: 100 // 设置完成状态
-            });
-        })
-        .catch(error => {
-            console.error('提交答案到后端时出错：', error);
-            wx.showToast({
-                title: '提交失败，请重试',
-                icon: 'none'
-            });
-        });
+                // 更新页面状态
+                this.setData({
+                    isAllSubmitted: true,
+                    questionStates: newQuestionStates,
+                    isSubmitted: true,
+                    questionAnalysis: newQuestionAnalysis,
+                    correctAnswers: newCorrectAnswers,
+                    optionStates: newOptionStates,
+                    questionStatuses: questionStatuses,
+                    ifFinash: 100
+                });
 
-        const totalCount = this.data.totalQuestions;
-        dailyQuestionCount(totalCount).then(res => {
-            console.log(res, '请求成功');
-        });
+                // 清除定时器
+                this.clearTimer();
+
+                // 清除本地存储的计时数据
+                wx.removeStorageSync('dailyTestStartTime');
+
+                // 提交题目数量
+                return dailyQuestionCount(this.data.totalQuestions);
+            })
+            .then(() => {
+                console.log('题目数量记录成功');
+                wx.hideLoading();
+                wx.showToast({
+                    title: '提交成功',
+                    icon: 'success'
+                });
+            })
+            .catch(error => {
+                console.error('提交过程出错：', error);
+                wx.hideLoading();
+                wx.showToast({
+                    title: '提交失败，请重试',
+                    icon: 'none'
+                });
+            });
     },
     onTouchStart: function (e) {
         // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
@@ -750,6 +773,7 @@ Page({
         const endTime = new Date().getTime();
         const usedTime = endTime - startTime;
         const minutes = Math.floor(usedTime / (1000 * 60));
+        console.log(minutes);
         addLearnTime(minutes);
 
         if (allUserAnswers.length > 0) {
@@ -905,7 +929,7 @@ Page({
                 }
             });
 
-            // 更新页面数据
+            // 更新页面数据，保持已提交状态
             this.setData({
                 questionAnalysis: newQuestionAnalysis,
                 correctAnswers: newCorrectAnswers,
@@ -913,8 +937,8 @@ Page({
                 selectedOptions: newSelectedOptions,
                 answerSheetStates: newAnswerSheetStates,
                 optionStates: newOptionStates,
-                isSubmitted: true,
-                isAllSubmitted: true
+                isSubmitted: this.data.isSubmitted,  // 保持原有状态
+                isAllSubmitted: this.data.isAllSubmitted  // 保持原有状态
             }, () => {
                 // 更新答题卡状态
                 const questionStatuses = newAnswerSheetStates.map((state, index) => ({
@@ -935,8 +959,8 @@ Page({
                     selectedOptions: newSelectedOptions,
                     answerSheetStates: newAnswerSheetStates,
                     optionStates: newOptionStates,
-                    isSubmitted: true,
-                    isAllSubmitted: true,
+                    isSubmitted: this.data.isSubmitted,  // 保持原有状态
+                    isAllSubmitted: this.data.isAllSubmitted,  // 保持原有状态
                     questionStatuses: questionStatuses
                 });
             });
@@ -982,7 +1006,9 @@ Page({
 
                         this.setData({
                             allQuestions: questions,
-                            totalQuestions: questions.length
+                            totalQuestions: questions.length,
+                            isSubmitted: true,  // 设置已提交状态
+                            isAllSubmitted: true  // 设置已完成状态
                         });
 
                         // 获取答案信息
@@ -1030,12 +1056,135 @@ Page({
             questionStates: [],
             questionAnalysis: {},
             correctAnswers: {},
-            startTime: new Date().getTime()
+            remainingTime: '20:00',
+            isTimeUp: false
         });
         
         // 获取新题目
         this.getData();
         // 开始新的倒计时
         this.startCountdown();
+    },
+    // 开始计时和倒计时
+    startTimer: function() {
+        // 清除可能存在的旧定时器
+        this.clearTimer();
+        
+        // 记录开始时间
+        const now = Date.now();
+        this.setData({
+            startTime: now,
+            isTimeUp: false
+        });
+
+        // 保存开始时间到本地存储
+        wx.setStorageSync('dailyTestStartTime', now);
+
+        // 启动定时器
+        this.data.timer = setInterval(() => {
+            const currentTime = Date.now();
+            const elapsedTime = Math.floor((currentTime - this.data.startTime) / 1000);
+            const remainingTime = Math.max(0, this.data.totalTime - elapsedTime);
+
+            // 更新倒计时显示
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            this.setData({
+                remainingTime: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+            });
+
+            // 检查是否时间到
+            if (remainingTime <= 0) {
+                this.handleTimeUp();
+            }
+        }, 1000);
+    },
+    // 清除定时器
+    clearTimer: function() {
+        if (this.data.timer) {
+            clearInterval(this.data.timer);
+            this.data.timer = null;
+        }
+    },
+    // 处理时间到的情况
+    handleTimeUp: function() {
+        this.clearTimer();
+        this.setData({
+            isTimeUp: true,
+            remainingTime: '00:00'
+        });
+
+        // 如果用户还没有提交答案，自动提交
+        if (!this.data.isSubmitted) {
+            wx.showModal({
+                title: '时间到',
+                content: '答题时间已结束，系统将自动提交您的答案',
+                showCancel: false,
+                success: () => {
+                    this.submitAllAnswers();
+                }
+            });
+        }
+    },
+    // 恢复计时状态
+    restoreTimer: function() {
+        const savedStartTime = wx.getStorageSync('dailyTestStartTime');
+        if (savedStartTime) {
+            const currentTime = Date.now();
+            const elapsedTime = Math.floor((currentTime - savedStartTime) / 1000);
+            const remainingTime = Math.max(0, this.data.totalTime - elapsedTime);
+
+            // 如果还有剩余时间，恢复计时
+            if (remainingTime > 0) {
+                this.setData({
+                    startTime: savedStartTime
+                });
+                this.startTimer();
+            } else {
+                // 如果时间已到，直接处理
+                this.handleTimeUp();
+            }
+        }
+    },
+    // 计算答题用时（分钟）
+    calculateUsedTime: function() {
+        const endTime = Date.now();
+        const startTime = this.data.startTime;
+        if (!startTime) {
+            console.warn('开始时间未记录，使用默认时间1分钟');
+            return 1;
+        }
+        const usedTimeInSeconds = Math.floor((endTime - startTime) / 1000);
+        // 确保至少记录1分钟，最多记录20分钟
+        const minutes = Math.min(Math.max(Math.ceil(usedTimeInSeconds / 60), 1), 20);
+        console.log('答题用时计算：', {
+            startTime: new Date(startTime).toLocaleString(),
+            endTime: new Date(endTime).toLocaleString(),
+            usedTimeInSeconds,
+            minutes
+        });
+        return minutes;
+    },
+    // 提交学习时间
+    submitLearningTime: function(minutes) {
+        return new Promise((resolve, reject) => {
+            if (!minutes || minutes <= 0) {
+                console.warn('无效的学习时间：', minutes);
+                resolve(); // 无效时间不阻止后续操作
+                return;
+            }
+
+            console.log('准备提交学习时间：', minutes, '分钟');
+            addLearnTime(minutes)
+                .then(res => {
+                    console.log('学习时间提交成功：', res);
+                    resolve(res);
+                })
+                .catch(error => {
+                    console.error('学习时间提交失败：', error);
+                    // 提交失败不影响后续操作
+                    resolve();
+                });
+        });
     },
 })
