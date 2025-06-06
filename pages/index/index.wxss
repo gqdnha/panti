@@ -16,7 +16,7 @@ page {
     justify-content: start;
     /* background: linear-gradient(150deg,  #c7fff7,  #357abd    ); */
     /* background: linear-gradient(to bottom, #e6f7ff, #ffffff); */
-    background:  #e6f7ff;
+    background: #e6f7ff;
 
 }
 
@@ -28,16 +28,19 @@ page {
     box-sizing: border-box;
     /* background: linear-gradient(135deg, #ff7373, #357abd); */
 }
+
 .welcomeBox {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
+
 .welcomId {
     font-size: 40px;
     font-weight: 500;
     text-align: center;
 }
+
 .welcomName {
     text-align: center;
     font-size: 30px;
@@ -105,10 +108,12 @@ page {
     align-items: center;
     margin-top: 30rpx;
 }
+
 .function-content-row {
     display: flex;
     flex-direction: row;
 }
+
 .function-content-right {
     margin-left: 20rpx;
 }
@@ -127,19 +132,23 @@ page {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
+
 }
+
 /* 每日练习-按钮 */
 .startTest {
     font-size: 25rpx;
     height: 50rpx;
-    width: 150rpx ;
+    width: 150rpx;
     text-align: center;
     line-height: 50rpx;
     border-radius: 30rpx;
     background-color: #fff;
     position: absolute;
-    bottom: 50rpx ;
+    bottom: 50rpx;
 }
+
 .orderTest {
     width: 390rpx;
     height: 210rpx;
@@ -152,8 +161,10 @@ page {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    border: #818181 .5rpx solid;
+    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
+
 }
+
 .functionLaw {
     width: 390rpx;
     height: 210rpx;
@@ -167,7 +178,10 @@ page {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
+
 }
+
 /* 大条 */
 /* .functionLaw {
     margin-top: 20rpx;

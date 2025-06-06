@@ -240,6 +240,8 @@
     position: relative;
     overflow: hidden;
     backdrop-filter: blur(8px);
+    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
+
 }
 
 .function-item::before {
