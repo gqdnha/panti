@@ -1,7 +1,7 @@
 .container {
     min-height: 100vh;
     /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #b4f8ed 100%); */
-    background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%);
+    /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%); */
     padding: 0rpx;
     position: relative;
     display: flex;

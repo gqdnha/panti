@@ -7,7 +7,7 @@ page {
 
 .container {
     /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%); */
-    background: linear-gradient(135deg, #1E4B92 0%, #d8fdf7 100%);
+    /* background: linear-gradient(135deg, #1E4B92 0%, #d8fdf7 100%); */
     min-height: 100vh;
     /* background-color: #f5f6fa; */
     padding: 0;
@@ -16,6 +16,7 @@ page {
     justify-content: start;
     /* background: linear-gradient(150deg,  #c7fff7,  #357abd    ); */
     /* background: linear-gradient(to bottom, #e6f7ff, #ffffff); */
+    background:  #e6f7ff;
 
 }
 
@@ -151,6 +152,7 @@ page {
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    border: #818181 .5rpx solid;
 }
 .functionLaw {
     width: 390rpx;
