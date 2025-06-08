@@ -1,6 +1,20 @@
 <view class="container">
-  <view class="echarts">
-    <ec-canvas id="myChart" canvas-id="myChart" ec="{{ec}}"></ec-canvas>
-  </view>    
-    <button bindtap="change">改变</button> //相当于模拟动态改变echarts数据
+  <picker mode="selector" range="{{chartOptions}}" range-key="label" value="{{currentChart}}" bindchange="onChartChange">
+    <view class="picker">
+      当前选择：{{chartOptions[currentChart].label}}
+    </view>
+  </picker>
+
+  <view class="chart-container" wx:if="{{currentChart == 0}}">
+    <ec-canvas id="userCountChart" canvas-id="userCountChart" ec="{{ ec }}"></ec-canvas>
+  </view>
+  <view class="chart-container" wx:if="{{currentChart == 1}}">
+    <ec-canvas id="learnTimeChart" canvas-id="learnTimeChart" ec="{{ ec2 }}"></ec-canvas>
+  </view>
+  <view class="chart-container" wx:if="{{currentChart == 2}}">
+    <ec-canvas id="rightRateChart" canvas-id="rightRateChart" ec="{{ ec3 }}"></ec-canvas>
+  </view>
+  <view class="chart-container" wx:if="{{currentChart == 3}}">
+    <ec-canvas id="dailyFinishChart" canvas-id="dailyFinishChart" ec="{{ ec4 }}"></ec-canvas>
+  </view>
 </view>
