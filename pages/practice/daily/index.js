@@ -398,6 +398,19 @@ Page({
         }
     },
     submitAllAnswers: function() {
+        // 添加确认弹窗
+        wx.showModal({
+            title: '确认提交',
+            content: '确定要提交答案吗？提交后将无法修改。',
+            success: (res) => {
+                if (res.confirm) {
+                    this.doSubmitAnswers();
+                }
+            }
+        });
+    },
+    // 新增实际提交答案的函数
+    doSubmitAnswers: function() {
         const {
             allQuestions,
             allAnswers,
@@ -538,8 +551,8 @@ Page({
                 // 清除定时器
                 this.clearTimer();
 
-                // 清除本地存储的计时数据
-                wx.removeStorageSync('dailyTestStartTime');
+                // 清除所有缓存
+                this.clearAllCache();
 
                 // 提交题目数量
                 return dailyQuestionCount(this.data.totalQuestions);
@@ -652,10 +665,10 @@ Page({
                 selectedOptions: this.data.selectedOptions,
                 optionStates: this.data.optionStates,
                 answerSheetStates: this.data.answerSheetStates,
-                allAnswers: this.data.allAnswers, // 确保填空题答案被缓存
+                allAnswers: this.data.allAnswers,
                 startTime: this.data.startTime,
                 totalQuestions: this.data.totalQuestions,
-                timestamp: new Date().getTime()
+                timestamp: new Date().getTime() // 添加时间戳
             };
             wx.setStorageSync('dailyTestAnswers', cacheData);
             console.log('答题状态已缓存，开始时间：', new Date(this.data.startTime));
@@ -1018,9 +1031,19 @@ Page({
                     // 如果未完成，检查是否有未完成的答题进度
                     const cachedData = wx.getStorageSync('dailyTestAnswers');
                     if (cachedData) {
-                        // 有未完成的答题进度，恢复数据
-                        this.getData();
-                        this.checkCacheAndStartTimer();
+                        // 检查缓存是否是今天的
+                        const today = new Date().toDateString();
+                        const cacheDate = new Date(cachedData.timestamp).toDateString();
+                        
+                        if (today === cacheDate) {
+                            // 是今天的缓存，恢复数据
+                            this.getData();
+                            this.checkCacheAndStartTimer();
+                        } else {
+                            // 不是今天的缓存，清除并开始新的答题
+                            this.clearAllCache();
+                            this.startNewTest();
+                        }
                     } else {
                         // 没有未完成的答题进度，开始新的答题
                         this.startNewTest();
@@ -1114,14 +1137,15 @@ Page({
             remainingTime: '00:00'
         });
 
-        // 如果用户还没有提交答案，自动提交
+        // 如果用户还没有提交答案，显示确认弹窗
         if (!this.data.isSubmitted) {
             wx.showModal({
                 title: '时间到',
-                content: '答题时间已结束，系统将自动提交您的答案',
-                showCancel: false,
-                success: () => {
-                    this.submitAllAnswers();
+                content: '答题时间已结束，是否现在提交答案？',
+                success: (res) => {
+                    if (res.confirm) {
+                        this.doSubmitAnswers();
+                    }
                 }
             });
         }
