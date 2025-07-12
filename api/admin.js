@@ -45,6 +45,7 @@ export const addLawsApi = (regulationType, data) => {
     });
 
     return new Promise((resolve, reject) => {
+        const userId = getUserId()
         wx.uploadFile({
             url: `${baseURL}/regulation/addRegulation`,
             filePath: data.file,
@@ -52,7 +53,7 @@ export const addLawsApi = (regulationType, data) => {
             formData: {
                 regulationName: data.regulationName,
                 regulationType: regulationType,
-                userId: 1
+                userId: userId
             },
             header: {
                 'content-type': 'multipart/form-data'
