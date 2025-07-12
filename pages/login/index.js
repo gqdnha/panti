@@ -153,15 +153,27 @@ Page({
 
     // 手机号输入处理
     onPhoneInput(e) {
+        const value = e.detail.value;
+        // 只允许输入数字
+        const phoneNumber = value.replace(/\D/g, '');
+        // 限制长度为11位
+        const limitedPhone = phoneNumber.slice(0, 11);
+        
         this.setData({
-            phone: e.detail.value
+            phone: limitedPhone
         });
     },
 
     // 姓名输入处理
     onNameInput(e) {
+        const value = e.detail.value;
+        // 去除首尾空格
+        const trimmedValue = value.trim();
+        // 限制长度为20个字符
+        const limitedName = trimmedValue.slice(0, 20);
+        
         this.setData({
-            name: e.detail.value
+            name: limitedName
         });
     },
 
@@ -173,26 +185,31 @@ Page({
             departmentIndex: index
         });
     },
+    
+    // 检查所有字段是否已填写
+    checkAllFieldsFilled() {
+        const { phone, name, department, userId } = this.data;
+        
+        const isPhoneValid = phone && phone.length === 11;
+        const isNameValid = name && name.trim().length >= 2;
+        const isDepartmentValid = department && department !== '';
+        const isUserIdValid = userId && userId !== '';
+        
+        return isPhoneValid && isNameValid && isDepartmentValid && isUserIdValid;
+    },
 
     // 验证手机号
     verifyPhone() {
-        const { phone, name, department, userId } = this.data;
+        // 检查所有字段是否已填写
+        if (!this.checkAllFieldsFilled()) {
+            wx.showToast({
+                title: '请完整填写所有信息',
+                icon: 'none'
+            });
+            return;
+        }
         
-        // 验证输入
-        if (!phone || phone.length !== 11) {
-            wx.showToast({
-                title: '请输入正确的手机号',
-                icon: 'none'
-            });
-            return;
-        }
-        if (!name || name.trim() === '') {
-            wx.showToast({
-                title: '请输入姓名',
-                icon: 'none'
-            });
-            return;
-        }
+        const { phone, name, department, userId } = this.data;
 
         wx.showLoading({
             title: '提交中...',
