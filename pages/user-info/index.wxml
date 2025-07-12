@@ -19,7 +19,7 @@
     <view class="stats-section">
         <view class="stats-item">
             <view class="stats-value">{{studyStats.totalQuestions}}</view>
-            <view class="stats-label">总题数</view>
+            <view class="stats-label">完成题数</view>
         </view>
         <view class="stats-item">
             <view class="stats-value">{{studyStats.correctRate}}%</view>
