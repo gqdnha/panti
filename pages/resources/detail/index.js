@@ -16,9 +16,7 @@ Page({
         isLoading: false,
         hasData: true,
         isFirstLoad: true,
-        downloadingFileIndex: -1, // 当前正在下载的文件索引
-        // PDF阅读器相关（保留用于下载功能）
-        currentPdfInfo: null
+        downloadingFileIndex: -1 // 当前正在下载的文件索引
     },
 
     onLoad(options) {
@@ -98,70 +96,6 @@ Page({
         const fileInfo = this.data.lawList[index];
         console.log(fileInfo);
         
-        // 统一使用下载和打开的方式
-        this.downloadAndOpenFile(fileInfo, index);
-    },
-
-    onNextPage() {
-        const { pageNum, totalPages } = this.data;
-        if (pageNum < totalPages) {
-            this.setData({ 
-                pageNum: pageNum + 1,
-                lawList: [] // 清空当前列表
-            }, () => {
-                this.getLawsData();
-            });
-        } else {
-            wx.showToast({
-                title: '已经是最后一页了',
-                icon: 'none'
-            });
-        }
-    },
-
-    // 下载文件功能
-    downloadFile(fileInfo) {
-        const baseurl = baseURL;
-        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url;
-        
-        wx.showLoading({
-            title: '正在下载...',
-            mask: true
-        });
-        
-        wx.downloadFile({
-            url: fullFileUrl,
-            success: (res) => {
-                if (res.statusCode === 200) {
-                    wx.hideLoading();
-                    wx.showToast({
-                        title: '下载成功',
-                        icon: 'success'
-                    });
-                } else {
-                    wx.hideLoading();
-                    wx.showToast({
-                        title: '下载失败',
-                        icon: 'none'
-                    });
-                }
-            },
-            fail: (error) => {
-                console.error('下载失败：', error);
-                wx.hideLoading();
-                wx.showToast({
-                    title: '下载失败',
-                    icon: 'none'
-                });
-            }
-        });
-    },
-    
-    // 下载并打开文件（用于非PDF文件）
-    downloadAndOpenFile(fileInfo, index) {
-        const baseurl = baseURL;
-        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url;
-        
         // 设置正在下载的文件索引
         this.setData({
             downloadingFileIndex: index
@@ -173,9 +107,18 @@ Page({
             mask: true
         });
         
+        const baseurl = baseURL;
+        console.log(baseurl);
+        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url;
+        console.log(fullFileUrl);
+        
         wx.downloadFile({
             url: fullFileUrl,
             success: (res) => {
+                console.log('下载成功，响应信息：', res);
+                console.log('状态码：', res.statusCode);
+                console.log('临时文件路径：', res.tempFilePath);
+                
                 if (res.statusCode === 200) {
                     let fileType = 'pdf';
                     if (fileInfo.regulation_url.toLowerCase().endsWith('.docx')) {
@@ -183,6 +126,8 @@ Page({
                     } else if (fileInfo.regulation_url.toLowerCase().endsWith('.doc')) {
                         fileType = 'doc';
                     }
+                    
+                    console.log('文件类型：', fileType);
                     
                     // 隐藏加载提示
                     wx.hideLoading();
@@ -211,6 +156,7 @@ Page({
                         },
                     });
                 } else {
+                    console.error('下载失败，状态码：', res.statusCode);
                     // 隐藏加载提示
                     wx.hideLoading();
                     // 重置下载状态
@@ -218,27 +164,62 @@ Page({
                         downloadingFileIndex: -1
                     });
                     wx.showToast({
-                        title: '下载文档失败',
+                        title: `下载失败，状态码：${res.statusCode}`,
                         icon: 'none'
                     });
                 }
             },
             fail: (error) => {
                 console.error('下载文档失败：', error);
+                console.error('错误详情：', {
+                    errMsg: error.errMsg,
+                    statusCode: error.statusCode,
+                    url: fullFileUrl
+                });
+                
                 // 隐藏加载提示
                 wx.hideLoading();
                 // 重置下载状态
                 this.setData({
                     downloadingFileIndex: -1
                 });
+                
+                // 根据错误类型显示不同的提示
+                let errorMessage = '下载文档失败';
+                if (error.errMsg && error.errMsg.includes('ENOENT')) {
+                    errorMessage = '文件不存在或路径错误';
+                } else if (error.errMsg && error.errMsg.includes('timeout')) {
+                    errorMessage = '下载超时，请重试';
+                } else if (error.statusCode) {
+                    errorMessage = `下载失败，状态码：${error.statusCode}`;
+                }
+                
                 wx.showToast({
-                    title: '下载文档失败',
-                    icon: 'none'
+                    title: errorMessage,
+                    icon: 'none',
+                    duration: 3000
                 });
             },
         });
     },
-    
+
+    onNextPage() {
+        const { pageNum, totalPages } = this.data;
+        if (pageNum < totalPages) {
+            this.setData({ 
+                pageNum: pageNum + 1,
+                lawList: [] // 清空当前列表
+            }, () => {
+                this.getLawsData();
+            });
+        } else {
+            wx.showToast({
+                title: '已经是最后一页了',
+                icon: 'none'
+            });
+        }
+    },
+
     onPreviousPage() {
         const { pageNum } = this.data;
         if (pageNum > 1) {
