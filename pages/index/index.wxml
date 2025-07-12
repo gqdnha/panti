@@ -25,10 +25,10 @@
     <view class="user-detail">
         <view class="welcomeBox">
             <text class="welcomId">Hi，</text>
-            <text class="welcomName">{{userInfo.name || 'XXX'}}</text>
+            <text class="welcomName">{{userInfo.name || '新用户'}}</text>
             <!-- <text class="welcomName">{{Name}}</text> -->
         </view>
-        <view>欢迎进入xxxxxxxxxxxx系统</view>
+        <view>欢迎进入江苏省环科学会法律实务知识训练系统</view>
     </view>
     <!-- 学习时长 -->
     <view class="study-content">
