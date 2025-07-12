@@ -86,7 +86,7 @@
                 </text> -->
             </view>
             <view class="correct-answer">
-                <text class="analysis-title">正确答案：：</text>
+                <text class="analysis-title">正确答案：</text>
                 <text class="right-answer">{{correctAnswers[allQuestions[currentQuestion - 1].questionId]}}</text>
             </view>
             <view class="analysis-content">

@@ -23,7 +23,7 @@ export const deletePicApi = (data) => {
         method: 'POST',
     });
 };
-// 禁用题目
+// 删除题目
 export const deleteQuestionApi = (questionId) => {
     const userId =getUserId()
     console.log(userId);

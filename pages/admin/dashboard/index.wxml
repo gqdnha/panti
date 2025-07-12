@@ -23,36 +23,37 @@
     <view class="function-cards">
         <view class="function-card" bindtap="navigateToUserStats">
             <image class="card-icon" src="/assets/icons/统计.png" mode="aspectFit"></image>
-            <view class="card-title">答题情况</view>
+            <view class="card-title">用户信息管理</view>
             <view class="card-desc">查看用户答题数据统计及用户管理</view>
         </view>
         <view class="function-card" bindtap="navigateToPhoneManage">
             <image class="card-icon" src="/assets/icons/phone.png" mode="aspectFit"></image>
-            <view class="card-title">手机号管理</view>
+            <view class="card-title">权限管理</view>
             <view class="card-desc">管理用户手机号信息</view>
         </view>
 
         <view class="function-card" bindtap="navigateToQuestionManage">
             <image class="card-icon" src="/assets/icons/題目管理.png" mode="aspectFit"></image>
             <view class="card-title">题目管理</view>
-            <view class="card-desc">管理题目数据</view>
+            <view class="card-desc">编辑题目内容</view>
         </view>
 
         <view class="function-card" bindtap="navigateToLawManage">
             <image class="card-icon" src="/assets/icons/法律管理.png" mode="aspectFit"></image>
-            <view class="card-title">法律管理</view>
-            <view class="card-desc">管理题目数据法律题目数据</view>
+            <view class="card-title">学习资料管理</view>
+            <view class="card-desc">编辑学习资料</view>
         </view>
 
         <view class="function-card" bindtap="navigateTo20Mistake">
             <image class="card-icon" src="/assets/icons/顺序练习.png" mode="aspectFit"></image>
-            <view class="card-title">易错20题</view>
-            <view class="card-desc">查看易错20题</view>
+            <view class="card-title">易错50题</view>
+            <view class="card-desc">题目总数：50</view>
+
         </view>
         <view class="function-card" bindtap="navigateapartEchatrs">
             <image class="card-icon" src="/assets/icons/可视化.png" mode="aspectFit"></image>
-            <view class="card-title">可视化</view>
-            <view class="card-desc">查看各部门及人员数据</view>
+            <view class="card-title">数据可视化</view>
+            <view class="card-desc">查看各部门数据</view>
         </view>
 
         

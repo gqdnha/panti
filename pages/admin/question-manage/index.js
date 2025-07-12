@@ -179,20 +179,20 @@ Page({
     deleteQuestion(e) {
         const questionId = e.currentTarget.dataset.id;
         wx.showModal({
-            title: '确认禁用',
-            content: '确定要禁用这道题目吗？',
+            title: '确认删除',
+            content: '确定要删除这道题目吗？',
             success: (res) => {
                 if (res.confirm) {
                     deleteQuestionApi(questionId).then(() => {
                         wx.showToast({
-                            title: '禁用成功',
+                            title: '删除成功',
                             icon: 'success'
                         });
                         this.loadQuestions();
                     }).catch(error => {
-                        console.error('禁用题目失败:', error);
+                        console.error('删除题目失败:', error);
                         wx.showToast({
-                            title: '禁用题目失败',
+                            title: '删除题目失败',
                             icon: 'none'
                         });
                     });
