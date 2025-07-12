@@ -15,7 +15,10 @@ Page({
         lawList: [],
         isLoading: false,
         hasData: true,
-        isFirstLoad: true
+        isFirstLoad: true,
+        downloadingFileIndex: -1, // 当前正在下载的文件索引
+        // PDF阅读器相关（保留用于下载功能）
+        currentPdfInfo: null
     },
 
     onLoad(options) {
@@ -82,45 +85,21 @@ Page({
 
     openFile(e) {
         const index = e.currentTarget.dataset.index;
+        
+        // 防止重复点击
+        if (this.data.downloadingFileIndex === index) {
+            wx.showToast({
+                title: '文件正在加载中，请稍候',
+                icon: 'none'
+            });
+            return;
+        }
+        
         const fileInfo = this.data.lawList[index];
         console.log(fileInfo);
-        const baseurl = baseURL;
-        console.log(baseurl);
-        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url;
-        console.log(fullFileUrl);
-        wx.downloadFile({
-            url: fullFileUrl,
-            success: (res) => {
-                if (res.statusCode === 200) {
-                    let fileType = 'pdf';
-                    if (fileInfo.regulation_url.toLowerCase().endsWith('.docx')) {
-                        fileType = 'docx';
-                    } else if (fileInfo.regulation_url.toLowerCase().endsWith('.doc')) {
-                        fileType = 'doc';
-                    }
-                    wx.openDocument({
-                        filePath: res.tempFilePath,
-                        fileType: fileType,
-                        showMenu: true,
-                        success: () => {
-                            wx.showToast({
-                                title: '打开文档成功',
-                            });
-                        },
-                        fail: () => {
-                            wx.showToast({
-                                title: '打开文档失败',
-                            });
-                        },
-                    });
-                }
-            },
-            fail: () => {
-                wx.showToast({
-                    title: '下载文档失败',
-                });
-            },
-        });
+        
+        // 统一使用下载和打开的方式
+        this.downloadAndOpenFile(fileInfo, index);
     },
 
     onNextPage() {
@@ -140,6 +119,126 @@ Page({
         }
     },
 
+    // 下载文件功能
+    downloadFile(fileInfo) {
+        const baseurl = baseURL;
+        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url;
+        
+        wx.showLoading({
+            title: '正在下载...',
+            mask: true
+        });
+        
+        wx.downloadFile({
+            url: fullFileUrl,
+            success: (res) => {
+                if (res.statusCode === 200) {
+                    wx.hideLoading();
+                    wx.showToast({
+                        title: '下载成功',
+                        icon: 'success'
+                    });
+                } else {
+                    wx.hideLoading();
+                    wx.showToast({
+                        title: '下载失败',
+                        icon: 'none'
+                    });
+                }
+            },
+            fail: (error) => {
+                console.error('下载失败：', error);
+                wx.hideLoading();
+                wx.showToast({
+                    title: '下载失败',
+                    icon: 'none'
+                });
+            }
+        });
+    },
+    
+    // 下载并打开文件（用于非PDF文件）
+    downloadAndOpenFile(fileInfo, index) {
+        const baseurl = baseURL;
+        const fullFileUrl = baseurl + '/static/' + fileInfo.regulation_url;
+        
+        // 设置正在下载的文件索引
+        this.setData({
+            downloadingFileIndex: index
+        });
+        
+        // 显示加载提示
+        wx.showLoading({
+            title: '正在加载文件...',
+            mask: true
+        });
+        
+        wx.downloadFile({
+            url: fullFileUrl,
+            success: (res) => {
+                if (res.statusCode === 200) {
+                    let fileType = 'pdf';
+                    if (fileInfo.regulation_url.toLowerCase().endsWith('.docx')) {
+                        fileType = 'docx';
+                    } else if (fileInfo.regulation_url.toLowerCase().endsWith('.doc')) {
+                        fileType = 'doc';
+                    }
+                    
+                    // 隐藏加载提示
+                    wx.hideLoading();
+                    
+                    // 重置下载状态
+                    this.setData({
+                        downloadingFileIndex: -1
+                    });
+                    
+                    wx.openDocument({
+                        filePath: res.tempFilePath,
+                        fileType: fileType,
+                        showMenu: true,
+                        success: () => {
+                            wx.showToast({
+                                title: '打开文档成功',
+                                icon: 'success'
+                            });
+                        },
+                        fail: (error) => {
+                            console.error('打开文档失败：', error);
+                            wx.showToast({
+                                title: '打开文档失败',
+                                icon: 'none'
+                            });
+                        },
+                    });
+                } else {
+                    // 隐藏加载提示
+                    wx.hideLoading();
+                    // 重置下载状态
+                    this.setData({
+                        downloadingFileIndex: -1
+                    });
+                    wx.showToast({
+                        title: '下载文档失败',
+                        icon: 'none'
+                    });
+                }
+            },
+            fail: (error) => {
+                console.error('下载文档失败：', error);
+                // 隐藏加载提示
+                wx.hideLoading();
+                // 重置下载状态
+                this.setData({
+                    downloadingFileIndex: -1
+                });
+                wx.showToast({
+                    title: '下载文档失败',
+                    icon: 'none'
+                });
+            },
+        });
+    },
+    
     onPreviousPage() {
         const { pageNum } = this.data;
         if (pageNum > 1) {

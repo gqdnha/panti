@@ -73,6 +73,21 @@
     margin-top: 5rpx;
 }
 
+/* 下载中状态 */
+.law-list-item.downloading {
+    opacity: 0.7;
+    background-color: #f0f8ff;
+}
+
+.loading-text {
+    color: #0066cc;
+    font-size: 24rpx;
+    margin-top: 8rpx;
+    font-weight: bold;
+}
+
+
+
 /* 分页按钮 */
 .pagination {
     position: fixed;
