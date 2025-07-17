@@ -56,6 +56,9 @@
             <view class="card-desc">查看各部门数据</view>
         </view>
 
-        
+        <view class="function-card" bindtap="goToDepartmentManage">
+            <view class="card-title">部门管理</view>
+            <view class="card-desc">管理和维护部门信息</view>
+        </view>
     </view>
 </view>

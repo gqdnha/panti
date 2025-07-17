@@ -1,0 +1,128 @@
+.container {
+  min-height: 100vh;
+  background: #f7faff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 60rpx 24rpx;
+}
+.title {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #1E4B92;
+  margin-bottom: 40rpx;
+}
+.desc {
+  font-size: 32rpx;
+  color: #666;
+  text-align: center;
+}
+.dept-list {
+  width: 100%;
+  margin-top: 40rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 32rpx;
+}
+.dept-item {
+  background: #fff;
+  border-radius: 16rpx;
+  border: 1rpx solid #e6ecfa;
+  box-shadow: 0 4rpx 16rpx rgba(30,75,146,0.08);
+  padding: 32rpx 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  box-sizing: border-box;
+}
+.dept-info {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+.dept-name {
+  font-size: 36rpx;
+  font-weight: 600;
+  color: #1E4B92;
+}
+.dept-status {
+  font-size: 26rpx;
+  color: #888;
+}
+.dept-actions {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 20rpx;
+  align-items: center;
+  justify-content: center;
+  margin-top: 16rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+.action-btn {
+  min-width: 100rpx;
+  max-width: 40vw;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex: 1 1 120rpx;
+  background: #1E4B92;
+  color: #fff;
+  border: none;
+  border-radius: 24rpx;
+  padding: 12rpx 36rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  box-shadow: 0 2rpx 8rpx rgba(30,75,146,0.08);
+  transition: background 0.2s;
+}
+.action-btn.auth {
+  background: #3A7BD5;
+}
+.action-btn:active {
+  background: #163366;
+}
+.search-bar {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 16rpx;
+  margin: 32rpx 0 0 0;
+}
+.search-input {
+  flex: 1;
+  min-width: 0;
+  height: 64rpx;
+  border: 1rpx solid #e6ecfa;
+  border-radius: 32rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  background: #fff;
+  color: #222;
+  box-sizing: border-box;
+}
+.search-btn {
+  background: #1E4B92;
+  color: #fff;
+  border: none;
+  border-radius: 32rpx;
+  padding: 0 36rpx;
+  height: 64rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  box-shadow: 0 2rpx 8rpx rgba(30,75,146,0.08);
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.search-btn:active {
+  background: #163366;
+} 

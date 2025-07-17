@@ -176,5 +176,10 @@ Page({
         wx.navigateTo({
             url: '/pages/admin/phone-manage/index'
         });
+    },
+    goToDepartmentManage() {
+        wx.navigateTo({
+            url: '/pages/admin/department-manage/index'
+        });
     }
 })

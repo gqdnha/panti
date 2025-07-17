@@ -2,6 +2,7 @@
     min-height: 100vh;
     /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #b4f8ed 100%); */
     /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%); */
+    background: linear-gradient(135deg, #1E4B92 0%, #3A7BD5 100%);
     padding: 0rpx;
     position: relative;
     display: flex;
@@ -60,11 +61,11 @@
 }
 
 .function-card {
-    background: rgba(255, 255, 255, 0.15);
+    background: #fff;
+    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
     border-radius: 16rpx;
     padding: 32rpx;
     box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(8px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     transition: all 0.3s ease;
     display: flex;
@@ -295,4 +296,16 @@ button {
 
 button::after {
     border: none;
+}
+
+.stats-card, .function-card {
+    background: #fff;
+    border-radius: 20rpx;
+    border: 1rpx solid #e6ecfa;
+    box-shadow: 0 8rpx 32rpx rgba(30,75,146,0.10), 0 1rpx 4rpx rgba(30,75,146,0.08);
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+.stats-card:active, .function-card:active {
+    box-shadow: 0 12rpx 40rpx rgba(30,75,146,0.16), 0 2rpx 8rpx rgba(30,75,146,0.12);
+    transform: translateY(-4rpx) scale(1.02);
 }

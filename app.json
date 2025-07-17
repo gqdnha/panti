@@ -23,7 +23,8 @@
     "pages/userPages/oneWrongBook_type/ontWrongBook_type",
     "pages/setting/setting",
     "pages/admin/phone-manage/index",
-    "pages/admin/apartmentEcharts/apartmentEcharts"
+    "pages/admin/apartmentEcharts/apartmentEcharts",
+    "pages/admin/department-manage/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

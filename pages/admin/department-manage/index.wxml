@@ -1,0 +1,22 @@
+<view class="container">
+  <view class="title">部门管理</view>
+  <view class="desc">可对部门进行停用/启用和授权操作</view>
+  <view class="search-bar">
+    <input class="search-input" placeholder="搜索部门名称" value="{{searchKeyword}}" bindinput="onSearchInput" />
+    <button class="search-btn" bindtap="onSearch">搜索</button>
+  </view>
+  <view class="dept-list">
+    <block wx:for="{{departments}}" wx:key="id">
+      <view class="dept-item">
+        <view class="dept-info">
+          <text class="dept-name">{{item.name}}</text>
+          <text class="dept-status">{{item.active ? '已启用' : '已停用'}}</text>
+        </view>
+        <view class="dept-actions">
+          <button class="action-btn" bindtap="toggleDeptStatus" data-id="{{item.id}}">{{item.active ? '停用' : '启用'}}</button>
+          <button class="action-btn auth" bindtap="authDept" data-id="{{item.id}}">授权</button>
+        </view>
+      </view>
+    </block>
+  </view>
+</view> 
