@@ -17,17 +17,23 @@
 
     <!-- 学习统计 -->
     <view class="stats-section">
-        <view class="stats-item">
-            <view class="stats-value">{{studyStats.totalQuestions}}</view>
-            <view class="stats-label">完成题数</view>
+        <view class="stats-row">
+            <view class="stats-item">
+                <view class="stats-value">{{studyStats.totalQuestions}}</view>
+                <view class="stats-label">完成题数</view>
+            </view>
+            <view class="stats-v-divider"></view>
+            <view class="stats-item">
+                <view class="stats-value">{{studyStats.correctRate}}%</view>
+                <view class="stats-label">正确率</view>
+            </view>
         </view>
-        <view class="stats-item">
-            <view class="stats-value">{{studyStats.correctRate}}%</view>
-            <view class="stats-label">正确率</view>
-        </view>
-        <view class="stats-item">
-            <view class="stats-value">{{studyTime}}</view>
-            <view class="stats-label">学习时长(分钟)</view>
+        <view class="stats-h-divider"></view>
+        <view class="stats-row">
+            <view class="stats-item stats-center">
+                <view class="stats-value">{{studyTimeFormatted}}</view>
+                <view class="stats-label">学习时长(分钟)</view>
+            </view>
         </view>
     </view>
 

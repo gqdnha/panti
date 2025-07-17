@@ -13,7 +13,8 @@ Page({
             totalQuestions: 0,
             correctRate: '',
         },
-        studyTime:0,
+        studyTime: 0,
+        studyTimeFormatted: '',
     },
 
     /**
@@ -22,16 +23,22 @@ Page({
     onLoad(options) {
         this.getUserInfo();
         this.getStudyStats();
-        this.getUserLearnTime()
+        this.getUserLearnTime();
     },
     getUserLearnTime() {
         // const learnTime = wx.getStorageSync('learnTime');
         getLearnTime().then(res => {
             console.log(res);
             this.setData({
-                'studyTime': res
+                'studyTime': res,
+                'studyTimeFormatted': this.formatTime(res)
             });
         })
+    },
+    formatTime(minutes) {
+        const h = Math.floor(minutes / 60);
+        const m = minutes % 60;
+        return `${h}小时${m}分钟`;
     },
 
     /**
@@ -45,7 +52,7 @@ Page({
      * 生命周期函数--监听页面显示
      */
     onShow() {
-        this.getUserLearnTime()
+        this.getUserLearnTime();
         if (typeof this.getTabBar === 'function' && this.getTabBar()) {
             this.getTabBar().setData({
                 selected: 1

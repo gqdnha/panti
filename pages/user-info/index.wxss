@@ -188,50 +188,70 @@
 
 /* 学习统计 */
 .stats-section {
-    background: #fff;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-    border: 1px solid #e6ecfa;
-    border-radius: 16rpx;
-    padding: 40rpx;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 16rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 8rpx 32rpx rgba(30,75,146,0.10), 0 1rpx 4rpx rgba(30,75,146,0.08);
+  border: 1rpx solid #e6ecfa;
+  padding: 32rpx 0;
+  width: 95%;
+  margin: 0 auto;
 }
-
+.stats-row {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
 .stats-item {
-    text-align: center;
-    border-right: 1rpx solid #e6ecfa;
+  flex: 1;
+  text-align: center;
 }
-.stats-item:last-child {
-    border-right: none;
+.stats-center {
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
-
-.stats-value {
-    font-size: 40rpx;
-    font-weight: 600;
-    color: #0f172a;
-    margin-bottom: 8rpx;
-    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+.stats-v-divider {
+  width: 1rpx;
+  height: 48rpx;
+  background: #e6ecfa;
+  margin: 0 32rpx;
 }
-
-.stats-label {
-    font-size: 24rpx;
-    color: #64748b;
-}
-
-.stats-divider {
-    width: 1rpx;
-    background: #e6ecfa;
-    margin: 0 0.5em;
-    height: 60rpx;
-    align-self: center;
-    display: inline-block;
+.stats-h-divider {
+  width: 100%;
+  height: 1rpx;
+  background: #e6ecfa;
+  margin: 16rpx 0;
 }
 
 /* 移除.stats-row、.stats-v-divider、.stats-h-divider样式 */
-.stats-row {}
-.stats-v-divider {}
-.stats-h-divider {}
+.stats-row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.stats-v-divider {
+    width: 1rpx;
+    height: 48rpx;
+    background: #e6ecfa;
+    margin: 0 32rpx;
+}
+.stats-h-divider {
+    width: 100%;
+    height: 1rpx;
+    background: #e6ecfa;
+    margin: 16rpx 0;
+}
+.stats-center {
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
 /* 功能列表 */
 .function-list {
