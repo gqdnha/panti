@@ -2,6 +2,7 @@ import { getAllUserInfo } from '../../../api/admin'
 import {getUserInfo} from '../../../api/getUserInfo'
 import { getUserDailyFinish } from '../../../api/getDeilyFinash'
 import { request } from '../../../api/request'
+import {downLoadUserText} from '../../../api/downLoadUserText'
 
 Page({
     data: {
@@ -201,6 +202,13 @@ Page({
         wx.navigateTo({
             url: `/pages/userPages/oneWrongBook/ontWrongBook?id=${currentUserId}`
         });
+    },
+    // 新增导出
+    downLoadUserText(){
+        downLoadUserText().then(res => {
+            console.log(res);
+            // console.log('111');
+        })
     },
 
     goToOneDaily(e) {

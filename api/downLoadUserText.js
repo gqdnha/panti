@@ -1,12 +1,11 @@
-// 获取错题数量
 import { request } from "./request";
 import {getUserId} from './getUserId'
-export const getWrongCount = () => {
+// 导出个人记录
+export const downLoadUserText = () => {
     const userId = getUserId()
     // console.log(data);
     return request({
-        url: `/wrongQuestion/getWrongQuestionCount?userId=${userId}`,
+        url: `/exportUserExcel?userId=${userId}`,
         method: 'GET',
     });
 };
-

@@ -77,6 +77,11 @@
                         <text class="btn-text">错题本</text>
                     </button>
                 </view>
+                <view class="function-item" bindtap="downLoadUserText">
+                    <button class="action-btn wrong-book">
+                        <text class="btn-text">导出</text>
+                    </button>
+                </view>
                 <!-- <view class="function-item" bindtap="goToOneDaily">
                     <button class="action-btn daily-practice">
                         <text class="btn-text">每日练习</text>
