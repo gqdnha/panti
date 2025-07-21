@@ -2,6 +2,7 @@
 import { getUserInfo } from '../../api/getUserInfo'
 import { setupTabBar } from '../../utils/tabBar';
 import {getLearnTime} from '../../api/getLearnTime'
+import {getWrongCount} from '../../api/getWrongCount'
 Page({
 
     /**
@@ -15,6 +16,7 @@ Page({
         },
         studyTime: 0,
         studyTimeFormatted: '',
+        wrongBookCount:''
     },
 
     /**
@@ -24,6 +26,16 @@ Page({
         this.getUserInfo();
         this.getStudyStats();
         this.getUserLearnTime();
+        this.getWrongCountApi()
+    },
+    // 获取错题数量
+    getWrongCountApi() {
+        getWrongCount().then(res => {
+            console.log(res,'111');
+            this.setData({
+                wrongBookCount :res
+            })
+        })
     },
     getUserLearnTime() {
         // const learnTime = wx.getStorageSync('learnTime');

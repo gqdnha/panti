@@ -374,3 +374,8 @@
 .logout-btn::after {
     border: none;
 }    
+/* 错题数设置 */
+.wrongCount {
+    margin-top: 5rpx;
+    color: rgb(0, 0, 0);
+}
