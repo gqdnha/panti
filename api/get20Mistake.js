@@ -3,7 +3,7 @@ import {
 } from "./request";
 export const get20Mistake = () => {
     return request({
-        url: `/question/get20HighWrongQuestion`,
+        url: `/question/get50HighWrongQuestion`,
         method: 'GET',
     });
 };
