@@ -1,4 +1,13 @@
 <view class="container">
+    <!-- 禁用按钮 -->
+    <view style="width:100%;display:flex;justify-content:flex-end;margin-bottom:16rpx;">
+        <button class="btn batch-disable-btn" bindtap="onBatchDisable">禁用</button>
+    </view>
+
+    <!-- 批量禁用保存按钮 -->
+    <view style="width:100%;display:flex;justify-content:flex-end;margin-top:16rpx;" wx:if="{{showCheckbox}}">
+        <button class="btn batch-disable-btn" bindtap="onConfirmBatchDisable">保存</button>
+    </view>
 
     <!-- 搜索框 -->
     <view class="search-box">

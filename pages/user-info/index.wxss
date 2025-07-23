@@ -210,8 +210,8 @@
     box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
     border: none;
     padding: 36rpx 0;
-    width: 95%;
-    margin: 0 auto;
+  width: 95%;
+  margin: 0 auto;
 }
 .stats-row {
   display: flex;

@@ -3,6 +3,7 @@ import {getUserInfo} from '../../../api/getUserInfo'
 import { getUserDailyFinish } from '../../../api/getDeilyFinash'
 import { request } from '../../../api/request'
 import {downLoadUserText} from '../../../api/downLoadUserText'
+import { unuseUser } from '../../../api/apartmentAdmin'
 
 Page({
     data: {
@@ -26,7 +27,9 @@ Page({
             department: ''
         },
         dailyFinishData: null, // 每日练习完成情况
-        loadingDailyFinish: false // 加载每日练习完成情况的状态
+        loadingDailyFinish: false, // 加载每日练习完成情况的状态
+        showCheckbox: false,
+        selectedUserIds: [],
     },
 
     onLoad(options) {
@@ -237,5 +240,46 @@ Page({
                 icon: 'none'
             });
         });
+    },
+    onBatchDisable() {
+        this.setData({ showCheckbox: !this.data.showCheckbox });
+        if (!this.data.showCheckbox) {
+            this.setData({ selectedUserIds: [] });
+        }
+    },
+    onCheckboxChange(e) {
+        const userId = e.currentTarget.dataset.userid;
+        let selected = this.data.selectedUserIds.slice();
+        if (e.detail.value.length > 0) {
+            if (selected.indexOf(userId) === -1) selected.push(userId);
+        } else {
+            selected = selected.filter(id => id !== userId);
+        }
+        this.setData({ selectedUserIds: selected });
+    },
+    async onConfirmBatchDisable() {
+        const ids = this.data.selectedUserIds;
+        if (!ids.length) {
+            wx.showToast({ title: '请先选择要禁用的用户', icon: 'none' });
+            return;
+        }
+        try {
+            await unuseUser(ids.join(','));
+            wx.showToast({ title: '批量禁用成功', icon: 'success' });
+            this.setData({ showCheckbox: false, selectedUserIds: [] });
+            this.loadUserStats();
+        } catch (e) {
+            wx.showToast({ title: '禁用失败', icon: 'none' });
+        }
+    },
+    async onDisableUser(e) {
+        const userId = e.currentTarget.dataset.id;
+        try {
+            await unuseUser(userId);
+            wx.showToast({ title: '禁用成功', icon: 'success' });
+            this.loadUserStats();
+        } catch (e) {
+            wx.showToast({ title: '禁用失败', icon: 'none' });
+        }
     },
 });

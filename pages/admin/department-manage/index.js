@@ -1,23 +1,25 @@
+import { getApartmentList } from '../../../api/apartmentAdmin'
+
 Page({
   data: {
     searchKeyword: '',
-    departments: [
-      { id: 1, name: '人事部', active: true },
-      { id: 2, name: '技术部', active: true },
-      { id: 3, name: '财务部', active: false }
-    ],
-    allDepartments: [
-      { id: 1, name: '人事部', active: true },
-      { id: 2, name: '技术部', active: true },
-      { id: 3, name: '财务部', active: false }
-    ]
+    departments: [],
+    allDepartments: []
+  },
+  onLoad() {
+    // 页面加载时获取部门列表
+    getApartmentList().then(res => {
+      // 假设res为部门数组，字段有id、name、active
+      this.setData({
+        departments: res,
+        allDepartments: res
+      });
+    });
   },
   onSearchInput(e) {
     this.setData({ searchKeyword: e.detail.value });
   },
   onSearch() {
-    // 这里预留后端接口对接
-    // wx.request({ url: '/api/department/search', data: { keyword: this.data.searchKeyword }, ... })
     const keyword = this.data.searchKeyword.trim();
     if (!keyword) {
       this.setData({ departments: this.data.allDepartments });
