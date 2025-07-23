@@ -54,18 +54,18 @@
     <view class="function-content">
         <view class="function-content-row">
             <view class="dailyTest" bindtap="goToDailyPractice" data-option="{{dailyOptions[0]}}">
-                <image class="module-icon" src="/assets/icons/每日练习.png"></image>
+                <image class="module-icon" src="/assets/icons/每日练习fff.png"></image>
                 <text class="module-name">每日练习</text>
                 <view class="startTest">开始练习</view>
             </view>
             <view class="function-content-right">
 
                 <view class="orderTest" bindtap="goToTopicalPractice" data-category="法律法规">
-                    <image class="module-icon" src="/assets/icons/专题练习.png"></image>
+                    <image class="module-icon" src="/assets/icons/专题练习fff.png"></image>
                     <text class="module-name">专题练习</text>
                 </view>
                 <view class="functionLaw" bindtap="goToResources" data-category="法律法规">
-                    <image class="module-icon" src="/assets/icons/法律法规.png"></image>
+                    <image class="module-icon" src="/assets/icons/法律法规fff.png"></image>
                     <text class="module-name">学习资料</text>
                 </view>
             </view>

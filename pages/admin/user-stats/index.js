@@ -29,7 +29,7 @@ Page({
         dailyFinishData: null, // 每日练习完成情况
         loadingDailyFinish: false, // 加载每日练习完成情况的状态
         showCheckbox: false,
-        selectedUserIds: [],
+        selectedUserIds: [], // 初始为空，默认都不选中
     },
 
     onLoad(options) {
@@ -241,21 +241,28 @@ Page({
             });
         });
     },
+    // 点击禁用按钮，显示复选框
     onBatchDisable() {
-        this.setData({ showCheckbox: !this.data.showCheckbox });
-        if (!this.data.showCheckbox) {
-            this.setData({ selectedUserIds: [] });
-        }
+        this.setData({
+            showCheckbox: true,
+            selectedUserIds: [] // 每次点禁用都清空
+        });
     },
+
+    // 复选框选中变化
     onCheckboxChange(e) {
-        const userId = e.currentTarget.dataset.userid;
-        let selected = this.data.selectedUserIds.slice();
-        if (e.detail.value.length > 0) {
-            if (selected.indexOf(userId) === -1) selected.push(userId);
-        } else {
-            selected = selected.filter(id => id !== userId);
+      const userId = String(e.currentTarget.dataset.userid);
+      console.log('点击的用户ID:', userId); // 打印当前点击的用户ID
+
+      let selectedUserIds = this.data.selectedUserIds.slice();
+      if (e.detail.value) {
+        if (selectedUserIds.indexOf(userId) === -1) {
+          selectedUserIds.push(userId);
         }
-        this.setData({ selectedUserIds: selected });
+      } else {
+        selectedUserIds = selectedUserIds.filter(id => id !== userId);
+      }
+      this.setData({ selectedUserIds });
     },
     async onConfirmBatchDisable() {
         const ids = this.data.selectedUserIds;

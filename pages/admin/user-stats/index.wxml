@@ -3,12 +3,10 @@
     <view style="width:100%;display:flex;justify-content:flex-end;margin-bottom:16rpx;">
         <button class="btn batch-disable-btn" bindtap="onBatchDisable">禁用</button>
     </view>
-
     <!-- 批量禁用保存按钮 -->
     <view style="width:100%;display:flex;justify-content:flex-end;margin-top:16rpx;" wx:if="{{showCheckbox}}">
         <button class="btn batch-disable-btn" bindtap="onConfirmBatchDisable">保存</button>
     </view>
-
     <!-- 搜索框 -->
     <view class="search-box">
         <input type="text" placeholder="请输入姓名进行查询" bindinput="onSearchInput" value="{{searchKeyword}}" />
@@ -37,6 +35,7 @@
                         <view class="btn edit" bindtap="viewDetail" data-id="{{item.user_id}}">详情</view>
                         <!-- <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view> -->
                     </td>
+                    <checkbox wx:if="{{showCheckbox}}" value="{{item.user_id}}" checked="{{selectedUserIds.indexOf(item.user_id) !== -1}}" bindchange="onCheckboxChange" data-userid="{{item.user_id}}" />
                 </tr>
             </tbody>
         </table>
@@ -46,7 +45,6 @@
         <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
         <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
     </view>
-
     <!-- 用户详情弹窗 -->
     <view class="user-detail-modal-mask" wx:if="{{showUserDetailModal}}" bindtap="closeUserDetailModal"></view>
     <view class="user-detail-modal-container" wx:if="{{showUserDetailModal}}">
@@ -78,11 +76,12 @@
                 </view>
                 <view class="user-detail-item">
                     <label>每日练习完成情况</label>
-                    <text class="info-text {{dailyFinishData === '未完成' ? 'status-incomplete' : ''}}" wx:if="{{!loadingDailyFinish && dailyFinishData}}">{{dailyFinishData}}</text>
+                    <text class="info-text {{dailyFinishData === '未完成' ? 'status-incomplete' : ''}}" wx:if="{{!loadingDailyFinish && dailyFinishData}}">
+                        {{dailyFinishData}}
+                    </text>
                 </view>
             </view>
-            
-            <view class="action-buttons"> 
+            <view class="action-buttons">
                 <view class="function-item" bindtap="goToOneWrongBook">
                     <button class="action-btn wrong-book">
                         <text class="btn-text">错题本</text>

@@ -11,7 +11,7 @@ page {
     flex-direction: column;
     align-items: center;
     justify-content: start;
-    background: linear-gradient(135deg, #1E3A6D 0%, #2563A6 100%); /* 执法蓝渐变 */
+    /* background: linear-gradient(135deg, #1E3A6D 0%, #2563A6 100%); 执法蓝渐变 */
     position: relative;
     overflow: hidden;
     padding-top: 30rpx;
@@ -34,7 +34,7 @@ page {
 /* 顶部用户信息 */
 .user-detail {
     width: 100vw;
-    color: #fff;
+    color: rgb(0, 0, 0);
     padding: 30rpx 30rpx 10rpx 30rpx;
     box-sizing: border-box;
     background: transparent;
@@ -51,14 +51,14 @@ page {
     font-size: 40px;
     font-weight: 500;
     text-align: center;
-    color: #fff;
+    /* color: #fff; */
 }
 
 .welcomName {
     text-align: center;
     font-size: 30px;
     font-weight: 300;
-    color: #fff;
+    /* color: rgb(0, 0, 0); */
 }
 
 /* 学习时长 */
@@ -77,8 +77,12 @@ page {
     align-items: center;
     width: 180rpx;
     height: 180rpx;
-    background: rgba(255,255,255,0.90);
-    border: 1px solid rgba(255, 255, 255, 0.4);
+    padding: 15rpx;
+    color: #fff;
+    /* background: rgba(255,255,255,0.90); */
+    /* background-color: #3EBEFA; */
+    background: linear-gradient(135deg, #42C3FC ,#2CA2FC, #137CFB);
+    /* border: 1px solid rgba(255, 255, 255, 0.4); */
     border-radius: 36rpx;
     box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
     transition: all 0.3s cubic-bezier(.25,.8,.25,1);
@@ -92,7 +96,7 @@ page {
 
 .studyName {
     font-size: 24rpx;
-    color: #2563A6;
+    /* color: #2563A6; */
     text-align: center;
     margin-top: 8rpx;
     font-weight: 500;
@@ -100,9 +104,9 @@ page {
 
 .studyValue {
     font-size: 36rpx;
-    color: #1E3A6D;
+    /* color: #1E3A6D; */
     text-align: center;
-    font-weight: 600;
+    /* font-weight: 500; */
     text-shadow: 0 2rpx 4rpx rgba(30, 58, 109, 0.10);
 }
 
@@ -141,7 +145,10 @@ page {
     justify-content: center;
     border-radius: 32rpx;
     box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.16), 0 1rpx 4rpx rgba(30, 58, 109, 0.10);
-    background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%);
+    /* background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%); */
+    /* background: linear-gradient(135deg, rgb(195, 255, 252) 60%, #e6f4fa 100%); */
+    background: #1F3F73 ;
+    color: #fff;
     border: none;
     transition: box-shadow 0.2s, transform 0.2s;
 }
@@ -172,8 +179,9 @@ page {
 
 .module-name {
     font-size: 38rpx;
-    font-weight: 700;
-    color: #1E3A6D;
+    font-weight: 500;
+    /* color: #1E3A6D; */
+    /* color: #fff; */
     text-align: center;
     margin-bottom: 8rpx;
     letter-spacing: 1rpx;
