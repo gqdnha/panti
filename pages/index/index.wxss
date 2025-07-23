@@ -2,25 +2,43 @@ page {
     padding: 0;
     margin: 0;
     height: 100vh;
-
 }
 
 .container {
     min-height: 100vh;
-    padding: 0;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: start;
-    background: linear-gradient(135deg, #1E4B92 0%, #3A7BD5 100%);
+    background: linear-gradient(135deg, #1E3A6D 0%, #2563A6 100%); /* 执法蓝渐变 */
+    position: relative;
+    overflow: hidden;
+    padding-top: 30rpx;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* 顶部用户信息 */
 .user-detail {
     width: 100vw;
-    color: rgb(0, 0, 0);
-    padding: 30rpx 30rpx;
+    color: #fff;
+    padding: 30rpx 30rpx 10rpx 30rpx;
     box-sizing: border-box;
-    /* background: linear-gradient(135deg, #ff7373, #357abd); */
+    background: transparent;
+    text-shadow: 0 2rpx 8rpx rgba(30,58,109,0.10);
 }
 
 .welcomeBox {
@@ -33,12 +51,14 @@ page {
     font-size: 40px;
     font-weight: 500;
     text-align: center;
+    color: #fff;
 }
 
 .welcomName {
     text-align: center;
     font-size: 30px;
     font-weight: 300;
+    color: #fff;
 }
 
 /* 学习时长 */
@@ -50,7 +70,6 @@ page {
     justify-content: space-between;
 }
 
-
 .study-item {
     display: flex;
     flex-direction: column;
@@ -58,21 +77,22 @@ page {
     align-items: center;
     width: 180rpx;
     height: 180rpx;
-    background: #fff;
+    background: rgba(255,255,255,0.90);
     border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 30rpx;
-    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
-    transition: all 0.3s ease;
+    border-radius: 36rpx;
+    box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+    margin-bottom: 10rpx;
 }
 
 .study-item:active {
-    transform: scale(0.95);
-    background: rgba(255, 255, 255, 0.25);
+    transform: scale(0.97);
+    background: rgba(255, 255, 255, 0.8);
 }
 
 .studyName {
     font-size: 24rpx;
-    color: #4a546b;
+    color: #2563A6;
     text-align: center;
     margin-top: 8rpx;
     font-weight: 500;
@@ -80,10 +100,10 @@ page {
 
 .studyValue {
     font-size: 36rpx;
-    color: #2c3e50;
+    color: #1E3A6D;
     text-align: center;
     font-weight: 600;
-    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2rpx 4rpx rgba(30, 58, 109, 0.10);
 }
 
 .total-count {
@@ -93,13 +113,12 @@ page {
 }
 
 /* 功能模块 */
-
 .function-content {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 30rpx;
+    margin-top: 40rpx;
 }
 
 .function-content-row {
@@ -108,154 +127,110 @@ page {
 }
 
 .function-content-right {
-    margin-left: 20rpx;
+    margin-left: 24rpx;
+    display: flex;
+    flex-direction: column;
+    gap: 24rpx;
 }
 
+.dailyTest, .orderTest, .functionLaw {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 32rpx;
+    box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.16), 0 1rpx 4rpx rgba(30, 58, 109, 0.10);
+    background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%);
+    border: none;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
 
 .dailyTest {
-    position: relative;
     width: 250rpx;
     height: 450rpx;
-    /* background: linear-gradient(to bottom, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) ); */
-    background: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
-
+    margin-right: 0;
+    margin-bottom: 0;
 }
 
-/* 每日练习-按钮 */
-.startTest {
-    font-size: 25rpx;
-    height: 50rpx;
-    width: 150rpx;
-    text-align: center;
-    line-height: 50rpx;
-    border-radius: 30rpx;
-    background-color: #1E4B92;
-    color: #fff;
-    position: absolute;
-    bottom: 50rpx;
-}
-
-.orderTest {
+.orderTest, .functionLaw {
     width: 390rpx;
     height: 210rpx;
-    /* background: linear-gradient(to right, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) ); */
-    background: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
-
 }
 
-.functionLaw {
-    width: 390rpx;
-    height: 210rpx;
-    margin-top: 20rpx;
-    /* background: linear-gradient(to right, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) ); */
-    background: #fff;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    border-radius: 20rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.1);
-
+.dailyTest:active, .orderTest:active, .functionLaw:active {
+    box-shadow: 0 12rpx 40rpx rgba(30, 58, 109, 0.22), 0 2rpx 8rpx rgba(30, 58, 109, 0.14);
+    transform: translateY(-4rpx) scale(1.03);
 }
-
-/* 大条 */
-/* .functionLaw {
-    margin-top: 20rpx;
-    width: 660rpx;
-    height: 220rpx;
-    background: linear-gradient(to bottom, rgba(151, 246, 223,.4) ,  rgb(6, 197, 149,.9) );
-    border-radius: 20rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-} */
-
-
-
-.question-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20rpx;
-}
-
-
-/* .module-item:active {
-    background-color: #e6f0ff;
-} */
 
 .module-icon {
-    width: 80rpx;
-    height: 80rpx;
-    margin-bottom: 10rpx;
-    color: #4a546b;
-
+    width: 100rpx;
+    height: 100rpx;
+    margin-bottom: 18rpx;
+    color: #2563A6;
 }
 
 .module-name {
-    font-size: 35rpx;
-    font-weight: 600;
-    /* color: #fff; */
-    color: #4a546b;
-
+    font-size: 38rpx;
+    font-weight: 700;
+    color: #1E3A6D;
     text-align: center;
+    margin-bottom: 8rpx;
+    letter-spacing: 1rpx;
+}
+
+.startTest {
+    font-size: 28rpx;
+    height: 60rpx;
+    width: 160rpx;
+    text-align: center;
+    line-height: 60rpx;
+    border-radius: 32rpx;
+    background: linear-gradient(90deg, #2563A6 0%, #1E3A6D 100%);
+    color: #fff;
+    position: absolute;
+    bottom: 44rpx;
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: 600;
+    box-shadow: 0 4rpx 16rpx rgba(30, 58, 109, 0.13);
+    letter-spacing: 1rpx;
 }
 
 /* 公告组件样式 */
 .notice-container {
-    margin-top: 30rpx;
+    /* margin-top: 30rpx; */
     width: 100%;
     background: linear-gradient(to right, #fff5f5, #fff);
     padding: 10rpx 30rpx;
     box-sizing: border-box;
     margin-bottom: 0;
     border-bottom: 1rpx solid #ffecec;
+    border-radius: 0 0 18rpx 18rpx;
+    box-shadow: 0 2rpx 8rpx rgba(30, 58, 109, 0.06);
 }
-
-/* 未完成状态的样式 */
 .notice-container.not-finished {
     background: linear-gradient(to right, #fff5f5, #fff);
     border-bottom: 1rpx solid #ffecec;
 }
-
-/* 已完成状态的样式 */
 .notice-container:not(.not-finished) {
     background: linear-gradient(to right, #e6f7ff, #fff);
     border-bottom: 1rpx solid #e6f7ff;
 }
-
 .notice-content {
     display: flex;
     align-items: center;
     height: 50rpx;
 }
-
 .notice-icon {
     width: 36rpx;
     height: 36rpx;
     margin-right: 16rpx;
 }
-
 .notice-swiper {
     flex: 1;
     height: 50rpx;
 }
-
 .notice-text {
     font-size: 26rpx;
     line-height: 50rpx;
@@ -263,25 +238,9 @@ page {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-
-/* 已完成状态文字颜色 */
 .notice-text.finished {
     color: #1890ff;
 }
-
-/* 未完成状态文字颜色 */
 .notice-text.not-finished {
     color: #ff4d4f;
-}
-
-.study-item, .dailyTest, .orderTest, .functionLaw {
-    background: #fff;
-    border-radius: 20rpx;
-    border: 1rpx solid #e6ecfa;
-    box-shadow: 0 8rpx 32rpx rgba(30,75,146,0.10), 0 1rpx 4rpx rgba(30,75,146,0.08);
-    transition: box-shadow 0.2s, transform 0.2s;
-}
-.study-item:active, .dailyTest:active, .orderTest:active, .functionLaw:active {
-    box-shadow: 0 12rpx 40rpx rgba(30,75,146,0.16), 0 2rpx 8rpx rgba(30,75,146,0.12);
-    transform: translateY(-4rpx) scale(1.02);
 }
