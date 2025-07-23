@@ -495,3 +495,11 @@ button::after {
 .info-text {
     margin-left: 10rpx;
 }
+
+.user-phone-small {
+    font-size: 24rpx;
+    color: #888;
+    line-height: 1.2;
+    margin-top: 2rpx;
+    word-break: break-all;
+}

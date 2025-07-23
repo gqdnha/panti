@@ -18,3 +18,12 @@ export const unuseUser = (data) => {
         method: 'GET',
     });
 }
+// 获取部门列表
+
+export const getApartmentList = () => {
+    const userId = getUserId()
+    return request({
+        url: `/mange/getDepartmentList?userId=${userId}`,
+        method: 'GET',
+    });
+}
