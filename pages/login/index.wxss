@@ -1,9 +1,10 @@
+/* 背景执法蓝，整体更美观现代 */
 .container {
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    background: linear-gradient(135deg, #1E3A6D 0%, #2563A6 100%); /* 执法蓝渐变 */
     position: relative;
     overflow: hidden;
     padding-top: 15vh;
@@ -14,17 +15,13 @@
     position: absolute;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 60%);
+    background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 70%);
     animation: rotate 20s linear infinite;
 }
 
 @keyframes rotate {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .welcome-text {
@@ -34,74 +31,65 @@
 }
 
 .welcome-title {
-    font-size: 56rpx;
+    font-size: 60rpx;
     font-weight: bold;
-    color: #333;
-    margin-bottom: 20rpx;
-    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+    color: #fff;
+    margin-bottom: 16rpx;
+    text-shadow: 0 4rpx 12rpx rgba(30,58,109,0.18);
+    letter-spacing: 2rpx;
 }
 
 .welcome-subtitle {
     font-size: 32rpx;
-    color: #666;
-    opacity: 0.8;
+    color: #e0e7ef;
+    opacity: 0.95;
+    letter-spacing: 1rpx;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20rpx);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(-20rpx); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .login-box {
     width: 85%;
     padding: 50rpx 40rpx;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 30rpx;
-    box-shadow: 0 8rpx 32rpx rgba(31, 38, 135, 0.15);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.18);
+    border-radius: 36rpx;
+    box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.18);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1.5px solid rgba(255, 255, 255, 0.22);
     position: relative;
     z-index: 1;
     animation: slideUp 0.5s ease-out;
 }
 
 @keyframes slideUp {
-    from {
-        transform: translateY(50rpx);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    from { transform: translateY(50rpx); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
 .title {
-    font-size: 44rpx;
+    font-size: 48rpx;
     font-weight: bold;
     text-align: center;
     margin-bottom: 60rpx;
-    color: #333;
+    color: #1E3A6D;
     position: relative;
-    text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
+    text-shadow: 0 2rpx 8rpx rgba(30, 58, 109, 0.10);
+    letter-spacing: 2rpx;
 }
 
 .title::after {
     content: '';
     position: absolute;
-    bottom: -20rpx;
+    bottom: -18rpx;
     left: 50%;
     transform: translateX(-50%);
     width: 60rpx;
     height: 6rpx;
-    background: linear-gradient(90deg, #a8edea 0%, #fed6e3 100%);
+    background: linear-gradient(90deg, #3A7BD5 0%, #1E4B92 100%);
     border-radius: 3rpx;
 }
 
@@ -114,42 +102,45 @@
     width: 100%;
     height: 100rpx;
     padding: 0 40rpx;
-    border: 2rpx solid rgba(255, 255, 255, 0.2);
+    border: 2rpx solid rgba(30, 58, 109, 0.10);
     border-radius: 50rpx;
     font-size: 30rpx;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.28);
+    color: #1E3A6D;
     transition: all 0.3s ease;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    font-weight: 500;
 }
 
 .input-group input:focus {
-    border-color: rgba(168, 237, 234, 0.4);
-    box-shadow: 0 0 20rpx rgba(168, 237, 234, 0.2);
-    background: rgba(255, 255, 255, 0.3);
+    border-color: #3A7BD5;
+    box-shadow: 0 0 20rpx #3A7BD5;
+    background: rgba(255, 255, 255, 0.38);
 }
 
-/* 部门选择器样式 */
 .picker {
     width: 100%;
     height: 100rpx;
     padding: 0 40rpx;
-    border: 2rpx solid rgba(255, 255, 255, 0.2);
+    border: 2rpx solid rgba(30, 58, 109, 0.10);
     border-radius: 50rpx;
     font-size: 30rpx;
     box-sizing: border-box;
-    background: rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.28);
+    color: #1E3A6D;
     transition: all 0.3s ease;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    font-weight: 500;
 }
 
 .picker .placeholder {
-    color: #999;
+    color: #b0b8c9;
 }
 
 .arrow-icon {
@@ -162,26 +153,27 @@
     height: 100rpx;
     line-height: 100rpx;
     text-align: center;
-    background: linear-gradient(135deg, rgba(168, 237, 234, 0.4) 0%, rgba(254, 214, 227, 0.4) 100%);
-    color: #333;
+    background: linear-gradient(135deg, #2563A6 0%, #1E3A6D 100%);
+    color: #fff;
     border-radius: 50rpx;
-    font-size: 34rpx;
+    font-size: 36rpx;
     font-weight: bold;
     margin-top: 50rpx;
-    box-shadow: 0 8rpx 20rpx rgba(168, 237, 234, 0.2);
+    box-shadow: 0 8rpx 24rpx rgba(30, 58, 109, 0.18);
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    letter-spacing: 2rpx;
 }
 
 .button-hover {
     transform: scale(0.98);
-    box-shadow: 0 4rpx 10rpx rgba(168, 237, 234, 0.2);
+    box-shadow: 0 4rpx 10rpx rgba(30, 58, 109, 0.18);
 }
 
 .button-hover::after {
@@ -195,7 +187,7 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%);
     opacity: 0;
     transition: opacity 0.3s ease;
 }
