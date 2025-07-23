@@ -1,13 +1,29 @@
 .container {
     min-height: 100vh;
-    /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #b4f8ed 100%); */
-    /* background: linear-gradient(135deg, #cee3ff 0%, #dfcbe1 60%, #d8fdf7 100%); */
-    background: linear-gradient(135deg, #1E4B92 0%, #3A7BD5 100%);
-    padding: 0rpx;
-    position: relative;
+    height: 100vh;
     display: flex;
     flex-direction: column;
+    align-items: center;
     justify-content: start;
+    background: linear-gradient(135deg, #1E3A6D 0%, #2563A6 100%); /* 执法蓝渐变 */
+    position: relative;
+    overflow: hidden;
+    /* padding-top: 15vh; */
+    padding: 0rpx;
+}
+
+.container::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.10) 0%, rgba(255,255,255,0) 70%);
+    animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* 顶部统计卡片 */
@@ -19,37 +35,34 @@
 }
 
 .stats-card {
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 16rpx;
-    padding: 24rpx;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%);
+    border-radius: 28rpx;
+    padding: 32rpx;
+    box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
+    backdrop-filter: blur(12px);
+    border: none;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     text-align: center;
 }
-
 .stats-card:active {
-    transform: scale(0.98);
-    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.03);
+    background: #f0f6ff;
 }
-
 .stats-title {
-    font-size: 28rpx;
-    color: #1e293b;
+    font-size: 30rpx;
+    color: #2563A6;
     margin-bottom: 16rpx;
-    font-weight: 500;
-}
-
-.stats-value {
-    font-size: 40rpx;
-    color: #0f172a;
     font-weight: 600;
-    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+}
+.stats-value {
+    font-size: 48rpx;
+    color: #1E3A6D;
+    font-weight: 800;
+    text-shadow: 0 2rpx 8rpx rgba(30, 58, 109, 0.10);
 }
 
 /* 功能卡片 */
@@ -61,46 +74,42 @@
 }
 
 .function-card {
-    background: #fff;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-    border-radius: 16rpx;
-    padding: 32rpx;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%);
+    box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
+    border-radius: 28rpx;
+    padding: 36rpx;
+    border: none;
+    transition: box-shadow 0.2s, transform 0.2s;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 16rpx;
+    gap: 18rpx;
     height: 240rpx;
     justify-content: center;
 }
-
 .function-card:active {
-    transform: scale(0.98);
-    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 12rpx 40rpx rgba(30, 58, 109, 0.22);
+    transform: translateY(-4rpx) scale(1.03);
+    background: #f0f6ff;
 }
-
 .card-icon {
-    width: 80rpx;
-    height: 80rpx;
+    width: 100rpx;
+    height: 100rpx;
     filter: brightness(0) invert(0.2);
     opacity: 1;
 }
-
 .card-title {
-    font-size: 32rpx;
-    color: #0f172a;
-    font-weight: 600;
-    text-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.15);
+    font-size: 36rpx;
+    color: #1E3A6D;
+    font-weight: 700;
+    text-shadow: 0 2rpx 8rpx rgba(30, 58, 109, 0.10);
 }
-
 .card-desc {
-    font-size: 24rpx;
-    color: #334155;
+    font-size: 26rpx;
+    color: #2563A6;
     text-align: center;
     line-height: 1.4;
-    
+    font-weight: 500;
 }
 
 /* 动画效果 */

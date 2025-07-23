@@ -24,7 +24,7 @@
     <!-- 顶部用户信息 -->
     <view class="user-detail">
         <view class="welcomeBox">
-            <text class="welcomId">您好，</text>
+            <text class="welcomName">您好，</text>
             <text class="welcomName">{{userInfo.name || '新用户'}}</text>
             <!-- <text class="welcomName">{{Name}}</text> -->
         </view>
