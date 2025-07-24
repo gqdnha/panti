@@ -1,16 +1,16 @@
 <view class="container">
-
-
     <!-- 搜索框 -->
     <view class="search-box">
         <input type="text" placeholder="请输入姓名进行查询" bindinput="onSearchInput" value="{{searchKeyword}}" />
         <button bindtap="onSearch">搜索</button>
     </view>
-    <!-- 题目列表 -->
+
+    <!-- 用户列表 -->
     <view class="question-list">
         <table class="question-table">
             <thead class="list-header">
                 <tr class="table-header">
+                    <th class="header-item">选择</th>
                     <th class="header-item">用户/手机号</th>
                     <th class="header-item">部门</th>
                     <th class="header-item">学习时间（分钟）</th>
@@ -19,7 +19,24 @@
             </thead>
             <tbody class="list-content">
                 <checkbox-group bindchange="onCheckboxChange">
-                    <tr class="list-item" wx:for="{{userList}}" wx:key="user_id">
+                    <tr 
+                        class="list-item {{item.checked ? 'selected' : ''}}" 
+                        wx:for="{{userList}}" 
+                        wx:key="user_id"
+                        bindtap="toggleRowSelection" 
+                        data-index="{{index}}"
+                    >
+                        <!-- 复选框列 -->
+                        <td class="checkbox-cell">
+                            <checkbox 
+                                value="{{item.user_id + ''}}" 
+                                checked="{{item.checked}}" 
+                                catchtap="onCheckboxChange" 
+                                data-type="checkbox"  
+                            />
+                        </td>
+                        
+                        <!-- 用户信息列 -->
                         <td class="user-name">
                             <view>{{item.name}}</view>
                             <view class="user-phone-small">{{item.phone}}</view>
@@ -28,7 +45,6 @@
                         <td class="correctRate">{{item.learn_time}}</td>
                         <td class="item-actions">
                             <view class="btn edit" bindtap="viewDetail" data-id="{{item.user_id}}">详情</view>
-                            <!-- <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view> -->
                         </td>
                     </tr>
                 </checkbox-group>
@@ -88,11 +104,6 @@
                         <text class="btn-text">导出</text>
                     </button>
                 </view>
-                <!-- <view class="function-item" bindtap="goToOneDaily">
-                    <button class="action-btn daily-practice">
-                        <text class="btn-text">每日练习</text>
-                    </button>
-                </view> -->
             </view>
         </view>
     </view>

@@ -503,3 +503,7 @@ button::after {
     margin-top: 2rpx;
     word-break: break-all;
 }
+/* 添加选中行的样式 */
+.list-item.selected {
+    background-color: #e6f7ff;
+}
