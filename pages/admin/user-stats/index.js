@@ -48,7 +48,7 @@ Page({
         this.loadUserStats();  // 加载用户列表
     },
 
-    // 加载用户列表（初始化checked状态）
+    // 加载用户列表（确保user_id存在且checked初始化）
     loadUserStats() {
         const { pageNum, pageSize, searchKeyword, department } = this.data;
         const data = {
@@ -60,11 +60,14 @@ Page({
 
         getAllUserInfo(data).then(res => {
             console.log('获取用户数据:', res);
-            // 为每个用户添加checked状态（默认未选中）
-            const userList = res.pageInfo.pageData.map(user => ({
-                ...user,
-                checked: false  // 关键：初始化选中状态
-            }));
+            // 确保每个用户对象有user_id且checked初始化为false
+            const userList = res.pageInfo.pageData.map(user => {
+                if (!user.hasOwnProperty('user_id')) {
+                    console.error('用户对象缺少user_id字段:', user);
+                    return {...user, user_id: 'unknown', checked: false};
+                }
+                return {...user, checked: false};
+            });
             this.setData({
                 userList,
                 totalPages: res.pageInfo.totalPage
@@ -75,12 +78,10 @@ Page({
         });
     },
 
-    // 搜索输入处理
+    // 搜索相关方法
     onSearchInput(e) {
         this.setData({ searchKeyword: e.detail.value });
     },
-
-    // 执行搜索
     onSearch() {
         this.setData({ pageNum: 1 }, () => this.loadUserStats());
     },
@@ -124,14 +125,12 @@ Page({
         this.setData({ showUserDetailModal: false, dailyFinishData: null });
     },
 
-    // 分页：上一页
+    // 分页方法
     onPreviousPage() {
         if (this.data.pageNum > 1) {
             this.setData({ pageNum: this.data.pageNum - 1 }, () => this.loadUserStats());
         }
     },
-
-    // 分页：下一页
     onNextPage() {
         if (this.data.pageNum < this.data.totalPages) {
             this.setData({ pageNum: this.data.pageNum + 1 }, () => this.loadUserStats());
@@ -153,40 +152,30 @@ Page({
         });
     },
 
-    // 跳转每日练习
-    goToOneDaily(e) {
-        const id = this.data.currentUserDetail.user_id;
-        wx.navigateTo({ url: `/pages/userPages/oneDaily/oneDaily?id=${id}` });
+    // 阻止复选框点击冒泡到行
+    stopPropagation(e) {
+        // 关键修改：阻止事件冒泡到行
+        // 不做其他处理，让checkbox-group处理选中状态
     },
 
     // 行点击切换选中状态
     toggleRowSelection(e) {
-        // 跳过由复选框触发的事件（避免重复处理）
-        if (e.target.dataset.type === 'checkbox') return;
-        
         const index = e.currentTarget.dataset.index;
         const userList = [...this.data.userList];
         userList[index].checked = !userList[index].checked;
-        
-        this.setData({ userList }, () => {
-            console.log('当前选中的用户ID:', 
-                userList.filter(u => u.checked).map(u => u.user_id));
-        });
+        this.setData({ userList });
     },
 
-    // 复选框变更处理
-    onCheckboxChange(e) {
-        const selectedIds = e.detail.value;  // 字符串数组
+    // 复选框组变更处理
+    onCheckboxGroupChange(e) {
+        const selectedIds = e.detail.value || [];
         console.log('复选框选中ID:', selectedIds);
         
         const userList = [...this.data.userList];
         userList.forEach(user => {
-            // 确保类型一致（user_id转字符串后比较）
-            user.checked = selectedIds.includes(user.user_id + '');
+            user.checked = selectedIds.includes(String(user.user_id));
         });
         
-        // this.setData({ userList });
-    },
-
-    // 移除stopPropagation方法（不再需要）
+        this.setData({ userList });
+    }
 });

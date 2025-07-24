@@ -18,7 +18,7 @@
                 </tr>
             </thead>
             <tbody class="list-content">
-                <checkbox-group bindchange="onCheckboxChange">
+                <checkbox-group bindchange="onCheckboxGroupChange">
                     <tr 
                         class="list-item {{item.checked ? 'selected' : ''}}" 
                         wx:for="{{userList}}" 
@@ -26,17 +26,13 @@
                         bindtap="toggleRowSelection" 
                         data-index="{{index}}"
                     >
-                        <!-- 复选框列 -->
                         <td class="checkbox-cell">
                             <checkbox 
-                                value="{{item.user_id + ''}}" 
+                                value="{{item.user_id}}" 
                                 checked="{{item.checked}}" 
-                                catchtap="onCheckboxChange" 
-                                data-type="checkbox"  
+                                catchtap="stopPropagation"
                             />
                         </td>
-                        
-                        <!-- 用户信息列 -->
                         <td class="user-name">
                             <view>{{item.name}}</view>
                             <view class="user-phone-small">{{item.phone}}</view>
