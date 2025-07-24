@@ -2,7 +2,7 @@ import {
     getAllUserInfo
 } from '../../../api/admin'
 import {
-    getUserInfo
+    getUserInfo,unUseUser
 } from '../../../api/getUserInfo'
 import {
     getUserDailyFinish
@@ -151,8 +151,9 @@ Page({
         console.log('提交禁用的用户ID:', selectedIds);
 
         // 模拟禁用API调用（实际项目打开注释）
-        /*
-        unuseUser(selectedIds).then(res => {
+        
+        unUseUser(selectedIds).then(res => {
+            console.log(res);
             wx.showToast({ title: '禁用成功', icon: 'success' });
             // 更新用户状态
             const userList = this.data.userList.map(user => ({
@@ -165,7 +166,7 @@ Page({
             console.error('禁用失败:', err);
             wx.showToast({ title: '禁用失败', icon: 'none' });
         });
-        */
+       
 
         // 模拟禁用成功
         wx.showToast({ title: '禁用成功', icon: 'success' });

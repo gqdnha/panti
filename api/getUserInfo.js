@@ -22,8 +22,10 @@ export const getWrongQuestion = () => {
 }
 
 // 禁用用户
-export const unAbleUser = (data) => {
+export const unUseUser = (data) => {
+    console.log(data);
     const userList =data
+    console.log(userList);
     return request({
         // url: `/dailyQuestion/getEverydayQuestion/${data}`,
         url:`/mange/disableUser?userList=${userList}`,
