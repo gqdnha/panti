@@ -1,4 +1,11 @@
 <view class="container">
+    <!-- 顶部操作栏：禁用功能按钮 -->
+    <view class="operation-bar">
+        <button bindtap="showDisableMode" wx:if="{{!isDisableMode}}">启用禁用功能</button>
+        <button bindtap="submitDisable" wx:if="{{isDisableMode && hasSelected}}" class="danger-btn">提交禁用</button>
+        <button bindtap="exitDisableMode" wx:if="{{isDisableMode}}" class="cancel-btn">取消</button>
+    </view>
+
     <!-- 搜索框 -->
     <view class="search-box">
         <input type="text" placeholder="请输入姓名进行查询" bindinput="onSearchInput" value="{{searchKeyword}}" />
@@ -10,7 +17,8 @@
         <table class="question-table">
             <thead class="list-header">
                 <tr class="table-header">
-                    <th class="header-item">选择</th>
+                    <!-- 禁用模式显示复选框列 -->
+                    <th class="header-item" wx:if="{{isDisableMode}}">选择</th>
                     <th class="header-item">用户/手机号</th>
                     <th class="header-item">部门</th>
                     <th class="header-item">学习时间（分钟）</th>
@@ -18,43 +26,66 @@
                 </tr>
             </thead>
             <tbody class="list-content">
-                <checkbox-group bindchange="onCheckboxGroupChange">
+                <!-- 禁用模式：显示复选框列 -->
+                <checkbox-group bindchange="onCheckboxChange" wx:if="{{isDisableMode}}">
                     <tr 
-                        class="list-item {{item.checked ? 'selected' : ''}}" 
+                        class="list-item {{item.checked ? 'selected' : ''}} {{item.disabled ? 'disabled-row' : ''}}" 
                         wx:for="{{userList}}" 
                         wx:key="user_id"
-                        bindtap="toggleRowSelection" 
+                        bindtap="toggleRowSelect" 
                         data-index="{{index}}"
                     >
                         <td class="checkbox-cell">
                             <checkbox 
                                 value="{{item.user_id}}" 
                                 checked="{{item.checked}}" 
-                                catchtap="stopPropagation"
+                                catchtap="stopPropagation" 
+                                disabled="{{item.disabled}}"
                             />
                         </td>
+                        
                         <td class="user-name">
                             <view>{{item.name}}</view>
                             <view class="user-phone-small">{{item.phone}}</view>
                         </td>
-                        <td class="user-count">{{item.department}}</td>
-                        <td class="correctRate">{{item.learn_time}}</td>
-                        <td class="item-actions">
-                            <view class="btn edit" bindtap="viewDetail" data-id="{{item.user_id}}">详情</view>
+                        <td class="user-dept">{{item.department}}</td>
+                        <td class="learn-time">{{item.learn_time}}</td>
+                        <td class="action-col">
+                            <view class="detail-btn" bindtap="viewDetail" data-id="{{item.user_id}}">详情</view>
                         </td>
                     </tr>
                 </checkbox-group>
+
+                <!-- 非禁用模式：隐藏复选框列 -->
+                <tr 
+                    class="list-item {{item.disabled ? 'disabled-row' : ''}}" 
+                    wx:for="{{userList}}" 
+                    wx:key="user_id"
+                    bindtap="viewDetail" 
+                    data-id="{{item.user_id}}"
+                    wx:if="{{!isDisableMode}}"
+                >
+                    <td class="user-name">
+                        <view>{{item.name}}</view>
+                        <view class="user-phone-small">{{item.phone}}</view>
+                    </td>
+                    <td class="user-dept">{{item.department}}</td>
+                    <td class="learn-time">{{item.learn_time}}</td>
+                    <td class="action-col">
+                        <view class="detail-btn" bindtap="viewDetail" data-id="{{item.user_id}}">详情</view>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </view>
 
     <!-- 分页按钮 -->
     <view class="pagination">
-        <button bindtap="onPreviousPage" disabled="{{pageNum === 1}}">上一页</button>
-        <button bindtap="onNextPage" disabled="{{pageNum === totalPages}}">下一页</button>
+        <button bindtap="prevPage" disabled="{{pageNum === 1}}">上一页</button>
+        <button bindtap="nextPage" disabled="{{pageNum === totalPages}}">下一页</button>
     </view>
 
-    <!-- 用户详情弹窗 -->
+    <!-- 用户详情弹窗（修复版） -->
     <view class="user-detail-modal-mask" wx:if="{{showUserDetailModal}}" bindtap="closeUserDetailModal"></view>
     <view class="user-detail-modal-container" wx:if="{{showUserDetailModal}}">
         <view class="user-detail-modal-header">
@@ -79,13 +110,9 @@
                     <label>学习时间</label>
                     <text class="info-text highlight">{{currentUserDetail.learn_time}} 分钟</text>
                 </view>
-                <view class="user-detail-item">
-                    <label>正确率</label>
-                    <text class="info-text highlight">{{rightPercent}}%</text>
-                </view>
-                <view class="user-detail-item">
-                    <label>每日练习完成情况</label>
-                    <text class="info-text {{dailyFinishData === '未完成' ? 'status-incomplete' : ''}}" wx:if="{{!loadingDailyFinish && dailyFinishData}}">{{dailyFinishData}}</text>
+                <view class="user-detail-item" wx:if="{{currentUserDetail.disabled}}">
+                    <label>状态</label>
+                    <text class="info-text disabled-status">已禁用</text>
                 </view>
             </view>
 

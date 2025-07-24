@@ -7,48 +7,42 @@ import {
 import {
     getUserDailyFinish
 } from '../../../api/getDeilyFinash'
-import {
-    request
-} from '../../../api/request'
+
 import {
     downLoadUserText
 } from '../../../api/downLoadUserText'
-import {
-    unuseUser
-} from '../../../api/apartmentAdmin'
 
 Page({
     data: {
+        // 基础数据
         department: '',
         rightPercent: 0,
         userId: null,
         userInfo: {},
-        answerRecords: [],
-        userList: [],  // 存储用户列表，包含checked状态
+        userList: [],
         pageNum: 1,
         pageSize: 8,
         totalPages: 1,
         searchKeyword: '',
-        showUserDetailModal: false,
-        currentUserDetail: {},
-        showModal: false,
-        newUser: {
-            name: '',
-            phone: '',
-            department: ''
-        },
+        
+        // 禁用功能相关
+        isDisableMode: false,  // 是否显示禁用功能
+        hasSelected: false,    // 是否有选中项
+        
+        // 弹窗相关（恢复原始字段名）
+        showUserDetailModal: false,  // 弹窗显示状态
+        currentUserDetail: {},       // 当前查看的用户详情
         dailyFinishData: null,
         loadingDailyFinish: false,
     },
 
     onLoad(options) {
-        // 获取部门信息
         const department = wx.getStorageSync('department');
         this.setData({ department: department || '' });
-        this.loadUserStats();  // 加载用户列表
+        this.loadUserStats();
     },
 
-    // 加载用户列表（确保user_id存在且checked初始化）
+    // 加载用户列表
     loadUserStats() {
         const { pageNum, pageSize, searchKeyword, department } = this.data;
         const data = {
@@ -59,15 +53,12 @@ Page({
         };
 
         getAllUserInfo(data).then(res => {
-            console.log('获取用户数据:', res);
-            // 确保每个用户对象有user_id且checked初始化为false
-            const userList = res.pageInfo.pageData.map(user => {
-                if (!user.hasOwnProperty('user_id')) {
-                    console.error('用户对象缺少user_id字段:', user);
-                    return {...user, user_id: 'unknown', checked: false};
-                }
-                return {...user, checked: false};
-            });
+            // 初始化选中状态和禁用状态
+            const userList = res.pageInfo.pageData.map(user => ({
+                ...user,
+                checked: false,        // 选中状态
+                disabled: user.disabled || false  // 禁用状态
+            }));
             this.setData({
                 userList,
                 totalPages: res.pageInfo.totalPage
@@ -78,7 +69,7 @@ Page({
         });
     },
 
-    // 搜索相关方法
+    // 搜索相关
     onSearchInput(e) {
         this.setData({ searchKeyword: e.detail.value });
     },
@@ -86,30 +77,143 @@ Page({
         this.setData({ pageNum: 1 }, () => this.loadUserStats());
     },
 
-    // 查看用户详情
+    // 禁用功能：进入禁用模式
+    showDisableMode() {
+        this.setData({ isDisableMode: true });
+    },
+
+    // 禁用功能：取消禁用模式
+    exitDisableMode() {
+        // 重置选中状态
+        const userList = this.data.userList.map(user => ({
+            ...user,
+            checked: false
+        }));
+        this.setData({
+            isDisableMode: false,
+            userList,
+            hasSelected: false
+        });
+    },
+
+    // 行点击切换选中状态（禁用模式下）
+    toggleRowSelect(e) {
+        const index = e.currentTarget.dataset.index;
+        const userList = [...this.data.userList];
+        
+        // 跳过已禁用用户
+        if (userList[index].disabled) return;
+        
+        // 切换选中状态
+        userList[index].checked = !userList[index].checked;
+        // 判断是否有选中项
+        const hasSelected = userList.some(user => user.checked);
+        
+        this.setData({ userList, hasSelected });
+    },
+
+    // 复选框组变更
+    onCheckboxChange(e) {
+        const selectedIds = e.detail.value || [];
+        console.log('当前选中的用户ID:', selectedIds);
+        
+        // 同步选中状态
+        const userList = [...this.data.userList];
+        userList.forEach(user => {
+            user.checked = selectedIds.includes(String(user.user_id));
+        });
+        
+        this.setData({ 
+            userList, 
+            hasSelected: selectedIds.length > 0 
+        });
+    },
+
+    // 阻止复选框点击冒泡
+    stopPropagation() {
+        // 仅阻止事件冒泡到行
+    },
+
+    // 提交禁用
+    submitDisable() {
+        // 获取选中的未禁用用户ID
+        const selectedUsers = this.data.userList.filter(user => 
+            user.checked && !user.disabled
+        );
+        const selectedIds = selectedUsers.map(user => user.user_id);
+        
+        if (selectedIds.length === 0) {
+            wx.showToast({ title: '请选择用户', icon: 'none' });
+            return;
+        }
+
+        // 控制台打印选中的ID
+        console.log('提交禁用的用户ID:', selectedIds);
+
+        // 模拟禁用API调用（实际项目打开注释）
+        /*
+        unuseUser(selectedIds).then(res => {
+            wx.showToast({ title: '禁用成功', icon: 'success' });
+            // 更新用户状态
+            const userList = this.data.userList.map(user => ({
+                ...user,
+                checked: false,
+                disabled: selectedIds.includes(user.user_id) ? true : user.disabled
+            }));
+            this.setData({ userList, isDisableMode: false, hasSelected: false });
+        }).catch(err => {
+            console.error('禁用失败:', err);
+            wx.showToast({ title: '禁用失败', icon: 'none' });
+        });
+        */
+
+        // 模拟禁用成功
+        wx.showToast({ title: '禁用成功', icon: 'success' });
+        const userList = this.data.userList.map(user => ({
+            ...user,
+            checked: false,
+            disabled: selectedIds.includes(user.user_id) ? true : user.disabled
+        }));
+        this.setData({ userList, isDisableMode: false, hasSelected: false });
+    },
+
+    // 分页
+    prevPage() {
+        if (this.data.pageNum > 1) {
+            this.setData({ pageNum: this.data.pageNum - 1 }, () => this.loadUserStats());
+        }
+    },
+    nextPage() {
+        if (this.data.pageNum < this.data.totalPages) {
+            this.setData({ pageNum: this.data.pageNum + 1 }, () => this.loadUserStats());
+        }
+    },
+
+    // 查看用户详情（弹窗核心逻辑）
     viewDetail(e) {
-        const { id } = e.currentTarget.dataset;
-        const user = this.data.userList.find(item => item.user_id === id);
+        const userId = e.currentTarget.dataset.id;
+        const user = this.data.userList.find(u => u.user_id === userId);
         if (!user) {
             wx.showToast({ title: '未找到用户', icon: 'none' });
             return;
         }
 
+        // 显示弹窗并加载详情数据
         this.setData({
-            showUserDetailModal: true,
+            showUserDetailModal: true,  // 打开弹窗
             currentUserDetail: user,
             dailyFinishData: null,
             loadingDailyFinish: true
         });
 
-        // 获取正确率
+        // 加载正确率
         getUserInfo().then(res => {
             this.setData({ rightPercent: res.rightPercent });
         }).catch(err => {
             console.error('获取正确率失败:', err);
         });
 
-        // 获取每日练习完成情况
+        // 加载每日练习完成情况
         getUserDailyFinish(user.user_id).then(res => {
             this.setData({
                 dailyFinishData: res === 100 ? '已完成' : '未完成',
@@ -122,60 +226,21 @@ Page({
 
     // 关闭详情弹窗
     closeUserDetailModal() {
-        this.setData({ showUserDetailModal: false, dailyFinishData: null });
+        this.setData({ showUserDetailModal: false });
     },
 
-    // 分页方法
-    onPreviousPage() {
-        if (this.data.pageNum > 1) {
-            this.setData({ pageNum: this.data.pageNum - 1 }, () => this.loadUserStats());
-        }
-    },
-    onNextPage() {
-        if (this.data.pageNum < this.data.totalPages) {
-            this.setData({ pageNum: this.data.pageNum + 1 }, () => this.loadUserStats());
-        }
-    },
-
-    // 跳转错题本
+    // 错题本跳转
     goToOneWrongBook() {
         const id = this.data.currentUserDetail.user_id;
         wx.navigateTo({ url: `/pages/userPages/oneWrongBook/ontWrongBook?id=${id}` });
     },
 
-    // 导出用户数据
+    // 导出功能
     downLoadUserText() {
         downLoadUserText().then(res => {
             console.log('导出结果:', res);
         }).catch(err => {
             console.error('导出失败:', err);
         });
-    },
-
-    // 阻止复选框点击冒泡到行
-    stopPropagation(e) {
-        // 关键修改：阻止事件冒泡到行
-        // 不做其他处理，让checkbox-group处理选中状态
-    },
-
-    // 行点击切换选中状态
-    toggleRowSelection(e) {
-        const index = e.currentTarget.dataset.index;
-        const userList = [...this.data.userList];
-        userList[index].checked = !userList[index].checked;
-        this.setData({ userList });
-    },
-
-    // 复选框组变更处理
-    onCheckboxGroupChange(e) {
-        const selectedIds = e.detail.value || [];
-        console.log('复选框选中ID:', selectedIds);
-        
-        const userList = [...this.data.userList];
-        userList.forEach(user => {
-            user.checked = selectedIds.includes(String(user.user_id));
-        });
-        
-        this.setData({ userList });
     }
 });

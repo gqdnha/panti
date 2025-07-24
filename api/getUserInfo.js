@@ -20,3 +20,13 @@ export const getWrongQuestion = () => {
         method: 'GET'
     })
 }
+
+// 禁用用户
+export const unAbleUser = (data) => {
+    const userList =data
+    return request({
+        // url: `/dailyQuestion/getEverydayQuestion/${data}`,
+        url:`/mange/disableUser?userList=${userList}`,
+        method: 'GET'
+    })
+}
