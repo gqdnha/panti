@@ -1,247 +1,241 @@
-import {
-    getAllUserInfo
-} from '../../../api/admin'
-import {
-    getUserInfo,unUseUser
-} from '../../../api/getUserInfo'
-import {
-    getUserDailyFinish
-} from '../../../api/getDeilyFinash'
-
-import {
-    downLoadUserText
-} from '../../../api/downLoadUserText'
+import { getAllUserInfo } from '../../../api/admin'
+import {getUserInfo} from '../../../api/getUserInfo'
+import { getUserDailyFinish } from '../../../api/getDeilyFinash'
+import { request } from '../../../api/request'
+import {downLoadUserText} from '../../../api/downLoadUserText'
 
 Page({
     data: {
-        // 基础数据
         department: '',
-        rightPercent: 0,
+        // 正确率
+        rightPercent:0,
         userId: null,
         userInfo: {},
+        answerRecords: [],
         userList: [],
         pageNum: 1,
         pageSize: 8,
         totalPages: 1,
         searchKeyword: '',
-        
-        // 禁用功能相关
-        isDisableMode: false,  // 是否显示禁用功能
-        hasSelected: false,    // 是否有选中项
-        
-        // 弹窗相关（恢复原始字段名）
-        showUserDetailModal: false,  // 弹窗显示状态
-        currentUserDetail: {},       // 当前查看的用户详情
-        dailyFinishData: null,
-        loadingDailyFinish: false,
+        showUserDetailModal: false, // 控制用户详情模态框的显示与隐藏
+        currentUserDetail: {}, // 当前要显示详情的用户信息
+        showModal: false,
+        newUser: {
+            name: '',
+            phone: '',
+            department: ''
+        },
+        dailyFinishData: null, // 每日练习完成情况
+        loadingDailyFinish: false // 加载每日练习完成情况的状态
     },
 
     onLoad(options) {
+        // 获取部门信息
         const department = wx.getStorageSync('department');
-        this.setData({ department: department || '' });
+        console.log('当前用户部门：', department);
+        
+        this.setData({
+            department: department || ''
+        });
+
+        // 打印部门信息，用于调试
+        console.log('页面数据中的部门信息：', this.data.department);
+
         this.loadUserStats();
     },
 
-    // 加载用户列表
     loadUserStats() {
         const { pageNum, pageSize, searchKeyword, department } = this.data;
         const data = {
+            // 如果是超级管理员，department传空字符串，否则传当前用户的department
             department: department === '超级管理员' ? "" : department,
+            // 判断 searchKeyword 是否有值，有则传其值，否则传空字符串
             userName: searchKeyword || "",
-            pageNum,
-            pageSize
+            pageNum: pageNum,
+            pageSize: pageSize
         };
-
+        console.log('请求参数：', data);
         getAllUserInfo(data).then(res => {
-            // 初始化选中状态和禁用状态
-            const userList = res.pageInfo.pageData.map(user => ({
-                ...user,
-                checked: false,        // 选中状态
-                disabled: user.disabled || false  // 禁用状态
-            }));
+            console.log('获取到的数据：', res);
+            // 假设 res 包含 userList 和 totalPages 数据
             this.setData({
-                userList,
+                userList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage
             });
+            console.log('用户列表：', this.data.userList);
+            console.log('总页数：', this.data.totalPages);
         }).catch(err => {
-            console.error('获取用户列表失败:', err);
-            wx.showToast({ title: '加载失败', icon: 'none' });
+            console.error('请求失败：', err);
         });
     },
 
-    // 搜索相关
     onSearchInput(e) {
-        this.setData({ searchKeyword: e.detail.value });
+        this.setData({
+            searchKeyword: e.detail.value
+        });
     },
+
     onSearch() {
-        this.setData({ pageNum: 1 }, () => this.loadUserStats());
+        // 重置页码为 1
+        this.setData({ pageNum: 1 });
+        this.loadUserStats();
     },
 
-    // 禁用功能：进入禁用模式
-    showDisableMode() {
-        this.setData({ isDisableMode: true });
-    },
-
-    // 禁用功能：取消禁用模式
-    exitDisableMode() {
-        // 重置选中状态
-        const userList = this.data.userList.map(user => ({
-            ...user,
-            checked: false
-        }));
-        this.setData({
-            isDisableMode: false,
-            userList,
-            hasSelected: false
+    viewAnswerDetail(e) {
+        const { id } = e.currentTarget.dataset;
+        wx.showToast({
+            title: '功能开发中',
+            icon: 'none'
         });
     },
 
-    // 行点击切换选中状态（禁用模式下）
-    toggleRowSelect(e) {
-        const index = e.currentTarget.dataset.index;
-        const userList = [...this.data.userList];
-        
-        // 跳过已禁用用户
-        if (userList[index].disabled) return;
-        
-        // 切换选中状态
-        userList[index].checked = !userList[index].checked;
-        // 判断是否有选中项
-        const hasSelected = userList.some(user => user.checked);
-        
-        this.setData({ userList, hasSelected });
-    },
-
-    // 复选框组变更
-    onCheckboxChange(e) {
-        const selectedIds = e.detail.value || [];
-        console.log('当前选中的用户ID:', selectedIds);
-        
-        // 同步选中状态
-        const userList = [...this.data.userList];
-        userList.forEach(user => {
-            user.checked = selectedIds.includes(String(user.user_id));
-        });
-        
-        this.setData({ 
-            userList, 
-            hasSelected: selectedIds.length > 0 
-        });
-    },
-
-    // 阻止复选框点击冒泡
-    stopPropagation() {
-        // 仅阻止事件冒泡到行
-    },
-
-    // 提交禁用
-    submitDisable() {
-        // 获取选中的未禁用用户ID
-        const selectedUsers = this.data.userList.filter(user => 
-            user.checked && !user.disabled
-        );
-        const selectedIds = selectedUsers.map(user => user.user_id);
-        
-        if (selectedIds.length === 0) {
-            wx.showToast({ title: '请选择用户', icon: 'none' });
-            return;
-        }
-
-        // 控制台打印选中的ID
-        console.log('提交禁用的用户ID:', selectedIds);
-
-        // 模拟禁用API调用（实际项目打开注释）
-        
-        unUseUser(selectedIds).then(res => {
-            console.log(res);
-            wx.showToast({ title: '禁用成功', icon: 'success' });
-            // 更新用户状态
-            const userList = this.data.userList.map(user => ({
-                ...user,
-                checked: false,
-                disabled: selectedIds.includes(user.user_id) ? true : user.disabled
-            }));
-            this.setData({ userList, isDisableMode: false, hasSelected: false });
-        }).catch(err => {
-            console.error('禁用失败:', err);
-            wx.showToast({ title: '禁用失败', icon: 'none' });
-        });
-       
-
-        // 模拟禁用成功
-        wx.showToast({ title: '禁用成功', icon: 'success' });
-        const userList = this.data.userList.map(user => ({
-            ...user,
-            checked: false,
-            disabled: selectedIds.includes(user.user_id) ? true : user.disabled
-        }));
-        this.setData({ userList, isDisableMode: false, hasSelected: false });
-    },
-
-    // 分页
-    prevPage() {
-        if (this.data.pageNum > 1) {
-            this.setData({ pageNum: this.data.pageNum - 1 }, () => this.loadUserStats());
-        }
-    },
-    nextPage() {
-        if (this.data.pageNum < this.data.totalPages) {
-            this.setData({ pageNum: this.data.pageNum + 1 }, () => this.loadUserStats());
-        }
-    },
-
-    // 查看用户详情（弹窗核心逻辑）
     viewDetail(e) {
-        const userId = e.currentTarget.dataset.id;
-        const user = this.data.userList.find(u => u.user_id === userId);
+        const { id } = e.currentTarget.dataset;
+        console.log('点击的用户ID:', id);
+        const user = this.data.userList.find(item => item.user_id === id);
+        console.log('找到的用户信息:', user);
+        
         if (!user) {
-            wx.showToast({ title: '未找到用户', icon: 'none' });
+            wx.showToast({
+                title: '未找到用户信息',
+                icon: 'none'
+            });
             return;
         }
 
-        // 显示弹窗并加载详情数据
         this.setData({
-            showUserDetailModal: true,  // 打开弹窗
+            showUserDetailModal: true,
             currentUserDetail: user,
-            dailyFinishData: null,
-            loadingDailyFinish: true
+            dailyFinishData: null, // 重置每日练习数据
+            loadingDailyFinish: true // 开始加载
         });
 
-        // 加载正确率
+        // 获取用户正确率
         getUserInfo().then(res => {
-            this.setData({ rightPercent: res.rightPercent });
+            console.log('获取到的用户信息:', res);
+            this.setData({
+                rightPercent: res.rightPercent
+            });
         }).catch(err => {
-            console.error('获取正确率失败:', err);
+            console.error('获取用户信息失败:', err);
+            wx.showToast({
+                title: '获取用户信息失败',
+                icon: 'none'
+            });
         });
 
-        // 加载每日练习完成情况
+        // 获取用户每日练习完成情况
         getUserDailyFinish(user.user_id).then(res => {
+            console.log('获取到的每日练习完成情况:', res);
+            
+            // 判断是否完成：如果是100则已完成，否则未完成
+            const statusText = res === 100 ? '已完成' : '未完成';
+            
             this.setData({
-                dailyFinishData: res === 100 ? '已完成' : '未完成',
+                dailyFinishData: statusText,
                 loadingDailyFinish: false
             });
         }).catch(err => {
-            this.setData({ dailyFinishData: '未完成', loadingDailyFinish: false });
+            console.error('获取每日练习完成情况失败:', err);
+            this.setData({
+                dailyFinishData: '未完成',
+                loadingDailyFinish: false
+            });
         });
     },
 
-    // 关闭详情弹窗
     closeUserDetailModal() {
-        this.setData({ showUserDetailModal: false });
-    },
-
-    // 错题本跳转
-    goToOneWrongBook() {
-        const id = this.data.currentUserDetail.user_id;
-        wx.navigateTo({ url: `/pages/userPages/oneWrongBook/ontWrongBook?id=${id}` });
-    },
-
-    // 导出功能
-    downLoadUserText() {
-        downLoadUserText().then(res => {
-            console.log('导出结果:', res);
-        }).catch(err => {
-            console.error('导出失败:', err);
+        this.setData({
+            showUserDetailModal: false,
+            dailyFinishData: null // 清空数据
         });
-    }
+    },
+
+    onNextPage() {
+        const { pageNum, totalPages } = this.data;
+        if (pageNum < totalPages) {
+            this.setData({ pageNum: pageNum + 1 });
+            this.loadUserStats();
+        } else {
+            wx.showToast({
+                title: '已经是最后一页了',
+                icon: 'none'
+            });
+        }
+    },
+
+    onPreviousPage() {
+        const { pageNum } = this.data;
+        if (pageNum > 1) {
+            this.setData({ pageNum: pageNum - 1 });
+            this.loadUserStats();
+        } else {
+            wx.showToast({
+                title: '已经是第一页了',
+                icon: 'none'
+            });
+        }
+    },
+
+    editQuestion(e) {
+        const questionId = e.currentTarget.dataset.id;
+        wx.navigateTo({
+            url: `/pages/admin/question-edit/index?id=${questionId}`
+        });
+    },
+
+
+    onNewQuestionInput(e) {
+        const { field } = e.currentTarget.dataset;
+        const value = e.detail.value;
+        this.setData({
+            newQuestion: {
+               ...this.data.newQuestion,
+                [field]: value
+            }
+        });
+    },
+
+    goToOneWrongBook() {
+        const currentUserId = this.data.currentUserDetail.user_id;
+        console.log(currentUserId);
+        wx.navigateTo({
+            url: `/pages/userPages/oneWrongBook/ontWrongBook?id=${currentUserId}`
+        });
+    },
+    // 新增导出
+    downLoadUserText(){
+        downLoadUserText().then(res => {
+            console.log(res);
+            // console.log('111');
+        })
+    },
+
+    goToOneDaily(e) {
+        const currentUserId = this.data.currentUserDetail.user_id;
+        console.log(currentUserId);
+
+        wx.navigateTo({
+            // url: `/pages/userPages/oneWrongBook/ontWrongBook?id=${currentUserId}`
+            url: `/pages/userPages/oneDaily/oneDaily?id=${currentUserId}`
+        });
+    },
+
+    // 获取用户列表
+    getUserList() {
+        request({
+            url: '/user/list',
+            method: 'GET'
+        }).then(res => {
+            this.setData({
+                userList: res.data
+            });
+        }).catch(err => {
+            console.error('获取用户列表失败:', err);
+            wx.showToast({
+                title: '获取用户列表失败',
+                icon: 'none'
+            });
+        });
+    },
 });
