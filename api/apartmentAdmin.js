@@ -11,13 +11,14 @@ export const unuseApartment = (departmentId) => {
 };
 
 // 批量禁用人员
-export const unuseUser = (data) => {
+/* export const unuseUser = (data) => {
     console.log(data);
     return request({
-        url: `/mange/disableUser?userIdList=${data}`,
-        method: 'GET',
+        url: `/mange/disableUser`,
+        method: 'POST',
+        data
     });
-}
+} */
 // 获取部门列表
 
 export const getApartmentList = () => {
@@ -27,3 +28,28 @@ export const getApartmentList = () => {
         method: 'GET',
     });
 }
+
+// 导出部门人员
+export const downLoadUserText = () => {
+    const userId = getUserId()
+    // console.log(data);
+    return request({
+        url: `/exportUserExcel?userId=${userId}`,
+        method: 'GET',
+    });
+};
+// 禁用部门
+export const disableDepartment = (department) => {
+    // console.log(data);
+    return request({
+        url: `/mange/disableDepartment?department=${department}`,
+        method: 'POST',
+    });
+};
+// 授权部门
+export const grantDepartment = (department) => {
+    return request({
+        url: `/mange/grantDepartment?department=${department}`,
+        method: 'POST',
+    });
+};
