@@ -4,6 +4,7 @@
 <view class="search-box">
     <input type="text" placeholder="请输入姓名进行查询" bindinput="onSearchInput" value="{{searchKeyword}}" />
     <button bindtap="onSearch">搜索</button>
+    <button bindtap="navigateToPhoneManage">权限管理</button>
 </view>
 <!-- 题目列表 -->
 <view class="question-list">
@@ -79,11 +80,11 @@
                     <text class="btn-text">错题本</text>
                 </button>
             </view>
-            <view class="function-item" bindtap="downLoadUserText">
+            <!-- <view class="function-item" bindtap="downLoadUserText">
                 <button class="action-btn wrong-book">
                     <text class="btn-text">导出</text>
                 </button>
-            </view>
+            </view> -->
             <!-- <view class="function-item" bindtap="goToOneDaily">
                 <button class="action-btn daily-practice">
                     <text class="btn-text">每日练习</text>

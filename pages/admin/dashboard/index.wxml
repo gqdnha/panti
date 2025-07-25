@@ -26,11 +26,16 @@
             <view class="card-title">用户信息管理</view>
             <view class="card-desc">查看用户答题数据统计及用户管理</view>
         </view>
-        <view class="function-card" bindtap="navigateToPhoneManage">
+        <view class="function-card" bindtap="goToDepartmentManage">
+            <image class="card-icon" src="/assets/icons/部门管理.png" mode="aspectFit"></image>
+            <view class="card-title">部门管理</view>
+            <view class="card-desc">管理和维护部门信息</view>
+        </view>
+        <!-- <view class="function-card" bindtap="navigateToPhoneManage">
             <image class="card-icon" src="/assets/icons/phone.png" mode="aspectFit"></image>
             <view class="card-title">权限管理</view>
             <view class="card-desc">管理用户手机号信息</view>
-        </view>
+        </view> -->
 
         <view class="function-card" bindtap="navigateToQuestionManage">
             <image class="card-icon" src="/assets/icons/題目管理.png" mode="aspectFit"></image>
@@ -56,9 +61,6 @@
             <view class="card-desc">查看各部门数据</view>
         </view>
 
-        <view class="function-card" bindtap="goToDepartmentManage">
-            <view class="card-title">部门管理</view>
-            <view class="card-desc">管理和维护部门信息</view>
-        </view>
+        
     </view>
 </view>

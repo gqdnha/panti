@@ -41,7 +41,7 @@
 
 .action-btn text {
     font-size: 28rpx;
-    color: #2d3436;
+    color: #ffffff;
     font-weight: 500;
     letter-spacing: 0.5rpx;
 }
@@ -55,36 +55,10 @@
     background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
 }
 
-/* 搜索栏样式 */
-.search-bar {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16rpx;
-    margin-bottom: 24rpx;
-    width: 90%;
-    max-width: 1200rpx;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 16rpx;
-    padding: 16rpx;
-    backdrop-filter: blur(8px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
 
-.search-bar input {
-    flex: 1;
-    height: 72rpx;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 8rpx;
-    padding: 0 24rpx;
-    font-size: 28rpx;
-    color: #1e293b;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-}
 
-.search-bar input::placeholder {
-    color: rgba(30, 41, 59, 0.5);
-}
+
+
 
 .search-btn {
     width: 120rpx;
@@ -449,7 +423,9 @@ button::after {
 
 .function-item button:last-child {
     /* background: #10b981; */
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    /* background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); */
+    background-color: #1E3A6D;
+    color: #fff;
 
     box-shadow: 0 4rpx 12rpx rgba(16, 185, 129, 0.2);
 }
@@ -472,13 +448,14 @@ button::after {
     margin-left: 10rpx;
     width: 200rpx;
     height: 50rpx;
-    background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+    /* background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); */
+    background-color: #1E3A6D;
     border-radius: 25rpx ;
     font-weight: 600;
-    color: #333;
+    color: #fff;
 }
 .search-box input {
-    width: 400rpx;
+    /* width: 400rpx; */
     height: 50rpx;
     border-radius: 25rpx;
     border: rgb(255, 255, 255) 1px solid;

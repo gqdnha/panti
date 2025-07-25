@@ -195,7 +195,24 @@ Page({
             }
         });
     },
-
+    // 检查权限
+    checkPermission() {
+        if (this.data.department !== '超级管理员') {
+            wx.showToast({
+                title: '您没有权限访问此功能',
+                icon: 'none',
+                duration: 2000
+            });
+            return false;
+        }
+        return true;
+    },
+    navigateToPhoneManage() {
+        if (!this.checkPermission()) return;
+        wx.navigateTo({
+            url: '/pages/admin/phone-manage/index'
+        });
+    },
     goToOneWrongBook() {
         const currentUserId = this.data.currentUserDetail.user_id;
         console.log(currentUserId);
