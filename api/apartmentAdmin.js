@@ -30,12 +30,13 @@ export const getApartmentList = () => {
 }
 
 // 导出部门人员
-export const downLoadUserText = () => {
-    const userId = getUserId()
+export const downLoadUserText = (data) => {
+    console.log(data);
     // console.log(data);
     return request({
-        url: `/exportUserExcel?userId=${userId}`,
-        method: 'GET',
+        url: `/exportUserExcel`,
+        method: 'POST',
+        data
     });
 };
 // 禁用部门
