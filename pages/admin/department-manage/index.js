@@ -40,15 +40,16 @@ Page({
         console.log(isActive);
 
         // 选择接口
-        const apiCall = isActive==0 ? disableDepartment : grantDepartment;
+        const apiCall = isActive ? grantDepartment : disableDepartment;
 
         wx.showLoading({ title: '操作中...' });
         apiCall(departmentName)
             .then(res => {
+                // 0代表已授权 1代表已禁用
                 console.log(departmentName);
                 wx.hideLoading();
                 this.getApartmentListApi()
-                wx.showToast({ title: isActive ? '已停用' : '已启用' });
+                wx.showToast({ title: isActive ? '已启用' : '已停用' });
                 /* if (res && res.success) {
                     wx.showToast({ title: isActive ? '已停用' : '已启用' });
                     // 推荐刷新列表，保证和后端一致

@@ -13,11 +13,11 @@
       <view class="dept-item">
         <view class="dept-info">
           <text class="dept-name">{{item.department}}</text> <!-- 修正：显示部门名称 -->
-          <text class="dept-status">{{item.active ? '已启用' : '已停用'}}</text>
+          <text class="dept-status">{{item.isActive ? '已授权' : '已停用'}}</text>
         </view>
         <view class="dept-actions">
           <button class="action-btn" bindtap="toggleDeptStatus" data-department="{{item.department}}">
-            {{item.isActive == 0 ? '禁用' : '启用'}}
+            {{item.isActive ? '授权' : '禁用'}}
           </button>
           <!-- 关键修改：将“授权”按钮改为“导出”，绑定导出函数 -->
           <button class="action-btn export" bindtap="exportDept" data-id="{{item.id}}" data-name="{{item.department}}">
