@@ -111,7 +111,8 @@ page {
 }
 
 .total-count {
-    color: #999999;
+    color: #ffffff;
+    /* color: #999999; */
     font-weight: 500;
     font-size: 28rpx;
 }
