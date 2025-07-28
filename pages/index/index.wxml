@@ -33,7 +33,8 @@
     <!-- 学习时长 -->
     <view class="study-content">
         <view class="study-item">
-            <text class="studyValue">{{studyTime}}</text>
+            <!-- <text class="studyValue-Time">{{studyTime}}</text> -->
+            <text class="studyValue-Time">10小时59分钟</text>
             <!-- <text class="studyValue">66小时59分钟</text> -->
             <!-- <text class="studyName">分钟</text> -->
             <text class="studyName">学习时长</text>

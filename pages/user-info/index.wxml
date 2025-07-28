@@ -44,10 +44,6 @@
             <text class="function-name">错题本</text>
             <text class="wrongCount">{{wrongBookCount}} 个</text>
         </view>
-        <!-- <view class="function-item" bindtap="goToAnswerHistory">
-            <image class="function-icon" src="/assets/icons/答题历史.png"></image>
-            <text class="function-name">答题历史</text>
-        </view> -->
 
     </view>
 

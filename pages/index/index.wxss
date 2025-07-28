@@ -109,6 +109,11 @@ page {
     /* font-weight: 500; */
     text-shadow: 0 2rpx 4rpx rgba(30, 58, 109, 0.10);
 }
+.studyValue-Time{
+    font-size: 28rpx;
+    text-align: center;
+    text-shadow: 0 2rpx 4rpx rgba(30, 58, 109, 0.10);
+}
 
 .total-count {
     color: #ffffff;
