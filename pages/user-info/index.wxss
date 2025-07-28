@@ -213,7 +213,8 @@
 
 /* 学习统计 */
 .stats-section {
-    background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%);
+    /* background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%); */
+    background-color:  #1F3F73 ;
     border-radius: 28rpx;
     box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
     border: none;
@@ -289,14 +290,14 @@
 
 .stats-value {
     font-size: 44rpx;
-    color: #1E3A6D;
+    color: #ffffff;
     font-weight: 700;
     text-shadow: 0 2rpx 8rpx rgba(30, 58, 109, 0.10);
 }
 
 .stats-label {
     font-size: 26rpx;
-    color: #2563A6;
+    color: #fff;
     font-weight: 500;
 }
 
@@ -311,9 +312,11 @@
 
 .function-item {
     /* background: linear-gradient(135deg, #fff 60%, #e6ecfa 100%); */
+    /* background-color: #1E3A6D; */
+    background: #1F3F73 ;
     border-radius: 28rpx;
     box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
-    color: #1E3A6D;
+    /* color: #1E3A6D; */
     transition: box-shadow 0.2s, transform 0.2s;
     position: relative;
     overflow: hidden;
@@ -333,8 +336,8 @@
 
 .function-name {
     font-size: 36rpx;
-    font-weight: 700;
-    color: #1E3A6D;
+    font-weight: 500;
+    color: #fff;
     text-align: center;
     margin-top: 12rpx;
     margin-bottom: 8rpx;
@@ -365,7 +368,6 @@
     width: 100rpx;
     height: 100rpx;
     margin-bottom: 18rpx;
-    filter: brightness(0) invert(0.2);
     opacity: 1;
     transition: transform 0.3s ease;
 }
@@ -374,14 +376,6 @@
     transform: scale(0.95);
 }
 
-.function-name {
-    font-size: 32rpx;
-    font-weight: 600;
-    color: #0f172a;
-    text-align: center;
-    margin-top: 16rpx;
-    transition: transform 0.3s ease;
-}
 
 .function-item:active .function-name {
     transform: scale(0.95);
@@ -401,7 +395,8 @@
 
 .logout-btn {
     /* background: linear-gradient(90deg, #fff 60%, #e6ecfa 100%); */
-    color: #ff4d4f;
+    background: #1F3F73 ;
+    color: #fff;
     border-radius: 44rpx;
     border: none;
     box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);
