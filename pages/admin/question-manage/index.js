@@ -1,5 +1,6 @@
 // import { log } from 'echarts/types/src/util/log.js';
 import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent,uploadImageApi , deletePicApi, getQuestionRegulation } from '../../../api/admin';
+import {getCategotyListApi} from '../../../api/getCategoryList'
 
 Page({
     data: {
@@ -62,6 +63,15 @@ Page({
     onLoad(options) {
         this.loadQuestions();
     },
+    // 获取分类列表
+    getCategoryList(category) {
+        // 传递分类参数调用接口
+        getCategotyListApi(category).then(res => {
+            console.log('获取到的分类列表数据:', res);
+        }).catch(err => {
+            console.error('获取分类列表失败:', err);
+        });
+    },
 
     // 根据题目分类获取法律分类
     getQuestionRegulation(category) {
@@ -80,21 +90,21 @@ Page({
         getQuestionRegulation(category).then(res => {
             console.log('获取到的法律分类数据:', res);
             if (res && res.length > 0) {
-                console.log('设置法律分类数据到state');
-                // 确保res是数组
-                const regulations = Array.isArray(res) ? res : [res];
+                console.log('设置法律分类数据到state', res);
+                // 提取每个对象的regulation字段，生成字符串数组
+                const regulations = Array.isArray(res) ? res.map(item => item.regulation) : [res.regulation];
                 const isEditMode = this.data.isEditModalVisible;
                 
-                // 根据模式设置不同的法律分类列表
+                // 根据模式设置不同的法律分类列表（使用提取后的法规名称数组）
                 const filterRegulations = isEditMode ? regulations : ['全部', ...regulations];
-                
+                console.log('处理后的filterRegulations:', filterRegulations);
                 this.setData({
                     filterRegulations: filterRegulations,
-                    regulations: regulations,
+                    regulations: regulations,  // 存储纯法规名称数组
                     newRegulationIndex: 0,
                     editRegulationIndex: 0,
-                    'newQuestion.regulation': isEditMode ? '' : regulations[0],
-                    'editQuestion.regulation': isEditMode ? regulations[0] : ''
+                    'newQuestion.regulation': isEditMode ? '' : regulations[0],  // 直接使用法规名称
+                    'editQuestion.regulation': isEditMode ? regulations[0] : ''  // 直接使用法规名称
                 });
             } else {
                 console.log('没有获取到法律分类数据');
@@ -446,7 +456,7 @@ Page({
     onCategoryChange(e) {
         const index = e.detail.value;
         const category = this.data.categories[index];
-        console.log('选择分类:', category);
+        console.log('选择分类:', category);  // 新增：打印选中的分类
         
         // 先清空当前的法律分类
         this.setData({
@@ -461,6 +471,7 @@ Page({
         // 获取新的法律分类
         if (category) {
             this.getQuestionRegulation(category);
+            this.getCategoryList(category);  // 新增：调用分类列表接口并传参
         }
     },
 
@@ -601,7 +612,7 @@ Page({
     onEditCategoryChange(e) {
         const index = e.detail.value;
         const category = this.data.categories[index];
-        console.log('编辑选择分类:', category);
+        console.log('编辑选择分类:', category);  // 新增：打印选中的分类
         
         // 先清空当前的法律分类
         this.setData({
@@ -616,6 +627,7 @@ Page({
         // 获取新的法律分类
         if (category) {
             this.getQuestionRegulation(category);
+            this.getCategoryList(category);  // 新增：调用分类列表接口并传参
         }
     },
 

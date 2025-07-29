@@ -205,7 +205,8 @@ export const getQuestionRegulation = (category) => {
     category = category
     const userId = getUserId()
     return request({
-        url: `/question/getRegulationByCategory?userId=${userId}&category=${category}`,
+        url: `/categoryList/getCategoryList?category=${category}`,
+        // url: `/question/getRegulationByCategory?userId=${userId}&category=${category}`,
         method: 'GET',
     });
 }; 
