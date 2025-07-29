@@ -35,7 +35,7 @@
             <picker mode="selector" range="{{filterRegulations}}" value="{{currentRegulationIndex}}" bindchange="onFilterRegulationChange">
                 <view class="picker-view">
                     <text class="picker-label">法律：</text>
-                    <text class="picker-value">{{filterRegulations[currentRegulationIndex] || '全部'}}</text>
+                    <text class="picker-value">{{filterRegulations[currentRegulationIndex].regulation || '全部'}}</text>
                     <image class="picker-arrow" src="/assets/icons/arrow_down.png" mode="aspectFit"></image>
                 </view>
             </picker>

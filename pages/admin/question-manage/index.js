@@ -1,6 +1,6 @@
 // import { log } from 'echarts/types/src/util/log.js';
-import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent,uploadImageApi , deletePicApi, getQuestionRegulation } from '../../../api/admin';
-import {getCategotyListApi} from '../../../api/getCategoryList'
+import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent, uploadImageApi, deletePicApi, getQuestionRegulation } from '../../../api/admin';
+import { getCategotyListApi } from '../../../api/getCategoryList'
 
 Page({
     data: {
@@ -32,8 +32,8 @@ Page({
         newQuestionTypeIndex: 0,
         newCategoryIndex: 0,
         newRegulationIndex: 0,
-        categories: ['环境保护法及配套办法', '环评与排污许可执法', '大气污染防治执法','水污染防治执法','固废污染防治执法','土壤污染防治执法','噪声污染执法','执法监测','行政执法规定','行刑衔接与损害赔偿','其他'],
-        filterCategories: ['全部', '环境保护法及配套办法', '环评与排污许可执法', '大气污染防治执法','水污染防治执法','固废污染防治执法','土壤污染防治执法','噪声污染执法','执法监测','行政执法规定','行刑衔接与损害赔偿','其他'], // 筛选用的分类
+        categories: ['环境保护法及配套办法', '环评与排污许可执法', '大气污染防治执法', '水污染防治执法', '固废污染防治执法', '土壤污染防治执法', '噪声污染执法', '执法监测', '行政执法规定', '行刑衔接与损害赔偿', '其他'],
+        filterCategories: ['全部', '环境保护法及配套办法', '环评与排污许可执法', '大气污染防治执法', '水污染防治执法', '固废污染防治执法', '土壤污染防治执法', '噪声污染执法', '执法监测', '行政执法规定', '行刑衔接与损害赔偿', '其他'], // 筛选用的分类
         regulations: [], // 编辑/添加弹窗用的法律分类列表
         filterRegulations: ['全部'], // 筛选用的法律分类列表
         isEditModalVisible: false,
@@ -86,7 +86,7 @@ Page({
             });
             return;
         }
-        
+
         getQuestionRegulation(category).then(res => {
             console.log('获取到的法律分类数据:', res);
             if (res && res.length > 0) {
@@ -94,7 +94,7 @@ Page({
                 // 提取每个对象的regulation字段，生成字符串数组
                 const regulations = Array.isArray(res) ? res.map(item => item.regulation) : [res.regulation];
                 const isEditMode = this.data.isEditModalVisible;
-                
+
                 // 根据模式设置不同的法律分类列表（使用提取后的法规名称数组）
                 const filterRegulations = isEditMode ? regulations : ['全部', ...regulations];
                 console.log('处理后的filterRegulations:', filterRegulations);
@@ -161,9 +161,12 @@ Page({
             if (currentCategory && currentCategory !== '全部') {
                 getQuestionRegulation(currentCategory).then(regulationRes => {
                     if (regulationRes && regulationRes.length > 0) {
-                        const regulations = Array.isArray(regulationRes) ? regulationRes : [regulationRes];
+                        // 关键修改：提取每个对象的regulation字段生成法规名称数组
+                        const regulations = Array.isArray(regulationRes)
+                            ? regulationRes.map(item => item.regulation)  // 新增map提取逻辑
+                            : [regulationRes.regulation];
                         this.setData({
-                            filterRegulations: ['全部', ...regulations]
+                            filterRegulations: ['全部', ...regulations]  // 使用法规名称数组
                         });
                     } else {
                         this.setData({
@@ -237,7 +240,7 @@ Page({
     onNextPage() {
         const { pageNum, totalPages } = this.data;
         if (pageNum < totalPages) {
-            this.setData({ 
+            this.setData({
                 pageNum: pageNum + 1,
                 scrollTop: 0 // 重置滚动位置
             }, () => {
@@ -254,7 +257,7 @@ Page({
     onPreviousPage() {
         const { pageNum } = this.data;
         if (pageNum > 1) {
-            this.setData({ 
+            this.setData({
                 pageNum: pageNum - 1,
                 scrollTop: 0 // 重置滚动位置
             }, () => {
@@ -278,7 +281,7 @@ Page({
     exportQuestions() {
         wx.showToast({
             title: '导出成功',
-            icon:'success'
+            icon: 'success'
         });
     },
 
@@ -287,10 +290,10 @@ Page({
         getQuestionDetail(questionId).then((res) => {
             const typeIndex = this.data.questionTypes.indexOf(res.type);
             const categoryIndex = this.data.categories.indexOf(res.category);
-            
+
             // 处理选项数据，将其解析为数组
             let optionsArray = [];
-            if (res.options && typeof res.options ==='string') {
+            if (res.options && typeof res.options === 'string') {
                 try {
                     optionsArray = JSON.parse(res.options);
                 } catch (error) {
@@ -299,7 +302,7 @@ Page({
                     res.options = [];
                 }
             }
-            
+
             // 单选题和多选题的选项处理
             if (res.type === '单选题' || res.type === '多选题') {
                 let option1 = '', option2 = '', option3 = '', option4 = '';
@@ -314,7 +317,7 @@ Page({
                 res.option3 = option3;
                 res.option4 = option4;
             }
-            
+
             // 判断题的选项处理
             if (res.type === '判断题') {
                 let optionT = '', optionF = '';
@@ -325,7 +328,7 @@ Page({
                 res.optionT = optionT;
                 res.optionF = optionF;
             }
-            
+
             this.setData({
                 isEditModalVisible: true,
                 editQuestion: {
@@ -353,11 +356,16 @@ Page({
                 // 获取对应的法律分类
                 if (res.category) {
                     getQuestionRegulation(res.category).then(regulationRes => {
+                        console.log(regulationRes, '编辑分类');
+
                         if (regulationRes && regulationRes.length > 0) {
-                            const regulations = Array.isArray(regulationRes) ? regulationRes : [regulationRes];
+                            // 关键修改：提取每个对象的regulation字段生成法规名称数组
+                            const regulations = Array.isArray(regulationRes)
+                                ? regulationRes.map(item => item.regulation)  // 新增map提取逻辑
+                                : [regulationRes.regulation];
                             const currentRegulation = this.data.editQuestion.regulation;
                             let regulationIndex = 0;
-                            
+
                             // 如果有已有的法律分类，找到对应的索引
                             if (currentRegulation) {
                                 regulationIndex = regulations.indexOf(currentRegulation);
@@ -367,7 +375,8 @@ Page({
                             }
 
                             this.setData({
-                                regulations: regulations,
+
+                                regulations: regulations,  // 存储法规名称数组
                                 filterRegulations: regulations, // 编辑模式下不添加"全部"选项
                                 editRegulationIndex: regulationIndex,
                                 'editQuestion.regulation': regulations[regulationIndex] || ''
@@ -457,7 +466,7 @@ Page({
         const index = e.detail.value;
         const category = this.data.categories[index];
         console.log('选择分类:', category);  // 新增：打印选中的分类
-        
+
         // 先清空当前的法律分类
         this.setData({
             newCategoryIndex: index,
@@ -480,7 +489,7 @@ Page({
         const value = e.detail.value;
         this.setData({
             [target]: {
-               ...this.data[target],
+                ...this.data[target],
                 [field]: value
             }
         });
@@ -489,11 +498,11 @@ Page({
     onNewQuestionInput(e) {
         const { field } = e.currentTarget.dataset;
         let value = e.detail.value;
-        
+
         // 如果是答案字段，进行特殊处理
         if (field === 'answer') {
             const type = this.data.newQuestion.type;
-            
+
             if (type === '多选题') {
                 // 转换为大写
                 value = value.toUpperCase();
@@ -515,7 +524,7 @@ Page({
                 value = ['A', 'B', 'C', 'D'].includes(value) ? value : '';
             }
         }
-        
+
         this.setData({
             [`newQuestion.${field}`]: value
         });
@@ -529,14 +538,14 @@ Page({
             });
             return false;
         }
-        if ((question.type === '单选题' || question.type === '多选题') && (!question.option1 ||!question.option2 ||!question.option3 ||!question.option4)) {
+        if ((question.type === '单选题' || question.type === '多选题') && (!question.option1 || !question.option2 || !question.option3 || !question.option4)) {
             wx.showToast({
                 title: '选项不能为空',
                 icon: 'none'
             });
             return false;
         }
-        if (question.type === '判断题' && (!question.optionT ||!question.optionF)) {
+        if (question.type === '判断题' && (!question.optionT || !question.optionF)) {
             wx.showToast({
                 title: '选项不能为空',
                 icon: 'none'
@@ -580,7 +589,7 @@ Page({
         addNewQuestion(cleanedNewQuestion).then(res => {
             wx.showToast({
                 title: '题目添加成功',
-                icon:'success'
+                icon: 'success'
             });
             this.onAddModalClose();
             this.loadQuestions();
@@ -613,7 +622,7 @@ Page({
         const index = e.detail.value;
         const category = this.data.categories[index];
         console.log('编辑选择分类:', category);  // 新增：打印选中的分类
-        
+
         // 先清空当前的法律分类
         this.setData({
             editCategoryIndex: index,
@@ -634,11 +643,11 @@ Page({
     onEditQuestionInput(e) {
         const { field } = e.currentTarget.dataset;
         let value = e.detail.value;
-        
+
         // 如果是答案字段，进行特殊处理
         if (field === 'answer') {
             const type = this.data.editQuestion.type;
-            
+
             if (type === '多选题') {
                 // 转换为大写
                 value = value.toUpperCase();
@@ -660,7 +669,7 @@ Page({
                 value = ['A', 'B', 'C', 'D'].includes(value) ? value : '';
             }
         }
-        
+
         this.setData({
             [`editQuestion.${field}`]: value
         });
@@ -694,7 +703,7 @@ Page({
         updateQuestion(questionId, cleanedEditQuestion).then(res => {
             wx.showToast({
                 title: '题目编辑成功',
-                icon:'success'
+                icon: 'success'
             });
             this.onEditModalClose();
             this.loadQuestions();
@@ -709,7 +718,7 @@ Page({
     // 添加图片
     addImg() {
         // 假设正在编辑的题目 ID 作为 questionId，这里你可以根据实际情况修改获取方式
-        const questionId = this.data.editQuestion.id || this.data.newQuestion.id; 
+        const questionId = this.data.editQuestion.id || this.data.newQuestion.id;
         wx.chooseImage({
             count: 1, // 一次选择一张图片
             success: (res) => {
@@ -718,7 +727,7 @@ Page({
                     console.log('图片上传成功', res);
                     wx.showToast({
                         title: '图片上传成功',
-                        icon:'success'
+                        icon: 'success'
                     });
                 }).catch(error => {
                     console.error('图片上传失败', error);
@@ -738,17 +747,17 @@ Page({
         });
     },
     deletImg() {
-        const pid = this.data.editQuestion.id || this.data.newQuestion.id; 
+        const pid = this.data.editQuestion.id || this.data.newQuestion.id;
 
         deletePicApi(pid).then(res => {
             console.log(res);
-        } )
+        })
     },
     // 分类筛选改变事件
     onFilterCategoryChange(e) {
         const index = e.detail.value;
         const category = this.data.filterCategories[index];
-        
+
         this.setData({
             currentCategoryIndex: index,
             currentCategory: category === '全部' ? '' : category,
@@ -801,7 +810,7 @@ Page({
     onFilterRegulationChange(e) {
         const index = e.detail.value;
         const regulation = this.data.filterRegulations[index];
-        
+
         this.setData({
             currentRegulationIndex: index,
             currentRegulation: regulation === '全部' ? '' : regulation,
