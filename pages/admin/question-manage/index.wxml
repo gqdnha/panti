@@ -136,8 +136,7 @@
                 <view class="option-item">C. <input type="text" data-field="option3" bindinput="onNewQuestionInput" value="{{newQuestion.option3}}" maxlength="500" /></view>
                 <view class="option-item">D. <input type="text" data-field="option4" bindinput="onNewQuestionInput" value="{{newQuestion.option4}}" maxlength="500" /></view>
             </view>
-            <!-- 添加题目的弹窗 WXML 片段 -->
-            <view class="modal-content {{questionType === '判断题' ? 'judge-question' : ''}}">
+            <view class="modal-content" wx:if="{{newQuestion.type === '判断题'}}">
                 <view class="form-item">
                     <label>选项</label>
                     <view class="option-item">
@@ -158,7 +157,7 @@
             </view>
             <view class="form-item">
                 <label>解析</label>
-                <textarea data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}" maxlength="500"></textarea>
+                <textarea data-field="analysis" bindinput="onNewQuestionInput" value="{{newQuestion.analysis}}" maxlength="2000"></textarea>
             </view>
         </view>
         <view class="modal-footer">
@@ -214,10 +213,16 @@
                 <view class="option-item">C. <input type="text" data-field="option3" bindinput="onEditQuestionInput" value="{{editQuestion.option3}}" maxlength="500" /></view>
                 <view class="option-item">D. <input type="text" data-field="option4" bindinput="onEditQuestionInput" value="{{editQuestion.option4}}" maxlength="500" /></view>
             </view>
-            <view class="form-item" wx:if="{{editQuestion.type === '判断题'}}">
-                <label>选项</label>
-                <view class="fixed-option">T. 正确</view>
-                <view class="fixed-option">F. 错误</view>
+            <view class="modal-content" wx:if="{{editQuestion.type === '判断题'}}">
+                <view class="form-item">
+                    <label>选项</label>
+                    <view class="option-item">
+                        <view class="option-label">T. 正确</view>
+                    </view>
+                    <view class="option-item">
+                        <view class="option-label">F. 错误</view>
+                    </view>
+                </view>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题' || editQuestion.type === '判断题'}}">
                 <label>答案（选项）</label>
