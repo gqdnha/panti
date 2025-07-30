@@ -1,4 +1,3 @@
-// import { log } from 'echarts/types/src/util/log.js';
 import { getAllQuestion, addNewQuestion, deleteQuestionApi, updateQuestion, getQuestionDetail, getWrongQuestionPercent, uploadImageApi, deletePicApi, getQuestionRegulation } from '../../../api/admin';
 import { getCategotyListApi } from '../../../api/getCategoryList'
 
@@ -20,8 +19,6 @@ Page({
             option2: '',
             option3: '',
             option4: '',
-            optionT: '',
-            optionF: '',
             answer: '',
             category: '',
             analysis: '',
@@ -79,8 +76,8 @@ Page({
         if (!category || category === '全部') {
             console.log('分类为空或全部，清空法律分类');
             this.setData({
-                filterRegulations: ['无'],
-                regulations: ['无'],
+                filterRegulations: ['全部'],
+                regulations: [],
                 'newQuestion.regulation': '',
                 'editQuestion.regulation': ''
             });
@@ -114,8 +111,8 @@ Page({
                     duration: 2000
                 });
                 this.setData({
-                    filterRegulations: ['无'],
-                    regulations: ['无'],
+                    filterRegulations: ['全部'],
+                    regulations: [],
                     newRegulationIndex: 0,
                     editRegulationIndex: 0,
                     'newQuestion.regulation': '',
@@ -130,8 +127,8 @@ Page({
                 duration: 2000
             });
             this.setData({
-                filterRegulations: ['无'],
-                regulations: ['无'],
+                filterRegulations: ['全部'],
+                regulations: [],
                 newRegulationIndex: 0,
                 editRegulationIndex: 0,
                 'newQuestion.regulation': '',
@@ -150,11 +147,13 @@ Page({
             pageNum: pageNum,
             pageSize: pageSize
         };
+        this.setData({ isLoading: true });
         getAllQuestion(data).then(res => {
             this.setData({
                 questionList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage,
-                scrollTop: 0 // 重置滚动位置
+                scrollTop: 0, // 重置滚动位置
+                isLoading: false
             });
 
             // 如果当前有选中的分类，重新获取法律分类
@@ -186,6 +185,7 @@ Page({
                 title: '加载题目列表失败',
                 icon: 'none'
             });
+            this.setData({ isLoading: false });
         });
     },
 
@@ -318,17 +318,6 @@ Page({
                 res.option4 = option4;
             }
 
-            // 判断题的选项处理
-            if (res.type === '判断题') {
-                let optionT = '', optionF = '';
-                if (optionsArray.length >= 2) {
-                    optionT = optionsArray[0].substring(2);
-                    optionF = optionsArray[1].substring(2);
-                }
-                res.optionT = optionT;
-                res.optionF = optionF;
-            }
-
             this.setData({
                 isEditModalVisible: true,
                 editQuestion: {
@@ -344,8 +333,6 @@ Page({
                     option2: res.option2,
                     option3: res.option3,
                     option4: res.option4,
-                    optionT: res.optionT,
-                    optionF: res.optionF,
                     regulation: res.regulation || ''
                 },
                 editQuestionTypeIndex: typeIndex,
@@ -375,7 +362,6 @@ Page({
                             }
 
                             this.setData({
-
                                 regulations: regulations,  // 存储法规名称数组
                                 filterRegulations: regulations, // 编辑模式下不添加"全部"选项
                                 editRegulationIndex: regulationIndex,
@@ -383,8 +369,8 @@ Page({
                             });
                         } else {
                             this.setData({
-                                regulations: ['无'],
-                                filterRegulations: ['无'],
+                                regulations: [],
+                                filterRegulations: [],
                                 editRegulationIndex: 0
                             });
                         }
@@ -429,8 +415,6 @@ Page({
                 option2: '',
                 option3: '',
                 option4: '',
-                optionT: '',
-                optionF: '',
                 answer: '',
                 category: '',
                 analysis: '',
@@ -538,6 +522,8 @@ Page({
             });
             return false;
         }
+        
+        // 单选题和多选题需要检查选项
         if ((question.type === '单选题' || question.type === '多选题') && (!question.option1 || !question.option2 || !question.option3 || !question.option4)) {
             wx.showToast({
                 title: '选项不能为空',
@@ -545,13 +531,8 @@ Page({
             });
             return false;
         }
-        if (question.type === '判断题' && (!question.optionT || !question.optionF)) {
-            wx.showToast({
-                title: '选项不能为空',
-                icon: 'none'
-            });
-            return false;
-        }
+        
+        // 检查答案是否为空
         if (!question.answer) {
             wx.showToast({
                 title: '答案不能为空',
@@ -559,6 +540,56 @@ Page({
             });
             return false;
         }
+        
+        // 判断题答案验证
+        if (question.type === '判断题' && !['T', 'F'].includes(question.answer)) {
+            wx.showToast({
+                title: '判断题答案必须为T或F',
+                icon: 'none'
+            });
+            return false;
+        }
+        
+        // 单选题答案验证
+        if (question.type === '单选题' && !['A', 'B', 'C', 'D'].includes(question.answer)) {
+            wx.showToast({
+                title: '单选题答案必须为A、B、C、D中的一个',
+                icon: 'none'
+            });
+            return false;
+        }
+        
+        // 多选题答案验证
+        if (question.type === '多选题') {
+            const validChars = ['A', 'B', 'C', 'D'];
+            const answerChars = question.answer.split('');
+            if (answerChars.length === 0) {
+                wx.showToast({
+                    title: '多选题答案不能为空',
+                    icon: 'none'
+                });
+                return false;
+            }
+            for (const char of answerChars) {
+                if (!validChars.includes(char)) {
+                    wx.showToast({
+                        title: '多选题答案只能包含A、B、C、D',
+                        icon: 'none'
+                    });
+                    return false;
+                }
+            }
+        }
+        
+        // 检查是否选择了法律分类
+        if (this.data.regulations.length > 0 && !question.regulation) {
+            wx.showToast({
+                title: '请选择法律分类',
+                icon: 'none'
+            });
+            return false;
+        }
+        
         return true;
     },
 
@@ -567,19 +598,11 @@ Page({
         if (newQuestion.type === '单选题' || newQuestion.type === '多选题') {
             newQuestion.options = `["A.${newQuestion.option1}","B.${newQuestion.option2}","C.${newQuestion.option3}","D.${newQuestion.option4}"]`;
         } else if (newQuestion.type === '判断题') {
-            newQuestion.options = `["T.${newQuestion.optionT}","F.${newQuestion.optionF}"]`;
+            // 判断题选项固定为T和F
+            newQuestion.options = `["T.正确","F.错误"]`;
         }
 
         if (!this.validateQuestion(newQuestion)) {
-            return;
-        }
-
-        // 检查是否选择了法律分类
-        if (this.data.regulations.length > 0 && !newQuestion.regulation) {
-            wx.showToast({
-                title: '请选择法律分类',
-                icon: 'none'
-            });
             return;
         }
 
@@ -680,19 +703,11 @@ Page({
         if (editQuestion.type === '单选题' || editQuestion.type === '多选题') {
             editQuestion.options = `["A.${editQuestion.option1}","B.${editQuestion.option2}","C.${editQuestion.option3}","D.${editQuestion.option4}"]`;
         } else if (editQuestion.type === '判断题') {
-            editQuestion.options = `["T.${editQuestion.optionT}","F.${editQuestion.optionF}"]`;
+            // 判断题选项固定为T和F
+            editQuestion.options = `["T.正确","F.错误"]`;
         }
 
         if (!this.validateQuestion(editQuestion)) {
-            return;
-        }
-
-        // 检查是否选择了法律分类
-        if (this.data.regulations.length > 0 && !editQuestion.regulation) {
-            wx.showToast({
-                title: '请选择法律分类',
-                icon: 'none'
-            });
             return;
         }
 
@@ -715,6 +730,7 @@ Page({
             });
         });
     },
+    
     // 添加图片
     addImg() {
         // 假设正在编辑的题目 ID 作为 questionId，这里你可以根据实际情况修改获取方式
@@ -746,6 +762,7 @@ Page({
             }
         });
     },
+    
     deletImg() {
         const pid = this.data.editQuestion.id || this.data.newQuestion.id;
 
@@ -753,6 +770,7 @@ Page({
             console.log(res);
         })
     },
+    
     // 分类筛选改变事件
     onFilterCategoryChange(e) {
         const index = e.detail.value;
@@ -769,7 +787,7 @@ Page({
             if (category && category !== '全部') {
                 getQuestionRegulation(category).then(regulationRes => {
                     if (regulationRes && regulationRes.length > 0) {
-                        const regulations = Array.isArray(regulationRes) ? regulationRes : [regulationRes];
+                        const regulations = Array.isArray(regulationRes) ? regulationRes.map(item => item.regulation) : [regulationRes.regulation];
                         this.setData({
                             filterRegulations: ['全部', ...regulations]
                         });
@@ -860,4 +878,4 @@ Page({
             'editQuestion.regulation': regulation
         });
     },
-});    
+});        
