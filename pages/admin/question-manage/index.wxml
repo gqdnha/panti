@@ -3,14 +3,7 @@
     <view class="search-box">
         <view class="search-input-wrapper">
             <image class="search-icon" src="/assets/icons/search.png" mode="aspectFit"></image>
-            <input 
-                class="search-input" 
-                type="text" 
-                placeholder="请输入题目关键词" 
-                value="{{searchKeyword}}"
-                bindinput="onSearchInput"
-                bindconfirm="onSearch"
-            />
+            <input class="search-input" type="text" placeholder="请输入题目关键词" value="{{searchKeyword}}" bindinput="onSearchInput" bindconfirm="onSearch" />
             <view class="search-clear" bindtap="clearSearch" wx:if="{{searchKeyword}}">
                 <image class="clear-icon" src="/assets/icons/clear.png" mode="aspectFit"></image>
             </view>
@@ -52,7 +45,7 @@
             </picker>
         </view>
 
-        
+
     </view>
 
     <!-- 题目列表 -->
@@ -65,16 +58,9 @@
                 <view class="header-item">类型</view>
                 <view class="header-item">操作</view>
             </view>
-            
+
             <!-- 可滚动的内容区域 -->
-            <scroll-view 
-                scroll-y 
-                class="list-content" 
-                scroll-top="{{scrollTop}}"
-                enhanced="{{true}}"
-                show-scrollbar="{{true}}"
-                scroll-anchoring="{{true}}"
-            >
+            <scroll-view scroll-y class="list-content" scroll-top="{{scrollTop}}" enhanced="{{true}}" show-scrollbar="{{true}}" scroll-anchoring="{{true}}">
                 <view class="list-item" wx:for="{{questionList}}" wx:key="id">
                     <view class="question-id">{{(pageNum - 1) * pageSize + index + 1}}</view>
                     <view class="question-title">{{item.content}}</view>
@@ -127,7 +113,7 @@
                     </view>
                 </picker>
             </view>
-            
+
             <view class="form-item">
                 <label>法律分类</label>
                 <picker mode="selector" range="{{regulations}}" value="{{newRegulationIndex}}" bindchange="onRegulationChange">
@@ -136,7 +122,7 @@
                     </view>
                 </picker>
             </view>
-            
+
             <view class="form-item">
                 <label>题目内容</label>
                 <!-- 添加图片 -->
@@ -150,10 +136,17 @@
                 <view class="option-item">C. <input type="text" data-field="option3" bindinput="onNewQuestionInput" value="{{newQuestion.option3}}" maxlength="500" /></view>
                 <view class="option-item">D. <input type="text" data-field="option4" bindinput="onNewQuestionInput" value="{{newQuestion.option4}}" maxlength="500" /></view>
             </view>
-            <view class="form-item" wx:if="{{newQuestion.type === '判断题'}}">
-                <label>选项</label>
-                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onNewQuestionInput" value="{{newQuestion.optionT}}" maxlength="500" /></view>
-                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onNewQuestionInput" value="{{newQuestion.optionF}}" maxlength="500" /></view>
+            <!-- 添加题目的弹窗 WXML 片段 -->
+            <view class="modal-content {{questionType === '判断题' ? 'judge-question' : ''}}">
+                <view class="form-item">
+                    <label>选项</label>
+                    <view class="option-item">
+                        <view class="option-label">T. 正确</view>
+                    </view>
+                    <view class="option-item">
+                        <view class="option-label">F. 错误</view>
+                    </view>
+                </view>
             </view>
             <view class="form-item" wx:if="{{newQuestion.type === '单选题' || newQuestion.type === '多选题' || newQuestion.type === '判断题'}}">
                 <label>答案（选项）</label>
@@ -223,8 +216,8 @@
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '判断题'}}">
                 <label>选项</label>
-                <view class="option-item">T. <input type="text" data-field="optionT" bindinput="onEditQuestionInput" value="{{editQuestion.optionT}}" maxlength="500" /></view>
-                <view class="option-item">F. <input type="text" data-field="optionF" bindinput="onEditQuestionInput" value="{{editQuestion.optionF}}" maxlength="500" /></view>
+                <view class="fixed-option">T. 正确</view>
+                <view class="fixed-option">F. 错误</view>
             </view>
             <view class="form-item" wx:if="{{editQuestion.type === '单选题' || editQuestion.type === '多选题' || editQuestion.type === '判断题'}}">
                 <label>答案（选项）</label>

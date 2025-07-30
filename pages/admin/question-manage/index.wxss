@@ -16,7 +16,6 @@
     margin: 0 20rpx;
     border-radius: 16rpx;
     display: flex;
-    /* gap: 16rpx; */
     box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.04);
 }
 
@@ -316,7 +315,6 @@
 }
 
 .list-content td {
-    /* border-bottom: 1rpx solid #eee; */
     padding: 16rpx;
 }
 
@@ -325,7 +323,7 @@
     display: flex;
     justify-content: center;
     gap: 24rpx;
-    margin: 30rpx  10rpx;
+    margin: 30rpx 10rpx;
     padding: 0 20rpx;
 }
 
@@ -792,4 +790,31 @@ button::after {
     min-height: 60rpx;
     display: flex;
     align-items: center;
+}
+
+/* ========== 判断题选项特殊处理 ========== */
+/* 判断题选项容器 */
+.judge-question .option-item {
+    position: relative;
+    padding-left: 0; /* 移除原有内边距 */
+}
+
+/* 隐藏判断题选项前的 T/F 标识 */
+.judge-question .option-item::before {
+    content: none; /* 清空伪元素内容，隐藏 T/F */
+}
+
+/* 判断题选项文本样式 */
+.judge-question .option-text {
+    padding-left: 0; /* 移除原有内边距 */
+}
+
+/* 其他题型保持原有显示 */
+.single-question .option-item::before,
+.multi-question .option-item::before {
+    content: attr(data-prefix); /* 显示选项前缀（A/B/C/D） */
+    position: absolute;
+    left: 24rpx;
+    color: #4a90e2;
+    font-weight: 500;
 }

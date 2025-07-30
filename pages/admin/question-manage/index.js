@@ -598,8 +598,13 @@ Page({
         if (newQuestion.type === '单选题' || newQuestion.type === '多选题') {
             newQuestion.options = `["A.${newQuestion.option1}","B.${newQuestion.option2}","C.${newQuestion.option3}","D.${newQuestion.option4}"]`;
         } else if (newQuestion.type === '判断题') {
-            // 判断题选项固定为T和F
+            // 判断题选项固定为T和F，无需用户输入
             newQuestion.options = `["T.正确","F.错误"]`;
+            // 清空可能残留的选项值，避免混淆
+            newQuestion.option1 = '';
+            newQuestion.option2 = '';
+            newQuestion.option3 = '';
+            newQuestion.option4 = '';
         }
 
         if (!this.validateQuestion(newQuestion)) {
@@ -703,8 +708,13 @@ Page({
         if (editQuestion.type === '单选题' || editQuestion.type === '多选题') {
             editQuestion.options = `["A.${editQuestion.option1}","B.${editQuestion.option2}","C.${editQuestion.option3}","D.${editQuestion.option4}"]`;
         } else if (editQuestion.type === '判断题') {
-            // 判断题选项固定为T和F
+            // 判断题选项固定为T和F，无需用户输入
             editQuestion.options = `["T.正确","F.错误"]`;
+            // 清空可能残留的选项值
+            editQuestion.option1 = '';
+            editQuestion.option2 = '';
+            editQuestion.option3 = '';
+            editQuestion.option4 = '';
         }
 
         if (!this.validateQuestion(editQuestion)) {
@@ -878,4 +888,4 @@ Page({
             'editQuestion.regulation': regulation
         });
     },
-});        
+});    
