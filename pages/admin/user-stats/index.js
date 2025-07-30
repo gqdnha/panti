@@ -1,5 +1,5 @@
-import { getAllUserInfo } from '../../../api/admin'
-import {getUserInfo} from '../../../api/getUserInfo'
+import { getAllUserInfo,getUserInfo } from '../../../api/admin'
+// import {getUserInfo} from '../../../api/getUserInfo'
 import { getUserDailyFinish } from '../../../api/getDeilyFinash'
 import { request } from '../../../api/request'
 import {downLoadUserText} from '../../../api/downLoadUserText'
@@ -111,7 +111,7 @@ Page({
         });
 
         // 获取用户正确率
-        getUserInfo().then(res => {
+        getUserInfo(user.user_id).then(res => {
             console.log('获取到的用户信息:', res);
             this.setData({
                 rightPercent: res.rightPercent

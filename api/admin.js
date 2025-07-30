@@ -211,3 +211,14 @@ export const getQuestionRegulation = (category) => {
     });
 }; 
 
+// 获取正确率等信息
+export const getUserInfo = (data) => {
+    const userId = data
+    console.log(userId,'获取用户id用于正确率获取');
+    return request({
+        // url: `/dailyQuestion/getEverydayQuestion/${data}`,
+        url:`/question/findAlreadyQuestion?userId=${userId}`,
+        method: 'POST'
+    })
+}
+
