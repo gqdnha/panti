@@ -99,11 +99,13 @@
 
                 <!-- 填空题 -->
                 <block class="testCard" wx:if="{{questionList[currentQuestion - 1].type === '填空题'}}">
-                    <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted[currentQuestion - 1]? 'wrong' : '')}}" 
-                           placeholder="请输入答案" 
-                           value="{{answer}}" 
-                           bindinput="{{!isSubmitted[currentQuestion - 1] ? 'onInputAnswer' : ''}}" 
-                           disabled="{{isSubmitted[currentQuestion - 1]}}" />
+                    <input 
+                        class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted[currentQuestion - 1]? 'wrong' : '')}}" 
+                        placeholder="请输入答案" 
+                        value="{{selectedOptions[currentQuestion - 1] || ''}}" 
+                        bindinput="{{!isSubmitted[currentQuestion - 1] ? 'onInputAnswer' : ''}}" 
+                        disabled="{{isSubmitted[currentQuestion - 1]}}" 
+                    />
                 </block>
             </view>
 
@@ -205,4 +207,4 @@
             </view>
         </view>
     </view>
-</view>
+</view>    

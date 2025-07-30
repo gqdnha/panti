@@ -25,7 +25,6 @@ Page({
         detailData: {},
         totalQuestions: 0,
         studyTime: 0,
-        allAnswers: [],
         isSubmitted: [],
         questionList: [],
         selectedOptions: [],
@@ -434,23 +433,18 @@ Page({
         });
     },
     onInputAnswer: function (e) {
-        const {
-            value
-        } = e.detail;
-        const {
-            currentQuestion,
-            allAnswers
-        } = this.data;
-        const newAllAnswers = [...allAnswers];
-        newAllAnswers[currentQuestion - 1] = value;
+        const { value } = e.detail;
+        const { currentQuestion, selectedOptions } = this.data;
+        // 更新当前题目的selectedOptions
+        const newSelectedOptions = [...selectedOptions];
+        newSelectedOptions[currentQuestion - 1] = value;
         this.setData({
-            allAnswers: newAllAnswers
+            selectedOptions: newSelectedOptions
         });
     },
     submitSingleAnswer: function () {
         const {
             questionList,
-            allAnswers,
             selectedOptions,
             questionStates,
             currentQuestion,
@@ -500,7 +494,7 @@ Page({
                 return;
             }
         } else if (question.type === '填空题') {
-            const userAnswer = allAnswers[currentQuestion - 1];
+            const userAnswer = selectedOptions[currentQuestion - 1];
             if (!userAnswer || userAnswer.trim() === '') {
                 wx.showToast({
                     title: '请输入答案',
@@ -510,7 +504,6 @@ Page({
             }
         }
 
-        const userAnswer = allAnswers[currentQuestion - 1];
         const questionId = question.questionId;
         let userAnswerToSubmit;
         if (question.type === '单选题' || question.type === '判断题') {
@@ -522,7 +515,7 @@ Page({
             const sortedAnswerString = sortedSelectedChars.join('');
             userAnswerToSubmit = sortedAnswerString;
         } else if (question.type === '填空题') {
-            userAnswerToSubmit = userAnswer || '';
+            userAnswerToSubmit = selectedOptions[currentQuestion - 1] || '';
         }
         const data = [{
             questionId: questionId,
@@ -752,4 +745,4 @@ Page({
             showAnswerCard: false
         });
     },
-});
+});    
