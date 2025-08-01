@@ -1,11 +1,11 @@
 <view class="container">
-    <!-- 欢迎语 -->
+    <!-- 欢迎语（仅在不显示表单时展示） -->
     <view class="welcome-text" wx:if="{{!showPhoneVerify}}">
         <view class="welcome-title">欢迎使用</view>
         <view class="welcome-subtitle">让生活更美好</view>
     </view>
 
-    <!-- 微信登录按钮 -->
+    <!-- 微信登录按钮（仅在不显示表单时展示） -->
     <view class="login-box" wx:if="{{!showPhoneVerify}}">
         <view class="title">欢迎登录</view>
         <view class="login-btn" hover-class="button-hover" bindtap="wxLogin">
@@ -14,7 +14,7 @@
         </view>
     </view>
 
-    <!-- 手机号验证界面 -->
+    <!-- 信息完善表单（仅在需要时显示，复用原有login-box样式） -->
     <view class="login-box" wx:if="{{showPhoneVerify}}">
         <view class="title">完善信息</view>
         <view class="input-group">
@@ -32,20 +32,5 @@
             <input type="number" placeholder="请输入手机号" bindinput="onPhoneInput" value="{{phone}}" maxlength="11" />
         </view>
         <view class="login-btn" hover-class="button-hover" bindtap="verifyPhone">提交</view>
-    </view>
-
-    <!-- 部门选择器 -->
-    <view class="department-picker-mask" wx:if="{{showDepartmentPicker}}" bindtap="hideDepartmentPicker">
-        <view class="department-picker-content" catchtap="stopPropagation">
-            <view class="picker-header">
-                <text>选择部门</text>
-                <image class="close-icon" src="/assets/icons/close.png" bindtap="hideDepartmentPicker" mode="aspectFit"></image>
-            </view>
-            <picker-view class="picker-view" indicator-style="height: 50px;" value="{{departmentIndex}}" bindchange="onDepartmentChange">
-                <picker-view-column>
-                    <view class="picker-item" wx:for="{{departmentList}}" wx:key="*this">{{item}}</view>
-                </picker-view-column>
-            </picker-view>
-        </view>
     </view>
 </view>

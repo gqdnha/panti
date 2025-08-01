@@ -3,6 +3,7 @@ import { getCategotyListApi } from '../../../api/getCategoryList'
 
 Page({
     data: {
+        testTextArea:'',
         // 正确率
         wrongQuestionPercent: '',
         questionList: [],
@@ -288,6 +289,10 @@ Page({
     editQuestion(e) {
         const questionId = e.currentTarget.dataset.id;
         getQuestionDetail(questionId).then((res) => {
+            console.log(res.analysis);
+            this.setData({
+                testTextArea:res.analysis
+            })
             const typeIndex = this.data.questionTypes.indexOf(res.type);
             const categoryIndex = this.data.categories.indexOf(res.category);
 
@@ -384,7 +389,7 @@ Page({
                 icon: 'none'
             });
         });
-
+        // 获取错误率
         getWrongQuestionPercent(questionId).then(res => {
             if (res !== null && res !== undefined) {
                 const percent = parseFloat(res);

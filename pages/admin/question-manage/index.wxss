@@ -482,8 +482,8 @@ button::after {
 
 .form-item textarea {
     width: 90%;
-    height: 160rpx;
-    padding: 20rpx 24rpx;
+    /* height: 200rpx; */
+    padding: 20rpx 20rpx;
     border: 2rpx solid #e8e8e8;
     border-radius: 12rpx;
     font-size: 28rpx;

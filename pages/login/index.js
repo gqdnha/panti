@@ -3,12 +3,12 @@ import { setupTabBar } from '../../utils/tabBar';
 
 Page({
     data: {
-        showPhoneVerify: false,
+        showPhoneVerify: false, // 控制信息完善弹窗显示
         phone: '',
         name: '',
         department: '',
-        loginCode: '', // 保存登录code
-        userId: '', // 保存用户ID
+        loginCode: '', // 微信登录code
+        userId: '', // 用户ID
         departmentList: [
             '市本级', 
             '玄武区环境监察大队', 
@@ -25,159 +25,105 @@ Page({
             '经济技术开发区环境监察大队',
             '江北新区环境监察大队',
             '生态环境监察执法研究所'
-        ], // 部门列表
-        departmentIndex: 0 // 默认选中第一个
+        ],
+        departmentIndex: 0 // 默认选中第一个部门
     },
 
-    // 微信登录
+    /**
+     * 微信一键登录
+     * 1. 获取微信登录code
+     * 2. 调用后端登录接口
+     * 3. 根据返回的phone字段判断是否显示完善信息弹窗
+     */
     wxLogin() {
-        wx.showLoading({
-            title: '登录中...',
-        });
+        wx.showLoading({ title: '登录中...' });
 
-        // 调用wx.login获取code
         wx.login({
             success: (res) => {
                 if (res.code) {
-                    // 保存code供后续使用
-                    this.setData({
-                        loginCode: res.code
-                    });
+                    this.setData({ loginCode: res.code });
                     
-                    // 发送code到后端
+                    // 发送code到后端验证
                     request({
                         url: '/user/login',
                         method: 'POST',
-                        data: {
-                            code: res.code
-                        }
+                        data: { code: res.code }
                     }).then(res => {
                         wx.hideLoading();
-                        // 保存用户信息到缓存
+                        // 保存基础用户信息到缓存
                         wx.setStorageSync('token', res.token);
                         wx.setStorageSync('userId', res.userId);
-                        wx.setStorageSync('name', res.name);
-                        wx.setStorageSync('phone', res.phone);
                         wx.setStorageSync('role', res.role);
-                        wx.setStorageSync('department', res.department);
                         wx.setStorageSync('learnTime', res.learnTime);
-                        
-                        this.setData({
-                            userId: res.userId
-                        });
-                        
-                        // 设置tabBar显示
+                        this.setData({ userId: res.userId });
                         setupTabBar();
-                        
-                        // 判断是否需要验证手机号
-                        if (!res.phone) {
-                            // 手机号为空，显示验证界面
+
+                        // 核心逻辑：根据phone是否存在控制弹窗
+                        if (!res.phone || res.phone.trim() === '') {
+                            // 无手机号 → 显示完善信息弹窗
                             this.setData({
-                                showPhoneVerify: true
+                                showPhoneVerify: true,
+                                // 预填已有信息（如后端返回姓名/部门）
+                                name: res.name || '',
+                                department: res.department || this.data.departmentList[0],
+                                departmentIndex: res.department 
+                                    ? this.data.departmentList.indexOf(res.department) 
+                                    : 0
                             });
                         } else {
-                            // 手机号不为空，直接跳转首页
+                            // 有手机号 → 直接登录成功
+                            wx.setStorageSync('name', res.name);
+                            wx.setStorageSync('phone', res.phone);
+                            wx.setStorageSync('department', res.department);
                             wx.showToast({
                                 title: '登录成功',
                                 icon: 'success',
                                 duration: 1500,
-                                success: () => {
-                                    setTimeout(() => {
-                                        // 重新初始化tabBar
-                                        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-                                            const role = wx.getStorageSync('role');
-                                            const list = [
-                                                {
-                                                    pagePath: "/pages/index/index",
-                                                    text: "首页",
-                                                    iconPath: "/assets/icons/home.png",
-                                                    selectedIconPath: "/assets/icons/home-active.png"
-                                                },
-                                                {
-                                                    pagePath: "/pages/user-info/index",
-                                                    text: "我的",
-                                                    iconPath: "/assets/icons/user.png",
-                                                    selectedIconPath: "/assets/icons/user-active.png"
-                                                }
-                                            ];
-                                            
-                                            if (role === 'admin') {
-                                                list.push({
-                                                    pagePath: "/pages/admin/dashboard/index",
-                                                    text: "管理",
-                                                    iconPath: "/assets/icons/admin.png",
-                                                    selectedIconPath: "/assets/icons/admin-active.png"
-                                                });
-                                            }
-                                            
-                                            this.getTabBar().setData({
-                                                selected: 0,
-                                                list: list
-                                            });
-                                            // 更新tabBar显示
-                                            this.getTabBar().updateTabBar();
-                                        }
-                                        wx.switchTab({
-                                            url: '/pages/index/index'
-                                        });
-                                    }, 1500);
-                                }
+                                success: () => setTimeout(() => {
+                                    this.initTabBar(); // 初始化底部导航
+                                    wx.switchTab({ url: '/pages/index/index' });
+                                }, 1500)
                             });
                         }
                     }).catch(err => {
                         wx.hideLoading();
                         console.error('登录失败:', err);
-                        wx.showToast({
-                            title: '登录失败，请重试',
-                            icon: 'none'
-                        });
+                        wx.showToast({ title: '登录失败，请重试', icon: 'none' });
                     });
                 } else {
                     wx.hideLoading();
-                    wx.showToast({
-                        title: '获取登录凭证失败',
-                        icon: 'none'
-                    });
+                    wx.showToast({ title: '获取登录凭证失败', icon: 'none' });
                 }
             },
             fail: (error) => {
                 wx.hideLoading();
-                console.error('wx.login失败：', error);
-                wx.showToast({
-                    title: '登录失败，请重试',
-                    icon: 'none'
-                });
+                console.error('wx.login失败:', error);
+                wx.showToast({ title: '登录失败，请重试', icon: 'none' });
             }
         });
     },
 
-    // 手机号输入处理
+    /**
+     * 手机号输入处理
+     * 仅允许输入数字，限制11位
+     */
     onPhoneInput(e) {
-        const value = e.detail.value;
-        // 只允许输入数字
-        const phoneNumber = value.replace(/\D/g, '');
-        // 限制长度为11位
-        const limitedPhone = phoneNumber.slice(0, 11);
-        
-        this.setData({
-            phone: limitedPhone
-        });
+        const value = e.detail.value.replace(/\D/g, ''); // 过滤非数字
+        this.setData({ phone: value.slice(0, 11) }); // 限制长度
     },
 
-    // 姓名输入处理
+    /**
+     * 姓名输入处理
+     * 去除首尾空格，限制20个字符
+     */
     onNameInput(e) {
-        const value = e.detail.value;
-        // 去除首尾空格
-        const trimmedValue = value.trim();
-        // 限制长度为20个字符
-        const limitedName = trimmedValue.slice(0, 20);
-        
-        this.setData({
-            name: limitedName
-        });
+        const value = e.detail.value.trim().slice(0, 20);
+        this.setData({ name: value });
     },
 
-    // 选择部门
+    /**
+     * 部门选择处理
+     */
     onDepartmentChange(e) {
         const index = e.detail.value;
         this.setData({
@@ -185,70 +131,104 @@ Page({
             departmentIndex: index
         });
     },
-    
-    // 检查所有字段是否已填写
+
+    /**
+     * 校验表单字段完整性
+     * @returns {boolean} 字段是否全部有效
+     */
     checkAllFieldsFilled() {
         const { phone, name, department, userId } = this.data;
         
-        const isPhoneValid = phone && phone.length === 11;
-        const isNameValid = name && name.trim().length >= 2;
-        const isDepartmentValid = department && department !== '';
-        const isUserIdValid = userId && userId !== '';
-        
-        return isPhoneValid && isNameValid && isDepartmentValid && isUserIdValid;
+        if (phone.length !== 11) {
+            wx.showToast({ title: '请输入11位有效手机号', icon: 'none' });
+            return false;
+        }
+        if (name.length < 2) {
+            wx.showToast({ title: '请输入至少2个字符的姓名', icon: 'none' });
+            return false;
+        }
+        if (!department) {
+            wx.showToast({ title: '请选择部门', icon: 'none' });
+            return false;
+        }
+        if (!userId) {
+            wx.showToast({ title: '用户信息异常，请重新登录', icon: 'none' });
+            return false;
+        }
+        return true;
     },
 
-    // 验证手机号
+    /**
+     * 提交完善的用户信息
+     */
     verifyPhone() {
-        // 检查所有字段是否已填写
-        if (!this.checkAllFieldsFilled()) {
-            wx.showToast({
-                title: '请完整填写所有信息',
-                icon: 'none'
-            });
-            return;
-        }
-        
-        const { phone, name, department, userId } = this.data;
+        if (!this.checkAllFieldsFilled()) return;
 
-        wx.showLoading({
-            title: '提交中...',
-        });
+        const { phone, name, department, userId } = this.data;
+        wx.showLoading({ title: '提交中...' });
 
         request({
             url: '/user/addUserInfo',
             method: 'POST',
-            data: {
-                userId: userId,
-                phone: phone,
-                name: name,
-                department: department
-            }
+            data: { userId, phone, name, department }
         }).then(res => {
             wx.hideLoading();
-                // 保存用户信息到缓存
-                wx.setStorageSync('name', name);
-                wx.setStorageSync('phone', phone);
-                wx.setStorageSync('department', department);
-                wx.showToast({
-                    title: '提交成功',
-                    icon: 'success',
-                    duration: 1500,
-                    success: () => {
-                        setTimeout(() => {
-                            wx.switchTab({
-                                url: '/pages/index/index'
-                            });
-                        }, 1500);
-                    }
-                });
+            // 保存完善后的信息到缓存
+            wx.setStorageSync('name', name);
+            wx.setStorageSync('phone', phone);
+            wx.setStorageSync('department', department);
+            
+            wx.showToast({
+                title: '信息提交成功',
+                icon: 'success',
+                duration: 1500,
+                success: () => setTimeout(() => {
+                    this.setData({ showPhoneVerify: false }); // 关闭弹窗
+                    this.initTabBar();
+                    wx.switchTab({ url: '/pages/index/index' });
+                }, 1500)
+            });
         }).catch(err => {
             wx.hideLoading();
-            console.error('提交失败:', err);
-            wx.showToast({
-                title: err,
-                icon: 'none'
+            console.error('信息提交失败:', err);
+            wx.showToast({ 
+                title: err.msg || '提交失败，请重试', 
+                icon: 'none' 
             });
         });
+    },
+
+    /**
+     * 初始化底部导航栏（根据角色显示不同菜单）
+     */
+    initTabBar() {
+        if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+            const role = wx.getStorageSync('role');
+            const tabBarList = [
+                {
+                    pagePath: "/pages/index/index",
+                    text: "首页",
+                    iconPath: "/assets/icons/home.png",
+                    selectedIconPath: "/assets/icons/home-active.png"
+                },
+                {
+                    pagePath: "/pages/user-info/index",
+                    text: "我的",
+                    iconPath: "/assets/icons/user.png",
+                    selectedIconPath: "/assets/icons/user-active.png"
+                }
+            ];
+            // 管理员额外显示"管理"菜单
+            if (role === 'admin') {
+                tabBarList.push({
+                    pagePath: "/pages/admin/dashboard/index",
+                    text: "管理",
+                    iconPath: "/assets/icons/admin.png",
+                    selectedIconPath: "/assets/icons/admin-active.png"
+                });
+            }
+            this.getTabBar().setData({ selected: 0, list: tabBarList });
+            this.getTabBar().updateTabBar();
+        }
     }
 });
