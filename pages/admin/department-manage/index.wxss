@@ -11,7 +11,7 @@
   font-size: 48rpx;
   font-weight: bold;
   color: #1E4B92;
-  margin-bottom: 40rpx;
+  margin-bottom: 10rpx;
 }
 .desc {
   font-size: 32rpx;
@@ -20,7 +20,7 @@
 }
 .dept-list {
   width: 100%;
-  margin-top: 40rpx;
+  margin-top: 10rpx;
   display: flex;
   flex-direction: column;
   gap: 32rpx;
