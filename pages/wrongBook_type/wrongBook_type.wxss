@@ -183,7 +183,7 @@
     display: flex;
     justify-content: space-between;
     padding: 20rpx;
-    background-color: #fff;
+    /* background-color: #fff; */
     border-radius: 10rpx;
 }
 
@@ -192,6 +192,7 @@
     border-radius: 8rpx;
     font-size: 30rpx;
     text-align: center;
+    background-color: #fff;
 }
 
 .prev {

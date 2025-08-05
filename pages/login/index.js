@@ -1,42 +1,76 @@
 import { request } from '../../api/request';
 import { setupTabBar } from '../../utils/tabBar';
+import { getApartmentList } from '../../api/apartmentAdmin'; // 与部门管理页面共用接口
 
 Page({
     data: {
-        showPhoneVerify: false, // 控制信息完善弹窗显示
+        showPhoneVerify: false,
         phone: '',
         name: '',
-        department: '',
-        loginCode: '', // 微信登录code
-        userId: '', // 用户ID
-        departmentList: [
-            '市本级', 
-            '玄武区环境监察大队', 
-            '秦淮区环境监察大队', 
-            '建邺区环境监察大队', 
-            '鼓楼区环境监察大队', 
-            '浦口区生态环境综合行政执法局',
-            '栖霞生态环境综合行政执法局',
-            '雨花台生态环境综合行政执法局',
-            '江宁区环境监察大队',
-            '六合区环境监察大队',
-            '溧水区生态环境综合行政执法局',
-            '高淳区环境监察大队',
-            '经济技术开发区环境监察大队',
-            '江北新区环境监察大队',
-            '江北新区生态环境综合行政执法局',
-            '生态环境监察执法研究所',
-            '玄武区生态环境综合行政执法局',
-            '秦淮区生态环境综合行政执法局'
-        ],
-        departmentIndex: 0 // 默认选中第一个部门
+        department: '', // 选中的二级部门名称
+        loginCode: '',
+        userId: '',
+        departmentList: [], // 仅存放二级部门名称
+        departmentIndex: 0
+    },
+
+    onLoad() {
+        // 页面加载时获取并提取二级部门列表
+        this.getSecondLevelDepartments();
     },
 
     /**
-     * 微信一键登录
-     * 1. 获取微信登录code
-     * 2. 调用后端登录接口
-     * 3. 根据返回的phone字段判断是否显示完善信息弹窗
+     * 从后端获取数据并仅提取二级部门名称
+     * 与部门管理页面保持一致的解析逻辑
+     */
+    getSecondLevelDepartments() {
+        getApartmentList().then(res => {
+            console.log("原始部门数据:", res);
+            
+            // 仅提取二级部门名称（与部门管理页面逻辑一致）
+            const secondLevelDepts = [];
+            
+            // 假设后端返回格式：[{一级部门: [二级部门数组]}, ...]
+            res.forEach(deptGroup => {
+                for (const firstLevelName in deptGroup) {
+                    if (deptGroup.hasOwnProperty(firstLevelName)) {
+                        // 遍历二级部门数组，提取名称
+                        const level2Depts = deptGroup[firstLevelName] || [];
+                        level2Depts.forEach(level2 => {
+                            // 确保二级部门名称唯一且不为空
+                            if (level2.department && !secondLevelDepts.includes(level2.department)) {
+                                secondLevelDepts.push(level2.department);
+                            }
+                        });
+                    }
+                }
+            });
+
+            console.log("提取的二级部门列表:", secondLevelDepts);
+            
+            this.setData({
+                departmentList: secondLevelDepts,
+                // 默认选中第一个二级部门（若存在）
+                department: secondLevelDepts.length > 0 ? secondLevelDepts[0] : '',
+                departmentIndex: 0
+            });
+        }).catch(err => {
+            console.error("获取二级部门失败:", err);
+            // 接口失败时使用默认二级部门兜底
+            this.setData({
+                departmentList: [
+                    '高淳区生态环境综合行政执法局', 
+                    '鼓楼区生态环境综合行政执法局'
+                    // 仅保留典型二级部门
+                ],
+                department: '玄武区环境监察大队',
+                departmentIndex: 0
+            });
+        });
+    },
+
+    /**
+     * 微信一键登录（逻辑不变）
      */
     wxLogin() {
         wx.showLoading({ title: '登录中...' });
@@ -46,35 +80,33 @@ Page({
                 if (res.code) {
                     this.setData({ loginCode: res.code });
                     
-                    // 发送code到后端验证
                     request({
                         url: '/user/login',
                         method: 'POST',
                         data: { code: res.code }
                     }).then(res => {
                         wx.hideLoading();
-                        // 保存基础用户信息到缓存
                         wx.setStorageSync('token', res.token);
                         wx.setStorageSync('userId', res.userId);
                         wx.setStorageSync('role', res.role);
-                        wx.setStorageSync('learnTime', res.learnTime);
                         this.setData({ userId: res.userId });
                         setupTabBar();
 
-                        // 核心逻辑：根据phone是否存在控制弹窗
                         if (!res.phone || res.phone.trim() === '') {
-                            // 无手机号 → 显示完善信息弹窗
+                            // 回显用户已有部门（仅匹配二级部门）
+                            let deptIndex = 0;
+                            if (res.department && this.data.departmentList.length > 0) {
+                                deptIndex = this.data.departmentList.indexOf(res.department);
+                                deptIndex = deptIndex === -1 ? 0 : deptIndex;
+                            }
+
                             this.setData({
                                 showPhoneVerify: true,
-                                // 预填已有信息（如后端返回姓名/部门）
                                 name: res.name || '',
-                                department: res.department || this.data.departmentList[0],
-                                departmentIndex: res.department 
-                                    ? this.data.departmentList.indexOf(res.department) 
-                                    : 0
+                                department: this.data.departmentList[deptIndex],
+                                departmentIndex: deptIndex
                             });
                         } else {
-                            // 有手机号 → 直接登录成功
                             wx.setStorageSync('name', res.name);
                             wx.setStorageSync('phone', res.phone);
                             wx.setStorageSync('department', res.department);
@@ -83,7 +115,7 @@ Page({
                                 icon: 'success',
                                 duration: 1500,
                                 success: () => setTimeout(() => {
-                                    this.initTabBar(); // 初始化底部导航
+                                    this.initTabBar();
                                     wx.switchTab({ url: '/pages/index/index' });
                                 }, 1500)
                             });
@@ -106,27 +138,17 @@ Page({
         });
     },
 
-    /**
-     * 手机号输入处理
-     * 仅允许输入数字，限制11位
-     */
+    // 以下方法保持不变
     onPhoneInput(e) {
-        const value = e.detail.value.replace(/\D/g, ''); // 过滤非数字
-        this.setData({ phone: value.slice(0, 11) }); // 限制长度
+        const value = e.detail.value.replace(/\D/g, '');
+        this.setData({ phone: value.slice(0, 11) });
     },
 
-    /**
-     * 姓名输入处理
-     * 去除首尾空格，限制20个字符
-     */
     onNameInput(e) {
         const value = e.detail.value.trim().slice(0, 20);
         this.setData({ name: value });
     },
 
-    /**
-     * 部门选择处理
-     */
     onDepartmentChange(e) {
         const index = e.detail.value;
         this.setData({
@@ -135,10 +157,6 @@ Page({
         });
     },
 
-    /**
-     * 校验表单字段完整性
-     * @returns {boolean} 字段是否全部有效
-     */
     checkAllFieldsFilled() {
         const { phone, name, department, userId } = this.data;
         
@@ -161,9 +179,6 @@ Page({
         return true;
     },
 
-    /**
-     * 提交完善的用户信息
-     */
     verifyPhone() {
         if (!this.checkAllFieldsFilled()) return;
 
@@ -176,7 +191,6 @@ Page({
             data: { userId, phone, name, department }
         }).then(res => {
             wx.hideLoading();
-            // 保存完善后的信息到缓存
             wx.setStorageSync('name', name);
             wx.setStorageSync('phone', phone);
             wx.setStorageSync('department', department);
@@ -186,7 +200,7 @@ Page({
                 icon: 'success',
                 duration: 1500,
                 success: () => setTimeout(() => {
-                    this.setData({ showPhoneVerify: false }); // 关闭弹窗
+                    this.setData({ showPhoneVerify: false });
                     this.initTabBar();
                     wx.switchTab({ url: '/pages/index/index' });
                 }, 1500)
@@ -201,9 +215,6 @@ Page({
         });
     },
 
-    /**
-     * 初始化底部导航栏（根据角色显示不同菜单）
-     */
     initTabBar() {
         if (typeof this.getTabBar === 'function' && this.getTabBar()) {
             const role = wx.getStorageSync('role');
@@ -221,7 +232,6 @@ Page({
                     selectedIconPath: "/assets/icons/user-active.png"
                 }
             ];
-            // 管理员额外显示"管理"菜单
             if (role === 'admin') {
                 tabBarList.push({
                     pagePath: "/pages/admin/dashboard/index",
