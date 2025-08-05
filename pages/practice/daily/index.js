@@ -49,10 +49,12 @@ Page({
         transition: '',
         startDistance: 0,
         ifFinash:0,
-        scrollTop: 0 // 添加scrollTop控制变量
+        scrollTop: 0, // 添加scrollTop控制变量
+        // 新增：记录倒计时暂停时剩余的秒数
+        remainingSecondsWhenPaused: 0
     },
+    
     onLoad: function (options) {
-        
         // 先检查今天是否已经提交过答案
         this.checkTodaySubmission();
         // 获取题目数据
@@ -78,6 +80,7 @@ Page({
             });
         }
     },
+    
     // 用户是否完成
     userFinash() {
         getDailyFinesh().then(res => {
@@ -94,6 +97,7 @@ Page({
             console.error('获取完成状态失败：', error);
         });
     },
+    
     // 检查缓存并启动相应的倒计时
     checkCacheAndStartTimer: function() {
         try {
@@ -115,6 +119,7 @@ Page({
             this.startCountdown();
         }
     },
+    
     // 请求接口
     getData: function () {
         apiGetDailyTest().then(res => {
@@ -211,6 +216,7 @@ Page({
             }
         });
     },
+    
     // 添加滚动到顶部的方法
     scrollToTop() {
         // 方法1：使用选择器
@@ -228,6 +234,7 @@ Page({
             }
         });
     },
+    
     nextQuestion: function () {
         const {
             currentQuestion,
@@ -241,6 +248,7 @@ Page({
             });
         }
     },
+    
     prevQuestion: function () {
         const {
             currentQuestion,
@@ -253,9 +261,10 @@ Page({
             });
         }
     },
+    
     selectOption: function (e) {
-        // 如果已经提交，不允许再选择
-        if (this.data.isSubmitted) {
+        // 如果已经提交或时间到，不允许再选择
+        if (this.data.isSubmitted || this.data.isTimeUp) {
             return;
         }
         const {
@@ -284,10 +293,11 @@ Page({
         
         console.log(`第 ${currentQuestion} 题选中的选项首字：`, optionFirstChar);
     },
+    
     // 多选题
     selectMultipleOption: function (e) {
-        // 如果已经提交，不允许再选择
-        if (this.data.isSubmitted) {
+        // 如果已经提交或时间到，不允许再选择
+        if (this.data.isSubmitted || this.data.isTimeUp) {
             return;
         }
         const {
@@ -339,7 +349,12 @@ Page({
             this.cacheCurrentAnswers();
         });
     },
+    
     onInputAnswer: function (e) {
+        // 如果已经提交或时间到，不允许再输入
+        if (this.data.isSubmitted || this.data.isTimeUp) {
+            return;
+        }
         const {
             value
         } = e.detail;
@@ -371,6 +386,7 @@ Page({
             }
         });
     },
+    
     // 开始倒计时
     startCountdown: function () {
         this.clearCountdown();
@@ -391,13 +407,22 @@ Page({
 
         this.startCountdownWithTime(remainingSeconds);
     },
+    
     // 清除倒计时
     clearCountdown: function () {
         if (this.data.timer) {
             clearInterval(this.data.timer);
+            this.setData({ timer: null });
         }
     },
+    
     submitAllAnswers: function() {
+        // 如果时间已到，直接提交
+        if (this.data.isTimeUp) {
+            this.doSubmitAnswers();
+            return;
+        }
+        
         // 添加确认弹窗
         wx.showModal({
             title: '确认提交',
@@ -409,7 +434,8 @@ Page({
             }
         });
     },
-    // 新增实际提交答案的函数
+    
+    // 实际提交答案的函数
     doSubmitAnswers: function() {
         const {
             allQuestions,
@@ -421,14 +447,16 @@ Page({
         } = this.data;
         const allUserAnswers = [];
 
-        // 检查是否所有题目都已作答
-        const allAnswered = answerSheetStates.every(state => state === true);
-        if (!allAnswered) {
-            wx.showToast({
-                title: '请作答所有题目',
-                icon: 'none'
-            });
-            return;
+        // 检查是否所有题目都已作答（时间到的情况不检查）
+        if (!this.data.isTimeUp) {
+            const allAnswered = answerSheetStates.every(state => state === true);
+            if (!allAnswered) {
+                wx.showToast({
+                    title: '请作答所有题目',
+                    icon: 'none'
+                });
+                return;
+            }
         }
 
         // 收集所有答案
@@ -574,19 +602,23 @@ Page({
                 });
             });
     },
+    
     onTouchStart: function (e) {
-        // 在这里添加触摸开始事件的处理逻辑，如果暂时没有逻辑，可以先空着
+        // 触摸开始事件处理
     },
+    
     onTouchEnd: function (e) {
-        // 在这里添加触摸结束事件的处理逻辑，如果暂时没有逻辑，可以先空着
+        // 触摸结束事件处理
     },
+    
     // 自定义函数，用于判断数组是否包含某个元素
     isArrayAndIncludes: function (arr, item) {
         if (!arr) return false;
         if (!Array.isArray(arr)) return false;
         return arr.includes(item);
     },
-    // 新增：点击答题卡的事件处理函数
+    
+    // 点击答题卡的事件处理函数
     showAnswerSheet: function () {
         const {
             answerSheetStates,
@@ -605,13 +637,15 @@ Page({
             questionStatuses: questionStatuses
         });
     },
-    // 新增：关闭答题卡弹窗的函数
+    
+    // 关闭答题卡弹窗的函数
     closeAnswerSheetModal: function () {
         this.setData({
             showAnswerSheetModal: false
         });
     },
-    // 新增：点击答题卡上的题目跳转到对应题目的函数
+    
+    // 点击答题卡上的题目跳转到对应题目的函数
     jumpToQuestion: function (e) {
         const {
             index
@@ -622,6 +656,7 @@ Page({
         });
         this.closeAnswerSheetModal();
     },
+    
     // 恢复缓存的倒计时
     restoreCachedCountdown: function(originalStartTime) {
         const currentTime = new Date().getTime();
@@ -637,10 +672,19 @@ Page({
             this.submitAllAnswers();
         }
     },
+    
     // 使用指定时间开始倒计时
     startCountdownWithTime: function(seconds) {
         this.clearCountdown();
         let remainingSeconds = seconds;
+        
+        // 更新显示
+        const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
+        const secs = (remainingSeconds % 60).toString().padStart(2, '0');
+        this.setData({
+            remainingTime: `${minutes}:${secs}`,
+            remainingSecondsWhenPaused: remainingSeconds
+        });
         
         this.data.timer = setInterval(() => {
             if (remainingSeconds > 0) {
@@ -648,14 +692,15 @@ Page({
                 const minutes = Math.floor(remainingSeconds / 60).toString().padStart(2, '0');
                 const secs = (remainingSeconds % 60).toString().padStart(2, '0');
                 this.setData({
-                    remainingTime: `${minutes}:${secs}`
+                    remainingTime: `${minutes}:${secs}`,
+                    remainingSecondsWhenPaused: remainingSeconds
                 });
             } else {
-                this.clearCountdown();
-                this.submitAllAnswers();
+                this.handleTimeUp();
             }
         }, 1000);
     },
+    
     // 缓存当前答题状态
     cacheCurrentAnswers: function() {
         try {
@@ -668,7 +713,8 @@ Page({
                 allAnswers: this.data.allAnswers,
                 startTime: this.data.startTime,
                 totalQuestions: this.data.totalQuestions,
-                timestamp: new Date().getTime() // 添加时间戳
+                timestamp: new Date().getTime(), // 添加时间戳
+                remainingSecondsWhenPaused: this.data.remainingSecondsWhenPaused
             };
             wx.setStorageSync('dailyTestAnswers', cacheData);
             console.log('答题状态已缓存，开始时间：', new Date(this.data.startTime));
@@ -676,31 +722,50 @@ Page({
             console.log('缓存答题状态失败：', error);
         }
     },
-    // 页面隐藏时触发（用户点击返回按钮时）
+    
+    // 页面隐藏时触发（用户切换到小程序其他页面时）
     onHide: function() {
-        // 只在答题未完成且未显示过警告时处理
-        if (!this.data.isAllSubmitted && !this.data.hasShownExitWarning) {
+        // 只在答题未完成时处理
+        if (!this.data.isAllSubmitted && !this.data.isTimeUp) {
+            // 记录暂停时的剩余秒数
+            const remainingSeconds = this.data.remainingSecondsWhenPaused;
+            
             // 缓存当前答题状态
             this.cacheCurrentAnswers();
             
             // 清除倒计时避免在后台继续运行
             this.clearCountdown();
             
-            // 标记已显示过警告，避免重复弹窗
-            this.setData({
-                hasShownExitWarning: true
-            });
+            console.log(`页面隐藏，倒计时已暂停，剩余${remainingSeconds}秒`);
         }
     },
-    // 页面显示时触发
+    
+    // 页面显示时触发（用户从其他页面返回时）
     onShow: function() {
-        // 只在未完成答题且有开始时间的情况下重新开始倒计时
-        if (!this.data.isAllSubmitted && this.data.startTime > 0) {
-            this.restartCountdown();
+        // 只在未完成答题且未超时的情况下重新开始倒计时
+        if (!this.data.isAllSubmitted && !this.data.isTimeUp) {
+            // 检查是否有保存的剩余秒数
+            if (this.data.remainingSecondsWhenPaused > 0) {
+                console.log(`页面显示，恢复倒计时，剩余${this.data.remainingSecondsWhenPaused}秒`);
+                this.startCountdownWithTime(this.data.remainingSecondsWhenPaused);
+            } else {
+                // 如果没有保存的剩余秒数，尝试从缓存恢复
+                const cachedData = wx.getStorageSync('dailyTestAnswers');
+                if (cachedData && cachedData.remainingSecondsWhenPaused > 0) {
+                    console.log(`从缓存恢复倒计时，剩余${cachedData.remainingSecondsWhenPaused}秒`);
+                    this.setData({
+                        remainingSecondsWhenPaused: cachedData.remainingSecondsWhenPaused
+                    });
+                    this.startCountdownWithTime(cachedData.remainingSecondsWhenPaused);
+                } else {
+                    this.startCountdown();
+                }
+            }
         }
         // 重新获取用户完成情况
         this.userFinash();
     },
+    
     // 重新开始倒计时
     restartCountdown: function() {
         // 计算剩余时间
@@ -717,6 +782,7 @@ Page({
             this.submitAllAnswers();
         }
     },
+    
     // 提交答案并退出
     submitAllAnswersAndExit: function() {
         // 如果用户已经完成所有题目，正常提交
@@ -734,6 +800,7 @@ Page({
             wx.navigateBack();
         }, 500);
     },
+    
     // 提交部分答案
     submitPartialAnswers: function() {
         const {
@@ -802,15 +869,17 @@ Page({
             isSubmitted: true
         });
     },
+    
     // 页面卸载时的处理
     onUnload: function() {
         // 清除倒计时
         this.clearCountdown();
         // 如果答题未完成，缓存当前状态
-        if (!this.data.isAllSubmitted) {
+        if (!this.data.isAllSubmitted && !this.data.isTimeUp) {
             this.cacheCurrentAnswers();
         }
     },
+    
     // 处理缩放开始
     touchStart: function(e) {
         if (e.touches.length === 2) {
@@ -856,7 +925,7 @@ Page({
         }
     },
 
-    // 修改图片预览打开函数
+    // 图片预览打开函数
     previewImage: function(e) {
         const url = e.currentTarget.dataset.url;
         this.setData({
@@ -867,7 +936,7 @@ Page({
         });
     },
 
-    // 修改关闭预览函数
+    // 关闭预览函数
     closeImagePreview: function() {
         this.setData({
             showImagePreview: false,
@@ -876,11 +945,13 @@ Page({
             transition: ''
         });
     },
+    
     stopPropagation: function(e) {
         // 阻止事件冒泡
         e.stopPropagation();
     },
-    // 新增：获取答案信息的方法
+    
+    // 获取答案信息的方法
     getAnswerInfo: function() {
         getDailyTestAnswer().then(res => {
             console.log('获取到的答案信息：', res);
@@ -981,7 +1052,8 @@ Page({
             console.error('获取答案信息失败：', error);
         });
     },
-    // 新增：检查今天是否已经提交过答案
+    
+    // 检查今天是否已经提交过答案
     checkTodaySubmission: function() {
         getDailyFinesh().then(res => {
             console.log('获取完成状态：', res);
@@ -1056,7 +1128,8 @@ Page({
             this.startNewTest();
         });
     },
-    // 新增：清除所有缓存的方法
+    
+    // 清除所有缓存的方法
     clearAllCache: function() {
         try {
             // 只清除答题进度缓存
@@ -1066,7 +1139,8 @@ Page({
             console.error('清除缓存失败：', error);
         }
     },
-    // 新增：开始新的答题
+    
+    // 开始新的答题
     startNewTest: function() {
         // 重置所有状态
         this.setData({
@@ -1080,7 +1154,8 @@ Page({
             questionAnalysis: {},
             correctAnswers: {},
             remainingTime: '20:00',
-            isTimeUp: false
+            isTimeUp: false,
+            remainingSecondsWhenPaused: 1200 // 重置为20分钟（1200秒）
         });
         
         // 获取新题目
@@ -1088,6 +1163,7 @@ Page({
         // 开始新的倒计时
         this.startCountdown();
     },
+    
     // 开始计时和倒计时
     startTimer: function() {
         // 清除可能存在的旧定时器
@@ -1113,7 +1189,8 @@ Page({
             const minutes = Math.floor(remainingTime / 60);
             const seconds = remainingTime % 60;
             this.setData({
-                remainingTime: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+                remainingTime: `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`,
+                remainingSecondsWhenPaused: remainingTime
             });
 
             // 检查是否时间到
@@ -1122,34 +1199,37 @@ Page({
             }
         }, 1000);
     },
+    
     // 清除定时器
     clearTimer: function() {
         if (this.data.timer) {
             clearInterval(this.data.timer);
-            this.data.timer = null;
+            this.setData({ timer: null });
         }
     },
+    
     // 处理时间到的情况
     handleTimeUp: function() {
         this.clearTimer();
+        this.clearCountdown();
         this.setData({
             isTimeUp: true,
-            remainingTime: '00:00'
+            remainingTime: '00:00',
+            remainingSecondsWhenPaused: 0,
+            isSubmitted: true // 锁定选择功能
         });
 
-        // 如果用户还没有提交答案，显示确认弹窗
-        if (!this.data.isSubmitted) {
-            wx.showModal({
-                title: '时间到',
-                content: '答题时间已结束，是否现在提交答案？',
-                success: (res) => {
-                    if (res.confirm) {
-                        this.doSubmitAnswers();
-                    }
-                }
-            });
-        }
+        // 自动提交答案
+        wx.showModal({
+            title: '时间到',
+            content: '答题时间已结束，即将自动提交答案',
+            showCancel: false, // 不允许取消
+            success: () => {
+                this.doSubmitAnswers();
+            }
+        });
     },
+    
     // 恢复计时状态
     restoreTimer: function() {
         const savedStartTime = wx.getStorageSync('dailyTestStartTime');
@@ -1161,7 +1241,8 @@ Page({
             // 如果还有剩余时间，恢复计时
             if (remainingTime > 0) {
                 this.setData({
-                    startTime: savedStartTime
+                    startTime: savedStartTime,
+                    remainingSecondsWhenPaused: remainingTime
                 });
                 this.startTimer();
             } else {
@@ -1170,6 +1251,7 @@ Page({
             }
         }
     },
+    
     // 计算答题用时（分钟）
     calculateUsedTime: function() {
         const endTime = Date.now();
@@ -1189,6 +1271,7 @@ Page({
         });
         return minutes;
     },
+    
     // 提交学习时间
     submitLearningTime: function(minutes) {
         return new Promise((resolve, reject) => {
@@ -1211,4 +1294,7 @@ Page({
                 });
         });
     },
+    
+    // 空函数，用于禁用点击事件
+    noop: function() {}
 })

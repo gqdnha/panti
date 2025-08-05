@@ -44,7 +44,11 @@
         <view class="options-container">
             <!-- 单选题 -->
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '单选题'}}">
-                <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" 
+                      wx:for="{{allQuestions[currentQuestion - 1].options}}" 
+                      wx:key="index" 
+                      bindtap="{{isTimeUp ? 'noop' : 'selectOption'}}" 
+                      data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                     <text class="mark" wx:if="{{isSubmitted && selectedOptions[currentQuestion - 1] === item[0]}}">{{questionStates[currentQuestion - 1] ? '√' : '×'}}</text>
                 </view>
@@ -55,7 +59,7 @@
                 <view wx:for="{{allQuestions[currentQuestion - 1].options}}" 
                       wx:key="index" 
                       class="option-item {{optionStates[currentQuestion - 1][index] ? (questionStates[currentQuestion - 1] ? 'selected correct' : (isSubmitted ? 'selected wrong' : 'selected')) : ''}}"
-                      bindtap="selectMultipleOption" 
+                      bindtap="{{isTimeUp ? 'noop' : 'selectMultipleOption'}}" 
                       data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                     <text class="mark" wx:if="{{isSubmitted && optionStates[currentQuestion - 1][index]}}">{{questionStates[currentQuestion - 1] ? '√' : '×'}}</text>
@@ -63,7 +67,11 @@
             </block>
 
             <block wx:if="{{allQuestions[currentQuestion - 1].type === '判断题'}}">
-                <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" wx:for="{{allQuestions[currentQuestion - 1].options}}" wx:key="index" bindtap="selectOption" data-index="{{index}}">
+                <view class="option-item {{selectedOptions[currentQuestion - 1] === item[0]? (questionStates[currentQuestion - 1]? 'selected correct' : (isSubmitted? 'selected wrong' :'selected')) : ''}}" 
+                      wx:for="{{allQuestions[currentQuestion - 1].options}}" 
+                      wx:key="index" 
+                      bindtap="{{isTimeUp ? 'noop' : 'selectOption'}}" 
+                      data-index="{{index}}">
                     <text class="option-content">{{item}}</text>
                     <text class="mark" wx:if="{{isSubmitted && selectedOptions[currentQuestion - 1] === item[0]}}">{{questionStates[currentQuestion - 1] ? '√' : '×'}}</text>
                 </view>
@@ -72,7 +80,11 @@
             <!-- 填空题 -->
             <block class="testCard" wx:if="{{allQuestions[currentQuestion - 1].type === '填空题'}}">
                 <view class="fill-blank-container">
-                    <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted? 'wrong' : '')}}" placeholder="请输入答案" value="{{allAnswers[currentQuestion - 1]}}" bindinput="onInputAnswer" />
+                    <input class="fill-blank-input {{questionStates[currentQuestion - 1]? 'correct' : (isSubmitted? 'wrong' : '')}}" 
+                           placeholder="请输入答案" 
+                           value="{{allAnswers[currentQuestion - 1]}}" 
+                           bindinput="{{isTimeUp ? 'noop' : 'onInputAnswer'}}" 
+                           disabled="{{isTimeUp}}" />
                     <text class="mark {{questionStates[currentQuestion - 1] ? 'correct' : 'wrong'}}" wx:if="{{isSubmitted && allAnswers[currentQuestion - 1]}}">{{questionStates[currentQuestion - 1] ? '√' : '×'}}</text>
                 </view>
             </block>
@@ -96,7 +108,7 @@
         </view>
     </scroll-view>
 
-    <!-- 新增：答题卡按钮 -->
+    <!-- 答题卡按钮 -->
     <view class="answer-sheet-btn" bindtap="showAnswerSheet">答题卡</view>
 
     <!-- 底部操作栏 -->
@@ -106,7 +118,7 @@
         <view class="btn next" bindtap="nextQuestion" wx:if="{{currentQuestion < totalQuestions}}">下一题</view>
     </view>
 
-    <!-- 新增：答题卡弹窗 -->
+    <!-- 答题卡弹窗 -->
     <view class="answer-sheet-modal" wx:if="{{showAnswerSheetModal}}">
         <view class="modal-content">
             <view class="result-header">

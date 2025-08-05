@@ -19,12 +19,12 @@ export const unuseApartment = (departmentId) => {
         data
     });
 } */
-// 获取部门列表
 
+
+// 获取部门列表
 export const getApartmentList = () => {
-    const userId = getUserId()
     return request({
-        url: `/mange/getDepartmentList?userId=${userId}`,
+        url: `/departmentList/getDepartmentList`,
         method: 'GET',
     });
 }
