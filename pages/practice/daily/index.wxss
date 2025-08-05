@@ -224,7 +224,7 @@
 .bottom-bar {
     display: flex;
     justify-content: space-between;
-    background-color: #fff;
+    /* background-color: #fff; */
     border-radius: 10rpx;
 
 }
@@ -238,10 +238,11 @@
     align-items: center;
     justify-content: center;
     margin-bottom: 30rpx;
+    background-color: #fff;
 }
 
 .prev {
-    background-color: #f8f9fa;
+    /* background-color: #f8f9fa; */
     color: #666;
     width: 180rpx;
     height: 60rpx;
@@ -258,7 +259,7 @@
 }
 
 .next {
-    background-color: #f8f9fa;
+    /* background-color: #f8f9fa; */
     color: #666;
     margin-left: 20rpx;
     width: 180rpx;

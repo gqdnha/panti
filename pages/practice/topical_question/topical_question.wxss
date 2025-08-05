@@ -49,7 +49,7 @@
     justify-content: center;
     gap: 20rpx;
     padding: 20rpx;
-    background-color: #fff;
+    /* background-color: #fff; */
     border-radius: 10rpx;
     z-index: 100;
 }
@@ -60,6 +60,7 @@
     font-size: 30rpx;
     text-align: center;
     min-width: 200rpx;
+    background-color: #fff;
 }
 
 .prev {
