@@ -56,7 +56,7 @@ page {
 
 .welcomName {
     text-align: center;
-    font-size: 30px;
+    font-size: 25px;
     font-weight: 300;
     /* color: rgb(0, 0, 0); */
 }
@@ -81,7 +81,8 @@ page {
     color: #fff;
     /* background: rgba(255,255,255,0.90); */
     /* background-color: #3EBEFA; */
-    background: linear-gradient(135deg, #42C3FC ,#2CA2FC, #137CFB);
+    /* background: linear-gradient(135deg, #42C3FC ,#2CA2FC, #137CFB); */
+    background: #1F3F73 ;
     /* border: 1px solid rgba(255, 255, 255, 0.4); */
     border-radius: 36rpx;
     box-shadow: 0 8rpx 32rpx rgba(30, 58, 109, 0.13);

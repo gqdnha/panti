@@ -430,7 +430,7 @@
 
 /* 错题数设置 */
 .wrongCount {
-    color: #ff4d4f;
+    color: #fff;
     font-size: 28rpx;
     font-weight: 600;
     margin-top: 4rpx;

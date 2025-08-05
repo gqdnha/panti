@@ -285,6 +285,7 @@ Page({
             const hours = Math.floor(res / 60);
             const minutes = res % 60;
             const formattedTime = `${hours}小时${minutes}分钟`;
+            console.log(formattedTime);
             this.setData({
                 'studyTime': formattedTime
             });
