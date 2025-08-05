@@ -147,7 +147,7 @@ Page({
                     data: departments,
                     axisLabel: {
                         interval: 0,
-                        rotate: 45,
+                        rotate: 290,
                         fontSize: 12,
                         margin: 15
                     }
@@ -207,7 +207,7 @@ Page({
                     data: departments,
                     axisLabel: {
                         interval: 0,
-                        rotate: 45,
+                        rotate: 290,
                         fontSize: 12,
                         margin: 15
                     }
@@ -264,7 +264,7 @@ Page({
                     data: departments,
                     axisLabel: {
                         interval: 0,
-                        rotate: 45,
+                        rotate: 290,
                         fontSize: 12,
                         margin: 15
                     }
@@ -324,12 +324,12 @@ Page({
                     axisPointer: { type: 'shadow' },
                     formatter: function(params) {
                         const param = params[0];
-                        return `${param.name}<br/>完成人数：${param.value}`;
+                        return `${param.name}\n完成人数：${param.value}`;
                     }
                 },
                 grid: {
                     top: '15%',
-                    left: '15%',
+                    left: '5%',
                     right: '5%',
                     bottom: '15%',
                     containLabel: true
@@ -339,7 +339,7 @@ Page({
                     data: dailyFinishData.map(item => item.department),
                     axisLabel: {
                         interval: 0,
-                        rotate: 45,
+                        rotate: 290,
                         fontSize: 12,
                         margin: 15
                     }
