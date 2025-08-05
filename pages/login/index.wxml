@@ -23,7 +23,7 @@
         <view class="input-group">
             <picker bindchange="onDepartmentChange" value="{{departmentIndex}}" range="{{departmentList}}">
                 <view class="picker">
-                    <text class="{{department ? '' : 'placeholder'}}">{{department || '请选择部门'}}</text>
+                    <text class="{{department ? '' : 'placeholder'}}">{{department || '新用户请选择部门'}}</text>
                     <image class="arrow-icon" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
                 </view>
             </picker>
