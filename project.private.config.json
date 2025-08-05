@@ -9,11 +9,18 @@
     "miniprogram": {
       "list": [
         {
-          "name": "pages/admin/user-stats/index",
-          "pathName": "pages/admin/user-stats/index",
+          "name": "pages\\admin\\department-manage/index",
+          "pathName": "pages/admin/department-manage/index",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/admin/user-stats/index",
+          "pathName": "pages/admin/user-stats/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         },
         {
           "name": "pages/admin/question-manage/index",

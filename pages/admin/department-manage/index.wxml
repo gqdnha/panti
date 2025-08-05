@@ -1,30 +1,43 @@
 <view class="container">
-  <view class="title">部门管理</view>
-  <view class="desc">可对部门进行停用/启用和导出操作</view>
-  
-  <!-- 搜索框（保留注释，如需可启用） -->
-  <!-- <view class="search-bar">
+    <view class="title">部门管理</view>
+    <view class="desc">可对部门进行停用/启用和导出操作</view>
+
+    <!-- 搜索框（保留注释，如需可启用） -->
+    <!-- <view class="search-bar">
     <input class="search-input" placeholder="搜索部门名称" value="{{searchKeyword}}" bindinput="onSearchInput" />
     <button class="search-btn" bindtap="onSearch">搜索</button>
   </view> -->
-  
-  <view class="dept-list">
-    <block wx:for="{{departments}}" wx:key="id">
-      <view class="dept-item">
-        <view class="dept-info">
-          <text class="dept-name">{{item.department}}</text> <!-- 修正：显示部门名称 -->
-          <text class="dept-status">{{item.isActive ? '已授权' : '已停用'}}</text>
+
+    <view class="dept-list">
+        <!-- 外层循环一级部门 -->
+        <block wx:for="{{departments}}" wx:key="level1Name" wx:for-item="level1">
+            <!-- 内层循环二级部门 -->
+            <block wx:for="{{level1.level2Departments}}" wx:key="id" wx:for-item="level2">
+                <view class="dept-item">
+                    <view class="dept-info">
+                        <view class="dept-nameList">
+                            <text class="dept-name">{{level2.department}}</text>
+                            <text class="dept-level1">({{level1.level1Name}})</text>
+                        </view>
+                        <text class="dept-status {{level2.isActive ? 'active' : 'inactive'}}">
+                            {{level2.isActive ? '已停用' : '已授权'}}
+                        </text>
+                    </view>
+                    <view class="dept-actions">
+                        <button class="action-btn toggle" bindtap="toggleDeptStatus" data-department="{{level2.department}}">
+                            {{level2.isActive ? '授权' : '禁用'}}
+                        </button>
+                        <button class="action-btn export" bindtap="exportDept" data-name="{{level2.department}}">
+                            导出
+                        </button>
+                    </view>
+                </view>
+            </block>
+        </block>
+
+        <!-- 空状态提示（修复判断逻辑） -->
+        <view class="empty-tip" wx:if="{{isNoDepartmentData}}">
+            暂无部门数据
         </view>
-        <view class="dept-actions">
-          <button class="action-btn" bindtap="toggleDeptStatus" data-department="{{item.department}}">
-            {{item.isActive ? '授权' : '禁用'}}
-          </button>
-          <!-- 关键修改：将“授权”按钮改为“导出”，绑定导出函数 -->
-          <button class="action-btn export" bindtap="exportDept" data-id="{{item.id}}" data-name="{{item.department}}">
-            导出
-          </button>
-        </view>
-      </view>
-    </block>
-  </view>
+    </view>
 </view>

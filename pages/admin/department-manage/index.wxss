@@ -44,8 +44,13 @@
   align-items: center;
   justify-content: space-between;
 }
+.dept-nameList{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 .dept-name {
-  font-size: 36rpx;
+  font-size: 35rpx;
   font-weight: 600;
   color: #1E4B92;
 }
