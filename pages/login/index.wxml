@@ -18,7 +18,7 @@
     <view class="login-box" wx:if="{{showPhoneVerify}}">
         <view class="title">完善信息</view>
         <view class="input-group">
-            <input type="text" placeholder="请输入姓名" bindinput="onNameInput" value="{{name}}" />
+            <input type="text" placeholder="请输入姓名" bindinput="onNameInput" />
         </view>
         <view class="input-group">
             <picker bindchange="onDepartmentChange" value="{{departmentIndex}}" range="{{departmentList}}">

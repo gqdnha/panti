@@ -78,6 +78,7 @@ Page({
         wx.login({
             success: (res) => {
                 if (res.code) {
+                    console.log(res.code);
                     this.setData({ loginCode: res.code });
                     
                     request({
