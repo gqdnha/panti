@@ -14,7 +14,7 @@ Page({
         answerRecords: [],
         userList: [],
         pageNum: 1,
-        pageSize: 8,
+        pageSize: 10,
         totalPages: 1,
         searchKeyword: '',
         showUserDetailModal: false, // 控制用户详情模态框的显示与隐藏
