@@ -147,7 +147,7 @@ Page({
                     data: departments,
                     axisLabel: {
                         interval: 0,
-                        rotate: 290,
+                        rotate: 273,
                         fontSize: 12,
                         margin: 15
                     }
@@ -207,7 +207,7 @@ Page({
                     data: departments,
                     axisLabel: {
                         interval: 0,
-                        rotate: 290,
+                        rotate: 273,
                         fontSize: 12,
                         margin: 15
                     }
@@ -264,7 +264,7 @@ Page({
                     data: departments,
                     axisLabel: {
                         interval: 0,
-                        rotate: 290,
+                        rotate: 273,
                         fontSize: 12,
                         margin: 15
                     }
@@ -339,7 +339,7 @@ Page({
                     data: dailyFinishData.map(item => item.department),
                     axisLabel: {
                         interval: 0,
-                        rotate: 290,
+                        rotate: 273,
                         fontSize: 12,
                         margin: 15
                     }
@@ -354,7 +354,7 @@ Page({
                 series: [{
                     name: '完成人数',
                     type: 'bar',
-                    data: dailyFinishData.map(item => item.count || 0),
+                    data: dailyFinishData.map(item => item.dailyFinish || 0),
                     itemStyle: {
                         color: '#73c0de'
                     },
