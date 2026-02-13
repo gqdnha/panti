@@ -3,6 +3,7 @@ import { getAllUserInfo,getUserInfo } from '../../../api/admin'
 import { getUserDailyFinish } from '../../../api/getDeilyFinash'
 import { request } from '../../../api/request'
 import {downLoadUserText} from '../../../api/downLoadUserText'
+import { getUserId } from '../../../api/getUserId';
 
 Page({
     data: {
