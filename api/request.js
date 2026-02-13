@@ -1,4 +1,5 @@
-export const baseURL = "https://gqdnha.cn:8090";
+// export const baseURL = "https://gqdnha.cn:8090";
+export const baseURL = "https://panti.qfnu.site:8090";
 
 // 处理登录状态失效的逻辑
 const handleUnauthorized = () => {
