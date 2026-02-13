@@ -1,6 +1,6 @@
 import { request } from '../../api/request';
 import { setupTabBar } from '../../utils/tabBar';
-import { getApartmentList } from '../../api/apartmentAdmin'; // 与部门管理页面共用接口
+import { getDepartmentByPhone } from '../../api/login';
 
 Page({
     data: {
@@ -20,52 +20,13 @@ Page({
     },
 
     /**
-     * 从后端获取数据并仅提取二级部门名称
-     * 与部门管理页面保持一致的解析逻辑
+     * 初始化时不获取部门列表，等待用户输入手机号后获取
      */
     getSecondLevelDepartments() {
-        getApartmentList().then(res => {
-            console.log("原始部门数据:", res);
-            
-            // 仅提取二级部门名称（与部门管理页面逻辑一致）
-            const secondLevelDepts = [];
-            
-            // 假设后端返回格式：[{一级部门: [二级部门数组]}, ...]
-            res.forEach(deptGroup => {
-                for (const firstLevelName in deptGroup) {
-                    if (deptGroup.hasOwnProperty(firstLevelName)) {
-                        // 遍历二级部门数组，提取名称
-                        const level2Depts = deptGroup[firstLevelName] || [];
-                        level2Depts.forEach(level2 => {
-                            // 确保二级部门名称唯一且不为空
-                            if (level2.department && !secondLevelDepts.includes(level2.department)) {
-                                secondLevelDepts.push(level2.department);
-                            }
-                        });
-                    }
-                }
-            });
-
-            console.log("提取的二级部门列表:", secondLevelDepts);
-            
-            this.setData({
-                departmentList: secondLevelDepts,
-                // 默认选中第一个二级部门（若存在）
-                department: secondLevelDepts.length > 0 ? secondLevelDepts[0] : '',
-                departmentIndex: 0
-            });
-        }).catch(err => {
-            console.error("获取二级部门失败:", err);
-            // 接口失败时使用默认二级部门兜底
-            this.setData({
-                departmentList: [
-                    '高淳区生态环境综合行政执法局', 
-                    '鼓楼区生态环境综合行政执法局'
-                    // 仅保留典型二级部门
-                ],
-                department: '玄武区环境监察大队',
-                departmentIndex: 0
-            });
+        this.setData({
+            departmentList: [],
+            department: '',
+            departmentIndex: 0
         });
     },
 
@@ -143,6 +104,74 @@ Page({
     onPhoneInput(e) {
         const value = e.detail.value.replace(/\D/g, '');
         this.setData({ phone: value.slice(0, 11) });
+    },
+
+    onPhoneBlur() {
+        const { phone } = this.data;
+        if (phone.length !== 11) {
+            if (phone.length > 0) {
+                wx.showToast({
+                    title: '请输入11位有效手机号',
+                    icon: 'none',
+                    duration: 2000
+                });
+            }
+            this.setData({
+                departmentList: [],
+                department: '',
+                departmentIndex: 0
+            });
+            return;
+        }
+        
+        wx.showLoading({ title: '获取部门列表...' });
+        getDepartmentByPhone(phone).then(res => {
+            wx.hideLoading();
+            console.log('根据手机号获取的部门列表:', res);
+            
+            const secondLevelDepts = [];
+            res.forEach(deptGroup => {
+                for (const firstLevelName in deptGroup) {
+                    if (deptGroup.hasOwnProperty(firstLevelName)) {
+                        const level2Depts = deptGroup[firstLevelName] || [];
+                        level2Depts.forEach(level2 => {
+                            if (level2.department && !secondLevelDepts.includes(level2.department)) {
+                                secondLevelDepts.push(level2.department);
+                            }
+                        });
+                    }
+                }
+            });
+
+            console.log('提取的二级部门列表:', secondLevelDepts);
+            
+            this.setData({
+                departmentList: secondLevelDepts,
+                department: secondLevelDepts.length > 0 ? secondLevelDepts[0] : '',
+                departmentIndex: 0
+            });
+
+            if (secondLevelDepts.length > 0) {
+                wx.showToast({
+                    title: '部门列表已更新',
+                    icon: 'success',
+                    duration: 1500
+                });
+            } else {
+                wx.showToast({
+                    title: '未找到对应部门',
+                    icon: 'none',
+                    duration: 1500
+                });
+            }
+        }).catch(err => {
+            wx.hideLoading();
+            console.error('获取部门列表失败:', err);
+            wx.showToast({
+                title: '获取部门列表失败',
+                icon: 'none'
+            });
+        });
     },
 
     onNameInput(e) {

@@ -46,3 +46,11 @@ export const changeUserName = (data) => {
         method: 'POST',
     });
 };
+
+// 根据手机号获取部门列表
+export const getDepartmentByPhone = (phone) => {
+    return request({
+        url: `/user/getDepartmentListByPhone?phone=${phone}`,
+        method: 'GET',
+    });
+};

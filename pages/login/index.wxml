@@ -18,18 +18,18 @@
     <view class="login-box" wx:if="{{showPhoneVerify}}">
         <view class="title">完善信息</view>
         <view class="input-group">
+            <input type="number" placeholder="请输入手机号" bindinput="onPhoneInput" bindblur="onPhoneBlur" value="{{phone}}" maxlength="11" />
+        </view>
+        <view class="input-group">
             <input type="text" placeholder="请输入姓名" bindinput="onNameInput" />
         </view>
         <view class="input-group">
-            <picker bindchange="onDepartmentChange" value="{{departmentIndex}}" range="{{departmentList}}">
-                <view class="picker">
-                    <text class="{{department ? '' : 'placeholder'}}">{{department || '新用户请选择部门'}}</text>
+            <picker bindchange="onDepartmentChange" value="{{departmentIndex}}" range="{{departmentList}}" disabled="{{departmentList.length === 0}}">
+                <view class="picker {{departmentList.length === 0 ? 'disabled' : ''}}">
+                    <text class="{{department ? '' : 'placeholder'}}">{{departmentList.length === 0 ? '无' : (department || '请选择部门')}}</text>
                     <image class="arrow-icon" src="/assets/icons/arrow-down.png" mode="aspectFit"></image>
                 </view>
             </picker>
-        </view>
-        <view class="input-group">
-            <input type="number" placeholder="请输入手机号" bindinput="onPhoneInput" value="{{phone}}" maxlength="11" />
         </view>
         <view class="login-btn" hover-class="button-hover" bindtap="verifyPhone">提交</view>
     </view>

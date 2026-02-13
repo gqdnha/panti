@@ -143,6 +143,11 @@
     color: #b0b8c9;
 }
 
+.picker.disabled {
+    opacity: 0.5;
+    background: rgba(255, 255, 255, 0.18);
+}
+
 .arrow-icon {
     width: 32rpx;
     height: 32rpx;
