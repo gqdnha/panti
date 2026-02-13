@@ -2,10 +2,14 @@ import {
     getphoneApi,
     addPhone,
     deletePhone,
+    getphoneApiZhenjiang,
+    addPhoneZhenjiang,
+    deletePhoneZhenjiang
 } from '../../../api/admin-phone'
 
 Page({
     data: {
+        region: '',
         searchValue: '',
         phoneList: [],
         showEditModal: false,
@@ -19,14 +23,21 @@ Page({
     },
 
     onLoad() {
+        const region = wx.getStorageSync('region');
+        console.log('当前用户region：', region);
+        this.setData({
+            region: region || '0'
+        });
         this.loadPhoneList();
     },
 
     // 加载手机号列表
     loadPhoneList() {
-        const phone = this.data.phoneNumber
-        // TODO: 调用后端API获取手机号列表
-        getphoneApi(phone).then(res => {
+        const { phoneNumber, region } = this.data;
+        const isZhenjiang = String(region) === '1';
+        console.log('当前用户region：', region, '是否镇江：', isZhenjiang);
+        const apiCall = isZhenjiang ? getphoneApiZhenjiang : getphoneApi;
+        apiCall(phoneNumber).then(res => {
             console.log(res);
             this.setData({
                 phoneList: res
@@ -44,8 +55,11 @@ Page({
     // 搜索
     onSearch() {
         const searchValue = this.data.searchValue;
-        console.log(searchValue);
-        getphoneApi(searchValue).then(res => {
+        const { region } = this.data;
+        const isZhenjiang = String(region) === '1';
+        console.log('搜索手机号：', searchValue, '是否镇江：', isZhenjiang);
+        const apiCall = isZhenjiang ? getphoneApiZhenjiang : getphoneApi;
+        apiCall(searchValue).then(res => {
             console.log(res);
             this.setData({
                 phoneList: res || []
@@ -91,9 +105,12 @@ Page({
             return;
         }
 
-        // 调用后端API新增手机号
-        console.log('新增手机号:', newPhone);
-        addPhone(newPhone).then(res => {
+        const { region } = this.data;
+        const isZhenjiang = String(region) === '1';
+        console.log('新增手机号:', newPhone, '是否镇江：', isZhenjiang);
+        const apiCall = isZhenjiang ? addPhoneZhenjiang : addPhone;
+
+        apiCall(newPhone).then(res => {
             console.log(res);
             wx.showToast({
                 title: '添加成功',
@@ -119,13 +136,18 @@ Page({
         const {
             id
         } = e.currentTarget.dataset;
-        console.log(id);
+        console.log('删除手机号ID:', id);
+        const { region } = this.data;
+        const isZhenjiang = String(region) === '1';
+        console.log('是否镇江：', isZhenjiang);
+        const apiCall = isZhenjiang ? deletePhoneZhenjiang : deletePhone;
+        
         wx.showModal({
             title: '确认删除',
             content: '确定要删除这个手机号吗？',
             success: (res) => {
                 if (res.confirm) {
-                    deletePhone(id).then(res => {
+                    apiCall(id).then(res => {
                         console.log(res);
                         wx.showToast({
                             title: '删除成功',
