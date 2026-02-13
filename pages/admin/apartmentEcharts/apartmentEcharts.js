@@ -12,6 +12,7 @@ import {
 Page({
 
     data: {
+        region: '',
         chartOptions: [
             { label: '部门人数统计', value: 0 },
             { label: '部门学习时长统计', value: 1 },
@@ -38,8 +39,9 @@ Page({
     },
 
     // 获取学习时长报表
-    getLearnTimeReportApi() {
-        getLearnTimeReport().then(res => {
+    getLearnTimeReportApi(region) {
+        console.log('获取学习时长报表，传递的region：', region);
+        getLearnTimeReport(region).then(res => {
             console.log(res, 'getLearnTimeReport');
             this.setData({
                 learnTimeData: res
@@ -50,8 +52,9 @@ Page({
     },
 
     // 获取用户完成每日答题情况报表
-    getUserDailyFinishReportApi() {
-        getUserDailyFinishReport().then(res => {
+    getUserDailyFinishReportApi(region) {
+        console.log('获取每日答题完成情况，传递的region：', region);
+        getUserDailyFinishReport(region).then(res => {
             console.log(res, 'getUserDailyFinishReport');
             this.setData({
                 dailyFinishData: res
@@ -62,8 +65,9 @@ Page({
     },
 
     // 获取部门人数
-    getUserReportApi() {
-        getUserReport().then(res => {
+    getUserReportApi(region) {
+        console.log('获取部门人数，传递的region：', region);
+        getUserReport(region).then(res => {
             console.log(res, 'getUserReport');
             this.setData({
                 departmentData: res
@@ -74,8 +78,9 @@ Page({
     },
 
     // 获取部门正确率
-    getUserRightReportApi() {
-        getUserRightReport().then(res => {
+    getUserRightReportApi(region) {
+        console.log('获取部门正确率，传递的region：', region);
+        getUserRightReport(region).then(res => {
             console.log(res, 'getUserRightReport');
             this.setData({
                 rightRateData: res
@@ -87,35 +92,61 @@ Page({
 
     // 更新所有图表
     updateAllCharts() {
-        const { departmentData, learnTimeData, rightRateData, dailyFinishData } = this.data;
+        const { departmentData, learnTimeData, rightRateData, dailyFinishData, currentChart } = this.data;
         
-        // 确保所有数据都已加载
-        if (!departmentData.length || !learnTimeData.length || !rightRateData.length) {
+        console.log('updateAllCharts 被调用，当前图表：', currentChart);
+        console.log('departmentData：', departmentData);
+        console.log('learnTimeData：', learnTimeData);
+        console.log('rightRateData：', rightRateData);
+        console.log('dailyFinishData：', dailyFinishData);
+        
+        // 根据当前显示的图表检查对应的数据
+        let hasData = false;
+        
+        if (currentChart === 0 && departmentData.length) {
+            hasData = true;
+        } else if (currentChart === 1 && learnTimeData.length) {
+            hasData = true;
+        } else if (currentChart === 2 && rightRateData.length) {
+            hasData = true;
+        } else if (currentChart === 3 && dailyFinishData.length) {
+            hasData = true;
+        }
+        
+        if (!hasData) {
+            console.log('当前图表所需数据未加载完成');
             return;
         }
 
-        // 准备图表数据
-        const departments = departmentData.map(item => item.department);
-        const userCounts = departmentData.map(item => item.userCount);
-        const learnTimes = departmentData.map(dept => {
-            const match = learnTimeData.find(item => item.department === dept);
-            return match ? match.learnTimeReport : 0;
-        });
-        const rightRates = departmentData.map(dept => {
-            const match = rightRateData.find(item => item.department === dept);
-            return match ? match.userRightPercent : 0;
-        });
-
-        // 更新四个图表
-        this.loadUserCountChart(departments, userCounts);
-        this.loadLearnTimeChart(departments, learnTimes);
-        this.loadRightRateChart(departments, rightRates);
-        this.loadDailyFinishChart(dailyFinishData);
+        // 只初始化当前显示的图表
+        if (currentChart === 0) {
+            const departments = departmentData.map(item => item.department);
+            const userCounts = departmentData.map(item => item.userCount);
+            console.log('部门人数统计 - 部门：', departments, '人数：', userCounts);
+            this.loadUserCountChart(departments, userCounts);
+        } else if (currentChart === 1) {
+            const departments = learnTimeData.map(item => item.department);
+            const learnTimes = learnTimeData.map(item => item.learnTimeReport);
+            console.log('学习时长统计 - 部门：', departments, '时长：', learnTimes);
+            this.loadLearnTimeChart(departments, learnTimes);
+        } else if (currentChart === 2) {
+            const departments = rightRateData.map(item => item.department);
+            const rightRates = rightRateData.map(item => item.userRightPercent);
+            console.log('正确率统计 - 部门：', departments, '正确率：', rightRates);
+            this.loadRightRateChart(departments, rightRates);
+        } else if (currentChart === 3) {
+            console.log('每日完成情况统计 - 数据：', dailyFinishData);
+            this.loadDailyFinishChart(dailyFinishData);
+        }
     },
 
     // 加载部门人数图表
     loadUserCountChart(departments, userCounts) {
         let ec_canvas = this.selectComponent('#userCountChart');
+        if (!ec_canvas) {
+            console.log('userCountChart组件不存在');
+            return;
+        }
         ec_canvas.init((canvas, width, height, dpr) => {
             const chart = echarts.init(canvas, null, {
                 width: width,
@@ -176,6 +207,10 @@ Page({
     // 加载学习时长图表
     loadLearnTimeChart(departments, learnTimes) {
         let ec_canvas = this.selectComponent('#learnTimeChart');
+        if (!ec_canvas) {
+            console.log('learnTimeChart组件不存在');
+            return;
+        }
         ec_canvas.init((canvas, width, height, dpr) => {
             const chart = echarts.init(canvas, null, {
                 width: width,
@@ -236,6 +271,10 @@ Page({
     // 加载正确率图表
     loadRightRateChart(departments, rightRates) {
         let ec_canvas = this.selectComponent('#rightRateChart');
+        if (!ec_canvas) {
+            console.log('rightRateChart组件不存在');
+            return;
+        }
         ec_canvas.init((canvas, width, height, dpr) => {
             const chart = echarts.init(canvas, null, {
                 width: width,
@@ -301,6 +340,10 @@ Page({
     // 加载每日完成情况图表
     loadDailyFinishChart(dailyFinishData) {
         let ec_canvas = this.selectComponent('#dailyFinishChart');
+        if (!ec_canvas) {
+            console.log('dailyFinishChart组件不存在');
+            return;
+        }
         ec_canvas.init((canvas, width, height, dpr) => {
             const chart = echarts.init(canvas, null, {
                 width: width,
@@ -373,11 +416,17 @@ Page({
     },
 
     onLoad() {
-        // 获取所有数据
-        this.getLearnTimeReportApi();
-        this.getUserDailyFinishReportApi();
-        this.getUserReportApi();
-        this.getUserRightReportApi();
+        const region = wx.getStorageSync('region') || '0';
+        console.log('当前用户region：', region);
+        this.setData({
+            region: region
+        });
+        
+        // 直接传递 region 参数获取数据
+        this.getLearnTimeReportApi(region);
+        this.getUserDailyFinishReportApi(region);
+        this.getUserReportApi(region);
+        this.getUserRightReportApi(region);
     },
 
     onChartChange(e) {
@@ -385,33 +434,8 @@ Page({
         this.setData({
             currentChart: idx
         }, () => {
-            // 切换后手动初始化当前图表
-            const { departmentData, learnTimeData, rightRateData, dailyFinishData } = this.data;
-            const departments = departmentData.map(d => d.department);
-            if (idx === 0) {
-                this.loadUserCountChart(departments, departmentData.map(d => d.userCount));
-            }
-            if (idx === 1) {
-                this.loadLearnTimeChart(
-                    departments,
-                    departments.map(dep => {
-                        const match = learnTimeData.find(item => item.department === dep);
-                        return match ? match.learnTimeReport : 0;
-                    })
-                );
-            }
-            if (idx === 2) {
-                this.loadRightRateChart(
-                    departments,
-                    departments.map(dep => {
-                        const match = rightRateData.find(item => item.department === dep);
-                        return match ? match.userRightPercent : 0;
-                    })
-                );
-            }
-            if (idx === 3) {
-                this.loadDailyFinishChart(dailyFinishData);
-            }
+            // 切换后直接调用 updateAllCharts 来初始化图表
+            this.updateAllCharts();
         });
     },
 })
