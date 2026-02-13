@@ -51,6 +51,7 @@ Page({
                         wx.setStorageSync('token', res.token);
                         wx.setStorageSync('userId', res.userId);
                         wx.setStorageSync('role', res.role);
+                        wx.setStorageSync('region', res.region);
                         this.setData({ userId: res.userId });
                         setupTabBar();
 
