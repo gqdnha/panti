@@ -7,9 +7,9 @@ import { getUserId } from '../../../api/getUserId';
 
 Page({
     data: {
+        region: '',
         department: '',
-        // 正确率
-        rightPercent:0,
+        rightPercent: 0,
         userId: null,
         userInfo: {},
         answerRecords: [],
@@ -18,39 +18,37 @@ Page({
         pageSize: 10,
         totalPages: 1,
         searchKeyword: '',
-        showUserDetailModal: false, // 控制用户详情模态框的显示与隐藏
-        currentUserDetail: {}, // 当前要显示详情的用户信息
+        showUserDetailModal: false,
+        currentUserDetail: {},
         showModal: false,
         newUser: {
             name: '',
             phone: '',
             department: ''
         },
-        dailyFinishData: null, // 每日练习完成情况
-        loadingDailyFinish: false // 加载每日练习完成情况的状态
+        dailyFinishData: null,
+        loadingDailyFinish: false
     },
 
     onLoad(options) {
-        // 获取部门信息
+        const region = wx.getStorageSync('region');
         const department = wx.getStorageSync('department');
+        console.log('当前用户region：', region);
         console.log('当前用户部门：', department);
         
         this.setData({
+            region: region || '0',
             department: department || ''
         });
-
-        // 打印部门信息，用于调试
-        console.log('页面数据中的部门信息：', this.data.department);
 
         this.loadUserStats();
     },
 
     loadUserStats() {
-        const { pageNum, pageSize, searchKeyword, department } = this.data;
+        const { pageNum, pageSize, searchKeyword, department, region } = this.data;
         const data = {
-            // 如果是超级管理员，department传空字符串，否则传当前用户的department
+            region: region,
             department: department === '超级管理员' ? "" : department,
-            // 判断 searchKeyword 是否有值，有则传其值，否则传空字符串
             userName: searchKeyword || "",
             pageNum: pageNum,
             pageSize: pageSize
@@ -58,7 +56,6 @@ Page({
         console.log('请求参数：', data);
         getAllUserInfo(data).then(res => {
             console.log('获取到的数据：', res);
-            // 假设 res 包含 userList 和 totalPages 数据
             this.setData({
                 userList: res.pageInfo.pageData,
                 totalPages: res.pageInfo.totalPage
