@@ -1,25 +1,41 @@
 import {
-    getApartmentList,
+    getApartmentListByPhone,
     downLoadUserText,
     disableDepartment,
     grantDepartment
   } from '../../../api/apartmentAdmin'
+import {
+    disableDepartmentZhenjiang,
+    grantDepartmentZhenjiang
+  } from '../../../api/apartmentAdminZhenjiang'
   import { baseURL } from '../../../api/request'
   
   Page({
     data: {
+      phone: '',
+      region: '',
       searchKeyword: '',
       departments: [], // 处理后的部门数据：[{level1Name, level2Departments: []}, ...]
       allDepartments: [] // 备份数据用于搜索
     },
   
     onLoad() {
+      const phone = wx.getStorageSync('phone');
+      const region = wx.getStorageSync('region');
+      console.log('当前用户手机号：', phone);
+      console.log('当前用户region：', region);
+      this.setData({
+        phone: phone || '',
+        region: region || '0'
+      });
       this.getApartmentListApi()
     },
   
     // 获取并处理部门列表
     getApartmentListApi() {
-      getApartmentList().then(res => {
+      const { phone } = this.data;
+      console.log('使用手机号获取部门列表：', phone);
+      getApartmentListByPhone(phone).then(res => {
         console.log("原始部门数据:", res);
         
         // 处理嵌套的部门结构
@@ -52,14 +68,16 @@ import {
     // 切换部门启用/停用状态（点击时打印二级部门名称）
     toggleDeptStatus(e) {
       const departmentName = e.currentTarget.dataset.department;
+      const { region } = this.data;
       // 关键：打印二级部门名称（调试用）
       console.log("点击禁用/授权按钮，二级部门名称：", departmentName);
+      console.log("当前用户region：", region);
       
       if (!departmentName) {
         wx.showToast({ title: '部门名称为空', icon: 'none' });
         return;
       }
-  
+
       // 查找部门状态
       let targetDept = null;
       for (const level1 of this.data.departments) {
@@ -73,12 +91,22 @@ import {
         wx.showToast({ title: '未找到该部门', icon: 'none' });
         return;
       }
-  
-      // 调用接口切换状态
-      const apiCall = targetDept.isActive === 0 ? disableDepartment : grantDepartment;
+
+      // 根据region选择对应的API
+      const isZhenjiang = String(region) === '1';
+      console.log('region值：', region, '类型：', typeof region, '是否镇江：', isZhenjiang);
+      
+      const apiCall = isZhenjiang 
+        ? (targetDept.isActive === 1 ? grantDepartmentZhenjiang : disableDepartmentZhenjiang)
+        : (targetDept.isActive === 1 ? grantDepartment : disableDepartment);
+      
       wx.showLoading({ title: '操作中...' });
+    //   console.log('调用的接口：', apiCall);
+      console.log('传递的部门名称：', departmentName);
       apiCall(departmentName)
         .then(res => {
+            console.log('接口调用成功，返回结果：', res);
+            console.log(departmentName,'departmentName打印');
             // 0代表已授权 1代表已禁用
           wx.hideLoading();
           this.getApartmentListApi();
@@ -88,6 +116,7 @@ import {
           });
         })
         .catch(err => {
+          console.error('接口调用失败：', err);
           wx.hideLoading();
           wx.showToast({ title: '操作失败', icon: 'none' });
           console.error('状态切换失败:', err);

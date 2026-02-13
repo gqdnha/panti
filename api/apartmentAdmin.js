@@ -29,6 +29,14 @@ export const getApartmentList = () => {
     });
 }
 
+// 根据手机号获取部门列表
+export const getApartmentListByPhone = (phone) => {
+    return request({
+        url: `/user/getDepartmentListByPhone?phone=${phone}`,
+        method: 'GET',
+    });
+}
+
 // 导出部门人员
 export const downLoadUserText = (data) => {
     console.log(data);
