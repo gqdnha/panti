@@ -14,35 +14,43 @@ Page({
         totalUsers: 0,
         todayUsers: 0,
         avgCorrectRate: 0,
-        dailyQuestionRate:'',
-        dailyQuestionUserCount:0,
-        department: ''
+        dailyQuestionRate: '',
+        dailyQuestionUserCount: 0,
+        department: '',
+        region: ''
     },
 
     /**
      * 生命周期函数--监听页面加载
      */
     onLoad(options) {
+        // 获取部门和地区信息
+        const department = wx.getStorageSync('department');
+        const region = wx.getStorageSync('region');
+        console.log('当前用户部门：', department);
+        console.log('当前用户region：', region);
+        this.setData({
+            department: department || '',
+            region: region || '0'
+        });
+
         // 加载数据
         this.loadUserStats()
         this.getUserToday()
-        // 获取部门信息
-        const department = wx.getStorageSync('department');
-        this.setData({
-            department: department || ''
-        });
     },
     loadUserStats() {
         const {
             pageNum,
-            pageSize
+            pageSize,
+            region
         } = this.data;
         const data = {
+            region: region,
             department: "",
             pageNum: pageNum,
             pageSize: pageSize
         };
-        console.log(data);
+        console.log('传递的参数：', data);
         getAllUserInfo(data).then(res => {
             console.log(res.pageInfo);
             // 假设 res 包含 userList 和 totalPages 数据
@@ -55,19 +63,26 @@ Page({
         });
     },
     getUserToday() {
-        getUserToday().then(res => {
+        const {
+            region
+        } = this.data;
+        console.log('传递给getUserToday的region：', region);
+        getUserToday(region).then(res => {
             console.log(res);
             console.log(res.dailyQuestionRate);
             this.setData({
-                dailyQuestionRate : res.dailyQuestionRate,
-                dailyQuestionUserCount : res.dailyQuestionUserCount
-            })
-        console.log(this.data.dailyQuestionRate);
-        console.log(this.data.dailyQuestionUserCount);
-
-        })
+                todayUsers: res.todayRegisterCount || 0,
+                avgCorrectRate: res.accuracyRate || 0,
+                dailyQuestionRate: res.dailyQuestionRate,
+                dailyQuestionUserCount: res.dailyQuestionUserCount
+            });
+            console.log(this.data.dailyQuestionRate);
+            console.log(this.data.dailyQuestionUserCount);
+        }).catch(err => {
+            console.error(err);
+        });
     },
-    
+
     /**
      * 生命周期函数--监听页面初次渲染完成
      */

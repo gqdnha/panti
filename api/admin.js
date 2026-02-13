@@ -183,10 +183,11 @@ export const getAllUserInfo = (data) => {
 };
 
 // 获取今日用户及完成率
-export const getUserToday = () => {
+export const getUserToday = (region) => {
+    console.log('getUserToday接收到的region：', region);
     return request({
-        url: `/dailyQuestion/getDailyQuestionStatus`,
-        method: 'GET'
+        url: `/dailyQuestion/getDailyQuestionStatus?region=${region}`,
+        method: 'GET',
     });
 };
 
