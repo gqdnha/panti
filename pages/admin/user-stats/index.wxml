@@ -9,7 +9,7 @@
 <!-- 题目列表 -->
 <view class="question-list">
     <table class="question-table">
-        <thead class="list-header">
+        <thead class="list-header" wx:if="{{userList.length > 0}}">
             <tr class="table-header">
                 <th class="header-item">用户/手机号</th>
                 <th class="header-item">部门</th>
@@ -18,7 +18,7 @@
             </tr>
         </thead>
         <tbody class="list-content">
-            <tr class="list-item" wx:for="{{userList}}" wx:key="id">
+            <tr class="list-item" wx:for="{{userList}}" wx:key="id" wx:if="{{userList.length > 0}}">
                 <td class="user-name">
                     <view>{{item.name}}</view>
                     <view class="user-phone-small">{{item.phone}}</view>
@@ -29,6 +29,9 @@
                     <view class="btn edit" bindtap="viewDetail" data-id="{{item.user_id}}">详情</view>
                     <!-- <view class="btn export" bindtap="exportUserData" data-id="{{item.id}}">导出</view> -->
                 </td>
+            </tr>
+            <tr wx:if="{{userList.length === 0}}">
+                <td colspan="4" class="empty-list">无</td>
             </tr>
         </tbody>
     </table>
