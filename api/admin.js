@@ -174,6 +174,7 @@ export const updateQuestion = (questionId,data) => {
 
 // 获取用户数据
 export const getAllUserInfo = (data) => {
+    console.log(data);
     console.log(data,"获取用户数据");
     return request({
         url: `/mange/findUserPage`,
