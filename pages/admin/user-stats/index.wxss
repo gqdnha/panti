@@ -35,7 +35,7 @@
 }
 
 .btn-icon {
-    width: 64rpx;
+    width: 60rpx;
     height: 64rpx;
     margin-bottom: 16rpx;
 }

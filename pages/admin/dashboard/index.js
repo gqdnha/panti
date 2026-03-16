@@ -172,7 +172,7 @@ Page({
         })
     },
 
-    // 易错20题
+    // 易错50题
     navigateTo20Mistake() {
         wx.navigateTo({
             url: '/pages/canMistake20/canMistake20'
@@ -180,6 +180,7 @@ Page({
     },
     // 可视化
     navigateapartEchatrs() {
+        if (!this.checkPermission()) return;
         wx.navigateTo({
             url: '/pages/admin/apartmentEcharts/apartmentEcharts'
         })
@@ -192,6 +193,7 @@ Page({
         });
     },
     goToDepartmentManage() {
+        if (!this.checkPermission()) return;
         wx.navigateTo({
             url: '/pages/admin/department-manage/index'
         });

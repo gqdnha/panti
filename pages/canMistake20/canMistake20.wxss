@@ -226,13 +226,13 @@
 .bottom-bar {
     display: flex;
     justify-content: space-between;
-    padding: 20rpx;
+    /* padding: 20rpx; */
     background-color: #fff;
     border-radius: 10rpx;
 }
 
 .btn {
-    padding: 20rpx 40rpx;
+    padding: 20rpx 20rpx;
     border-radius: 8rpx;
     font-size: 30rpx;
     text-align: center;
