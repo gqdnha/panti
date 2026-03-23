@@ -48,10 +48,17 @@ Page({
                         data: { code: res.code }
                     }).then(res => {
                         wx.hideLoading();
+                        wx.removeStorageSync('role');
+                        wx.removeStorageSync('name');
+                        wx.removeStorageSync('phone');
+                        wx.removeStorageSync('department');
+                        wx.removeStorageSync('region');
+                        
                         wx.setStorageSync('token', res.token);
                         wx.setStorageSync('userId', res.userId);
-                        wx.setStorageSync('role', res.role);
-                        wx.setStorageSync('region', res.region);
+                        wx.setStorageSync('role', res.role || 'user');
+                        wx.setStorageSync('region', res.region || '0');
+                        console.log('登录返回的role值：', res.role, '类型：', typeof res.role);
                         this.setData({ userId: res.userId });
                         setupTabBar();
 

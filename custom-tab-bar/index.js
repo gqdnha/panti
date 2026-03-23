@@ -31,6 +31,8 @@ Component({
   methods: {
     updateTabBar() {
       const role = wx.getStorageSync('role');
+      console.log('tabBar获取到的role值：', role, '类型：', typeof role);
+      
       const list = [
         {
           pagePath: "/pages/index/index",
