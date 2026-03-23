@@ -69,6 +69,7 @@ Page({
             this.getTabBar().setData({
                 selected: 1
             });
+            this.getTabBar().updateTabBar();
         }
         this.getStudyStats();
         this.getUserInfo();
