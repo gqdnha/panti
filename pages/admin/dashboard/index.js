@@ -64,8 +64,14 @@ Page({
     },
     // 获取今日用户及完成率
     getUserToday() {
-        const { region, department } = this.data;
-        console.log('传递给getUserToday的参数：', { region, department });
+        const {
+            region,
+            department
+        } = this.data;
+        console.log('传递给getUserToday的参数：', {
+            region,
+            department
+        });
         getUserToday(region, department === '超级管理员' ? '' : department).then(res => {
             console.log(res);
             console.log(res.dailyQuestionRate);

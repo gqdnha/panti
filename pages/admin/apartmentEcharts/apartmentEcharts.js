@@ -372,7 +372,7 @@ Page({
                 },
                 grid: {
                     top: '15%',
-                    left: '5%',
+                    left: '15%',
                     right: '5%',
                     bottom: '15%',
                     containLabel: true
@@ -389,14 +389,14 @@ Page({
                 },
                 yAxis: {
                     type: 'value',
-                    name: '完成人数',
+                    name: '完成率（%）',
                     nameLocation: 'middle',
                     nameGap: 40,
                     minInterval: 1
                 },
                 series: [{
                     name: '完成人数',
-                    type: 'bar',
+                    type: 'line',
                     data: dailyFinishData.map(item => item.dailyFinish || 0),
                     itemStyle: {
                         color: '#73c0de'
